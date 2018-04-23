@@ -16,7 +16,7 @@ https://mva.microsoft.com/en-US/training-courses/aspnet-core-intermediate-18154?
 
 
 **In ASP CORE, use VIEW COMPONENTS instead of partial views**
-
+https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-components?view=aspnetcore-2.0
 
 
 Process overview for the javascript design

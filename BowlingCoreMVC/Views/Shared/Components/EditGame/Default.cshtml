@@ -1,0 +1,25 @@
+﻿@model BowlingCoreMVC.Models.Game
+
+<table class="table table-bordered table-condensed">
+    <thead>
+        <tr>
+            @*OR just 1-10..*@
+            @foreach (var f in Model.Frames)
+            {
+                <th>
+                    @f.FrameNum
+                </th>
+
+            }
+        </tr>
+    </thead>
+    <tr>
+        @foreach (var f in Model.Frames)
+        {
+
+            <frame-throw frame="@f"></frame-throw>
+
+
+        }
+    </tr>
+</table>
