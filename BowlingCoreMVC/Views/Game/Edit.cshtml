@@ -1,0 +1,49 @@
+﻿@model BowlingCoreMVC.Models.Game
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@{
+    var m = Model;
+}
+<h2>Edit</h2>
+
+<table class="table table-bordered table-condensed">
+    <thead>
+        <tr>
+            @*OR just 1-10..*@
+            @foreach (var f in Model.Frames)
+            {
+                <th>
+                    @f.FrameNum
+                </th>
+
+            }
+        </tr>
+    </thead>
+    <tr>
+        @foreach (var f in Model.Frames)
+        {
+            
+            <frame-throw frame="@f"></frame-throw>
+            
+
+        }
+    </tr>
+</table>
+
+@* TODO: this didn't work in the site.css file?? *@
+<style type="text/css">
+    .frameBox {
+        border: 1px solid black;
+        padding: 3px;
+        margin-left: 60%;
+    }
+
+    .frameBox3 {
+        border: 1px solid black;
+        padding: 3px;
+        
+    }
+</style>

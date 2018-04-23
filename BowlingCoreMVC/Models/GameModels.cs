@@ -18,7 +18,6 @@ namespace BowlingCoreMVC.Models
         public int FrameScore { get; set; }
         public int FrameTotal { get; set; }
 
-        [Range(0, 10)]
         public int ThrowOneScore { get; set; }
         public int ThrowTwoScore { get; set; }
         public int ThrowThreeScore { get; set; }
@@ -26,23 +25,12 @@ namespace BowlingCoreMVC.Models
         //These are int16s bit fields of the missed pins
         // Example: Missed 10 pin: 1000000000
         // Example: Missed washout: 1000101011 (1-2-4-6-10)
-        public int ThrowOnePins { get; set; }
-        public int ThrowTwoPins { get; set; }
-        public int ThrowThreePins { get; set; }
+        public short ThrowOnePins { get; set; }
+        public short ThrowTwoPins { get; set; }
+        public short ThrowThreePins { get; set; }
 
-        //I guess this is only for the view?
-        [Editable(true)]
-        public bool PinMissed { get; set; }
-
-        //public bool TwoPinMissed   { get; set; }
-        //public bool ThreePinMissed { get; set; }
-        //public bool FourPinMissed  { get; set; }
-        //public bool FivePinMissed  { get; set; }
-        //public bool SixPinMissed   { get; set; }
-        //public bool SevenPinMissed { get; set; }
-        //public bool EightPinMissed { get; set; }
-        //public bool NinePinMissed  { get; set; }
-        //public bool TenPinMissed   { get; set; }
+        //[Editable(true)]
+        //public bool PinMissed { get; set; }
     }
 
     public class Game
@@ -59,7 +47,7 @@ namespace BowlingCoreMVC.Models
 
         //This is to score the game only up to this frame
         //this number should only go up, max of 10
-        //public int ScoreUpToFrame { get; set; }
+        public int ScoreUpToFrame { get; set; }
 
         public virtual ICollection<Frame> Frames { get; set; }
 
@@ -68,11 +56,10 @@ namespace BowlingCoreMVC.Models
         [StringLength(128)]
         public string UserID { get; set; }
 
-        //public int SeriesIndex { get; set; }
+        public int SeriesIndex { get; set; }
 
     }
 
-    /* Do this AFTER we publish v1
     public class Series
     {
         public int ID { get; set; }
@@ -113,7 +100,7 @@ namespace BowlingCoreMVC.Models
         [StringLength(128)]
         public string UserID { get; set; }
     }
-    */
+    
 
     /*
      * League > LeagueUsers

@@ -33,3 +33,12 @@
         display: none;
     }
 }
+
+
+
+
+/* custom */
+
+.frameBox {
+    border: 5px solid black;
+}
