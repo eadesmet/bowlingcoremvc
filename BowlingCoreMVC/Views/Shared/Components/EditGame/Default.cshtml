@@ -1,5 +1,7 @@
 ﻿@model BowlingCoreMVC.Models.Game
 
+
+
 <table class="table table-bordered table-condensed">
     <thead>
         <tr>
@@ -23,3 +25,8 @@
         }
     </tr>
 </table>
+
+<input type="hidden" id="hidGameID" value="@Model.ID" />
+
+<input type="button" class="btn btn-default" value="<--- PREVIOUS THROW" onclick="" />
+<input type="button" class="btn btn-default" value="NEXT THROW --->" onclick="NextThrow(@Model.ID)" />

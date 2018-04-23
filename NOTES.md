@@ -12,6 +12,7 @@ Storing secret values in the application the safe way:
 
 Look into using a TagHelper for displaying frames
 https://mva.microsoft.com/en-US/training-courses/aspnet-core-intermediate-18154?l=QiFcbpbeE_811787171
+https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/authoring?view=aspnetcore-2.1
 
 
 

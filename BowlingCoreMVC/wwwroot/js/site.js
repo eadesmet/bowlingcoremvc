@@ -94,3 +94,15 @@ function GetGameData()
     }
     return JSON.stringify(game);
 }
+
+
+
+function TestThisFile()
+{
+    alert("Yepp");
+}
+
+function NextThrow(GameID)
+{
+    alert("GameID passed: " + GameID);
+}

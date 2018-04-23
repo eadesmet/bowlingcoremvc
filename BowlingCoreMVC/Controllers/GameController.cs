@@ -29,24 +29,25 @@ namespace BowlingCoreMVC.Controllers
         // GET Edit page (Edit a single game by ID)
         public ActionResult Edit(int id)
         {
-            //Game g = _db.Games.Find(id);
+            //Old code that worked (edit a single game)
+            //var game = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
+            //game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
+            //return View(game);
 
-            //Game g = _db.Games.Include(f => f.Frames.OrderBy(f2 => f2.FrameNum).Where(f3 => f3.GameID == id))
-            //    .Where(o => o.ID == id)
-            //    .SingleOrDefault();
+            //New 'fake' series because the view takes a series now
+            Series s = new Series();
 
-            //var game = (from g in _db.Games.Include(o => o.Frames)
-            //            where g.ID == id
-            //            orderby g.Frames.OrderBy(f => f.FrameNum)
-            //            select g).FirstOrDefault();
+            var game1 = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
+            game1.Frames = game1.Frames.OrderBy(f => f.FrameNum).ToList();
 
-            //var game = _db.Games.Include(f => f.Frames.OrderBy(o => o.FrameNum).FirstOrDefault()).Where(x => x.ID == id).FirstOrDefault();
+            var game2 = _db.Games.Include(o => o.Frames).Where(g => g.ID == 2).SingleOrDefault();
+            game2.Frames = game2.Frames.OrderBy(f => f.FrameNum).ToList();
 
-            var game = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
+            s.Games = new List<Game>();
+            s.Games.Add(game1);
+            s.Games.Add(game2);
 
-            game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
-
-            return View(game);
+            return View(s);
         }
     }
 }

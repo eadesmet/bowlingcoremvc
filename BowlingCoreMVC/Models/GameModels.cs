@@ -58,6 +58,8 @@ namespace BowlingCoreMVC.Models
 
         public int SeriesIndex { get; set; }
 
+        //public int SeriesID { get; set; }
+
     }
 
     public class Series
@@ -69,6 +71,8 @@ namespace BowlingCoreMVC.Models
         public int LeagueID { get; set; }
 
         public int SeriesScore { get; set; }
+
+        public virtual ICollection<Game> Games { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }

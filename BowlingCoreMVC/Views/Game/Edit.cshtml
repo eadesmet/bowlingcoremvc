@@ -1,4 +1,4 @@
-﻿@model BowlingCoreMVC.Models.Game
+﻿@model BowlingCoreMVC.Models.Series
 
 @{
     ViewData["Title"] = "Edit";
@@ -8,8 +8,26 @@
     var m = Model;
 }
 <h2>Edit</h2>
+
+
+
+
+
+
+
 @* The Model.ID here will be in a for each loop later (for each game in series, etc) *@
-@await Component.InvokeAsync("EditGame", new { GameID = Model.ID })
+@foreach (var g in Model.Games)
+{
+    @await Component.InvokeAsync("EditGame", new { GameID = g.ID })
+
+}
+
+
+
+<input type="button" onclick="TestThisFile()" value="TEST" />
+
+
+
 
 @* TODO: this didn't work in the site.css file?? *@
 <style type="text/css">
@@ -22,6 +40,5 @@
     .frameBox3 {
         border: 1px solid black;
         padding: 3px;
-        
     }
 </style>
