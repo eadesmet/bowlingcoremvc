@@ -46,66 +46,127 @@
     </tr>
 </table>
 
+@*
+    <div class="col-sm-12" style="display:inline-block;">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_7" />
+                </div>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_8" />
+                </div>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_9" />
+                </div>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_10" />
+                </div>
+            </div>
+        </div>
+        <div class="row"><br /></div>
+        <div class="row">
+            <div class="col-sm-4">
+                <input type="button" class="btn btn-default btn-sm" value="<--- PREVIOUS THROW" onclick="PreviousThrow(@Model.ID)" />
+            </div>
+            <div class="col-sm-4">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_4" />
+                </div>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_5" />
+                </div>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_6" />
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <input type="button" class="btn btn-default btn-sm" value="NEXT THROW --->" onclick="NextThrow(@Model.ID)" />
+            </div>
+        </div>
+        <div class="row"><br /></div>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_2" />
+                </div>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_3" />
+                </div>
+            </div>
+        </div>
+        <div class="row"><br /></div>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="Missed_1" />
+                </div>
+            </div>
+        </div>
+    </div>
+*@
 
-<div class="col-sm-12">
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_7" />
-            </div>
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_8" />
-            </div>
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_9" />
-            </div>
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_10" />
-            </div>
-        </div>
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-1">
+        <button class="btn btn-default btn-sm" onclick="PreviousThrow(@Model.ID)" ><span class="glyphicon glyphicon-arrow-left" /></button>
     </div>
-    <div class="row"><br /></div>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_4" />
-            </div>
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_5" />
-            </div>
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_6" />
-            </div>
-        </div>
+    <div class="col-sm-4">
+        <table class="table table-condensed" id="PinsTable">
+            <tr>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_7" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_7"></label></div></td>
+                <td></td>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_8" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_8"></label></div></td>
+                <td></td>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_9" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_9"></label></div></td>
+                <td></td>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_10" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_10"></label></div></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_4" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_4"></label></div></td>
+                <td></td>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_5" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_5"></label></div></td>
+                <td></td>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_6" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_6"></label></div></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_2" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_2"></label></div></td>
+                <td></td>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_3" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_3"></label></div></td>
+                <td></td><td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><div><input type="checkbox" id="@Model.ID-Missed_1" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_1"></label></div></td>
+                <td></td><td></td><td></td>
+            </tr>
+        </table>
     </div>
-    <div class="row"><br /></div>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_2" />
-            </div>
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_3" />
-            </div>
-        </div>
+    <div class="col-sm-1">
+        <button class="btn btn-default btn-sm" onclick="NextThrow(@Model.ID)" ><span class="glyphicon glyphicon-arrow-right" /></button>
     </div>
-    <div class="row"><br /></div>
-    <div class="row">
-
-        <div class="col-sm-4">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-2">
-                <input type="checkbox" id="Missed_1" />
-            </div>
-        </div>
-    </div>
+    <div class="col-sm-2"></div>
 </div>
+
+<style type="text/css">
+
+</style>
 
 <input type="hidden" id="hidGameID" value="@Model.ID" />
 
 
 <input type="button" class="btn btn-success" value="Save" onclick="SaveGame(@Model.ID)" />
-<input type="button" class="btn btn-default" value="<--- PREVIOUS THROW" onclick="PreviousThrow(@Model.ID)" />
-<input type="button" class="btn btn-default" value="NEXT THROW --->" onclick="NextThrow(@Model.ID)" />
+
+
