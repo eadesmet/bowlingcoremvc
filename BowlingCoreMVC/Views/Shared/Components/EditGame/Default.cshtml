@@ -3,8 +3,10 @@
 <input type="hidden" id="'@Model.ID'_GameID" value="@Model.ID" />
 
 @Html.HiddenFor(mod => mod.ID, new { @id = Model.ID + "_GameID" })
+@Html.HiddenFor(mod => mod.CurrentFrame, new { @id = Model.ID + "_CurrentFrame" })
+@Html.HiddenFor(mod => mod.CurrentThrow, new { @id = Model.ID + "_CurrentThrow" })
 
-<table class="table table-bordered table-condensed">
+<table class="table table-bordered table-condensed GameTable">
     <thead>
         <tr>
             @*OR just 1-10..*@
@@ -115,7 +117,7 @@
 <div class="row">
     <div class="col-sm-3"></div>
     <div class="col-sm-1">
-        <button class="btn btn-default btn-sm" onclick="PreviousThrow(@Model.ID)" ><span class="glyphicon glyphicon-arrow-left" /></button>
+        <button class="btn btn-default btn-sm" onclick="PreviousThrow(@Model.ID)"><span class="glyphicon glyphicon-arrow-left" /></button>
     </div>
     <div class="col-sm-4">
         <table class="table table-condensed" id="PinsTable">
@@ -143,25 +145,27 @@
                 <td><div><input type="checkbox" id="@Model.ID-Missed_2" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_2"></label></div></td>
                 <td></td>
                 <td><div><input type="checkbox" id="@Model.ID-Missed_3" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_3"></label></div></td>
-                <td></td><td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td><div><input type="checkbox" id="@Model.ID-Missed_1" class="pins-checkbox sr-only" /><label for="@Model.ID-Missed_1"></label></div></td>
-                <td></td><td></td><td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         </table>
     </div>
     <div class="col-sm-1">
-        <button class="btn btn-default btn-sm" onclick="NextThrow(@Model.ID)" ><span class="glyphicon glyphicon-arrow-right" /></button>
+        <button class="btn btn-default btn-sm" onclick="NextClickSendGame(@Model.ID)"><span class="glyphicon glyphicon-arrow-right" /></button>
     </div>
     <div class="col-sm-2"></div>
 </div>
 
 <style type="text/css">
-
 </style>
 
 <input type="hidden" id="hidGameID" value="@Model.ID" />

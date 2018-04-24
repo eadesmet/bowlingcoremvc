@@ -26,8 +26,9 @@ namespace BowlingCoreMVC.ScoringTagHelpers
             var tdID = String.Format("{0}_{1}_tdFrameScore", frame.GameID, frame.FrameNum);
 
             var lblTotalScoreID = String.Format("{0}_{1}_lblFrameTotal", frame.GameID, frame.FrameNum);
-            var hidScoreID = String.Format("{0}_{1}_hidFrameScore", frame.GameID, frame.FrameNum);
+            var hidScoreID =      String.Format("{0}_{1}_hidFrameScore", frame.GameID, frame.FrameNum);
             var hidTotalScoreID = String.Format("{0}_{1}_hidFrameTotal", frame.GameID, frame.FrameNum);
+            var hidFrameID =      String.Format("{0}_{1}_hidFrameID", frame.GameID, frame.FrameNum);
 
             output.TagName = "td";
             output.Attributes.Add("id", tdID);
@@ -41,6 +42,7 @@ namespace BowlingCoreMVC.ScoringTagHelpers
             template.AppendJoin("", "<label id='", lblTotalScoreID, "'>", frame.FrameTotal, "</label>");
             template.AppendJoin("", "<input type='hidden' id='", hidScoreID, "' value='", frame.FrameScore, "'/>");
             template.AppendJoin("", "<input type='hidden' id='", hidTotalScoreID, "' value='", frame.FrameTotal, "'/>");
+            template.AppendJoin("", "<input type='hidden' id='", hidFrameID, "' value='", frame.ID, "'/>");
 
 
             output.Content.AppendHtml(template.ToString());

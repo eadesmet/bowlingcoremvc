@@ -49,6 +49,10 @@
     border: 1px solid black;
     padding: 3px;
 }*/
+.GameTable td {
+    text-align: center;
+    vertical-align: middle;
+}
 
 #PinsTable td {
     text-align: center;

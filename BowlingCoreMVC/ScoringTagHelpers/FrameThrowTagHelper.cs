@@ -35,10 +35,10 @@ namespace BowlingCoreMVC.ScoringTagHelpers
             //If content == 10, format as 'X' ?????
             //Do I need a Tag helper for every 'Tag' I want to show?
 
-            var tdID = String.Format("{0}_{1}_{2}_tdFrame", frame.GameID, frame.FrameNum, ThrowNum);
-
+            var tdID =       String.Format("{0}_{1}_{2}_tdFrame", frame.GameID, frame.FrameNum, ThrowNum);
             var lblThrowID = String.Format("{0}_{1}_{2}_lblFrame", frame.GameID, frame.FrameNum, ThrowNum);
             var hidThrowID = String.Format("{0}_{1}_{2}_hidFrame", frame.GameID, frame.FrameNum, ThrowNum);
+            var hidPinsID =  String.Format("{0}_{1}_{2}_hidPins", frame.GameID, frame.FrameNum, ThrowNum);
 
             output.TagName = "td";
             output.Attributes.Add("id", tdID);
@@ -49,16 +49,19 @@ namespace BowlingCoreMVC.ScoringTagHelpers
             {
                 template.AppendJoin("", "<label id='", lblThrowID, "'>", frame.ThrowOneScore, "</label>");
                 template.AppendJoin("", "<input type='hidden' id='", hidThrowID, "' value='", frame.ThrowOneScore, "'/>");
+                template.AppendJoin("", "<input type='hidden' id='", hidPinsID, "' value='", frame.ThrowOnePins, "'/>");
             }
             else if (ThrowNum == 2)
             {
                 template.AppendJoin("", "<label class='frameBox' id='", lblThrowID, "'>", frame.ThrowTwoScore, "</label>");
                 template.AppendJoin("", "<input type='hidden' id='", hidThrowID, "' value='", frame.ThrowTwoScore, "'/>");
+                template.AppendJoin("", "<input type='hidden' id='", hidPinsID, "' value='", frame.ThrowTwoPins, "'/>");
             }
             else if (ThrowNum == 3)
             {
                 template.AppendJoin("", "<label class='frameBox3' id='", lblThrowID, "'>", frame.ThrowThreeScore, "</label>");
                 template.AppendJoin("", "<input type='hidden' id='", hidThrowID, "' value='", frame.ThrowThreeScore, "'/>");
+                template.AppendJoin("", "<input type='hidden' id='", hidPinsID, "' value='", frame.ThrowThreePins, "'/>");
             }
             
             output.Content.AppendHtml(template.ToString());

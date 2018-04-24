@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace BowlingCoreMVC.Controllers
 {
@@ -48,6 +49,16 @@ namespace BowlingCoreMVC.Controllers
             s.Games.Add(game2);
 
             return View(s);
+        }
+
+        [HttpPost]
+        public ActionResult NextThrowClick(string JSONGame)
+        {
+            Game g = JsonConvert.DeserializeObject<Game>(JSONGame);
+
+
+            //This won't work, it needs to be a series.
+            return View("Edit", g);
         }
     }
 }
