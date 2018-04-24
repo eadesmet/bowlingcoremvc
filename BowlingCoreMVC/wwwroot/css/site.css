@@ -40,5 +40,12 @@
 /* custom */
 
 .frameBox {
-    border: 5px solid black;
+    border: 1px solid black;
+    padding: 3px;
+    margin-left: 60%;
+}
+
+.frameBox3 {
+    border: 1px solid black;
+    padding: 3px;
 }

@@ -3,12 +3,12 @@
 
 ///Getting GameData from the page (labels) to be sent to Controller
 ///Returns JSON string of the Game
-function GetGameData()
+function GetGameData(GameID)
 {
     var frameDetails = {};
     var game = {};
     game.frames = [];
-    game.ID = '@Model.ID';
+    game.ID = GameID;
     game.CreatedDate = $("#game_CreatedDate").val();
     game.ModifiedDate = $("#game_ModifiedDate").val();
     game.CurrentFrame = $("#game_CurrentFrame").val();
@@ -40,27 +40,6 @@ function GetGameData()
         frameDetails["ThrowTwoScore"] = throwTwo_data.score - throwOne_data.score;//$("#" + i + "_SecondThrow").text().trim();
         frameDetails["ThrowOnePins"] = throwOne_data.missed;
         frameDetails["ThrowTwoPins"] = throwTwo_data.missed;
-
-        /*
-        //CurrentThrow is WHAT IS BEING THROWN NOW. After it returns from controller it will be higher
-        var ThrowNum = GetThrowNum(game.CurrentThrow);
-        if (ThrowNum == 1)
-        {
-            //First throw going to 2 (or next 1 if frame 1-9)
-            frameDetails["ThrowTwoScore"] = 10 - throwOne_data.score;
-            frameDetails["ThrowTwoPins"] = MISSED_ALL - throwOne_data.missed;
-        }
-        else if (ThrowNum == 2)
-        {
-            //calculate throwtwo score based on throw one
-            frameDetails["ThrowTwoScore"] = (throwTwo_data.score - throwOne_data.score);
-        }
-        else if (ThrowNum == 3)
-        {
-            //This is only called when: 10th frame, 3rd throw, previous clicked.
-
-        }
-        */
 
 
         //---Throw Data---
@@ -104,5 +83,10 @@ function TestThisFile()
 
 function NextThrow(GameID)
 {
-    alert("GameID passed: " + GameID);
+    alert("Next called: GameID: " + GameID);
+}
+
+function PreviousThrow(GameID)
+{
+    alert("Previous called: GameID: " + GameID);
 }
