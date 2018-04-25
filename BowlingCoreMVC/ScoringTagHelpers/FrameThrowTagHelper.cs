@@ -27,23 +27,20 @@ namespace BowlingCoreMVC.ScoringTagHelpers
         //this defaults to Process???
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            /* questions..
-             * when CAN this get executed? can I put my formatting code here?
-             * 
-             * */
             var content = (await output.GetChildContentAsync()).GetContent();
-            //If content == 10, format as 'X' ?????
-            //Do I need a Tag helper for every 'Tag' I want to show?
-
+            
             var tdID =       String.Format("{0}_{1}_{2}_tdFrame", frame.GameID, frame.FrameNum, ThrowNum);
             var lblThrowID = String.Format("{0}_{1}_{2}_lblFrame", frame.GameID, frame.FrameNum, ThrowNum);
             var hidThrowID = String.Format("{0}_{1}_{2}_hidFrame", frame.GameID, frame.FrameNum, ThrowNum);
             var hidPinsID =  String.Format("{0}_{1}_{2}_hidPins", frame.GameID, frame.FrameNum, ThrowNum);
 
+            var hidFrameNumID = String.Format("{0}_{1}_hidFrameNum", frame.GameID, frame.FrameNum);
+
             output.TagName = "td";
             output.Attributes.Add("id", tdID);
 
             StringBuilder template = new StringBuilder();
+            template.AppendJoin("", "<input type='hidden' id='", hidFrameNumID, "' value='", frame.FrameNum, "'/>");
 
             if (ThrowNum == 1)
             {

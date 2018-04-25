@@ -54,6 +54,7 @@ function GetJSONFromPage(GameID)
 
         frameDetails["FrameScore"] = $(prefixID + "hidFrameScore").val();
         frameDetails["FrameTotal"] = $(prefixID + "hidFrameTotal").val();
+        frameDetails["FrameNum"] = $(prefixID + "hidFrameNum").val();
 
         frameDetails["ThrowOneScore"] = $(prefixID + "1_hidFrame").val();
         frameDetails["ThrowTwoScore"] = $(prefixID + "2_hidFrame").val();
@@ -90,18 +91,11 @@ function RefreshGameHid(g)
             $("#" + g.ID + "_" + i + "_3_hidFrame").val(g.Frames[i - 1].ThrowThreeScore);
         }
 
+        SetLabelsFromHid(g.ID, i);
+
         // : MissedPinsINT Bitwise & MISSED_1 : (In javascript, this should return 1 if it was missed)
         //$("#" + i + "_1_MissedPinOne").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_1) == MISSED_1);
-        //$("#" + i + "_1_MissedPinTwo").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_2) == MISSED_2);
-        //$("#" + i + "_1_MissedPinThree").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_3) == MISSED_3);
-        //$("#" + i + "_1_MissedPinFour").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_4) == MISSED_4);
-        //$("#" + i + "_1_MissedPinFive").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_5) == MISSED_5);
-        //$("#" + i + "_1_MissedPinSix").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_6) == MISSED_6);
-        //$("#" + i + "_1_MissedPinSeven").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_7) == MISSED_7);
-        //$("#" + i + "_1_MissedPinEight").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_8) == MISSED_8);
-        //$("#" + i + "_1_MissedPinNine").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_9) == MISSED_9);
-        //$("#" + i + "_1_MissedPinTen").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_10) == MISSED_10);
-
+        
     }
 
     var CurrentThrowMissedPins = $("#" + g.ID + "_" + g.CurrentFrame + "_" + g.CurrentThrow + "_hidPins").val();
@@ -125,9 +119,30 @@ function RefreshPinsOfCurrentThrow(GameID, MissedPins, FrameNum, ThrowNum)
     $("#" + GameID + "-Missed_10").prop("checked", (MissedPins & MISSED_10) == MISSED_10);
 }
 
-function SetLabelsFromHid()
+function SetLabelsFromHid(GameID, FrameNum)
 {
-    //TODO
+    EmptyFrameLabels(GameID, FrameNum)
+
+    $("#" + GameID + "_" + FrameNum + "_lblFrameTotal").append($("#" + GameID + "_" + FrameNum + "_hidFrameTotal").val());
+    $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append($("#" + GameID + "_" + FrameNum + "_1_hidFrame").val());
+    $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append($("#" + GameID + "_" + FrameNum + "_2_hidFrame").val());
+
+    if (FrameNum == 10)
+    {
+        $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append($("#" + GameID + "_" + FrameNum + "_3_hidFrame").val());
+    }
+
+}
+
+function EmptyFrameLabels(GameID, FrameNum)
+{
+    $("#" + GameID + "_" + FrameNum + "_lblFrameTotal").empty();
+    $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty();
+    $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty();
+    if (FrameNum == 10)
+    {
+        $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty();
+    }
 }
 
 
@@ -227,8 +242,8 @@ function NextClickSendGame(GameID)
         success: function (result)
         {
             //reload all of the game data on the page
-            var returnedGame = JSON.parse(result.JSONGameReturned);
-            RefreshGameOnPage(returnedGame);
+            var returnedGame = JSON.parse(result.jsonGameReturned);
+            RefreshGameHid(returnedGame);
 
             //reset previous throw indicator
             //if (returnedGame.CurrentFrame != previousFrame)
@@ -238,7 +253,7 @@ function NextClickSendGame(GameID)
             //previousThrow = returnedGame.CurrentThrow;
 
             //load current throw indicator here
-            HighlightSelectedFrame(returnedGame.CurrentFrame, returnedGame.CurrentThrow);
+            HighlightSelectedFrame(returnedGame.ID, returnedGame.CurrentFrame, returnedGame.CurrentThrow);
 
         },
         error: function (xhr)
