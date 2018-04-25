@@ -211,15 +211,17 @@ function HighlightSelectedFrame(GameID, FrameNum, CurrentThrow)
 function NextClickSendGame(GameID)
 {
     var JSONGame = GetJSONFromPage(GameID);
+    var GameIDs = GetGameIDs();
     var getReportColumnsParams = {
-        "JSONGame": JSONGame
+        "JSONGame": JSONGame,
+        "GameIDs" : GameIDs
     };
     $.ajax({
         type: "POST",
         traditional: true,
         async: false,
         cache: false,
-        url: '@Url.Action("NextThrowClick", "Game")',//'/TestAjaxJson/UpdateUsersDetail',
+        url: '/Game/NextThrowClick',//'@Url.Action("NextThrowClick", "Game")',
         context: document.body,
         data: getReportColumnsParams,
         success: function (result)
@@ -247,4 +249,22 @@ function NextClickSendGame(GameID)
 
         }
     });
+}
+
+
+
+
+
+//--------------------
+//utils
+//--------------------
+function GetGameIDs()
+{
+    var result = [];
+    $(".hidGameID").each(function (i, obj)
+    {
+        result.push($(this).val());
+    });
+    
+    return (result);
 }

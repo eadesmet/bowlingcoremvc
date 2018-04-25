@@ -1,10 +1,13 @@
 ﻿@model BowlingCoreMVC.Models.Game
 
-<input type="hidden" id="'@Model.ID'_GameID" value="@Model.ID" />
-
-@Html.HiddenFor(mod => mod.ID, new { @id = Model.ID + "_GameID" })
+@*
+@Html.HiddenFor(mod => mod.ID, new { @class = "hidGameID" })
+*@
 @Html.HiddenFor(mod => mod.CurrentFrame, new { @id = Model.ID + "_CurrentFrame" })
 @Html.HiddenFor(mod => mod.CurrentThrow, new { @id = Model.ID + "_CurrentThrow" })
+
+
+<input type="hidden" class="hidGameID" value="@Model.ID" />
 
 <table class="table table-bordered table-condensed GameTable">
     <thead>
@@ -47,72 +50,6 @@
         }
     </tr>
 </table>
-
-@*
-    <div class="col-sm-12" style="display:inline-block;">
-        <div class="row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4">
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_7" />
-                </div>
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_8" />
-                </div>
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_9" />
-                </div>
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_10" />
-                </div>
-            </div>
-        </div>
-        <div class="row"><br /></div>
-        <div class="row">
-            <div class="col-sm-4">
-                <input type="button" class="btn btn-default btn-sm" value="<--- PREVIOUS THROW" onclick="PreviousThrow(@Model.ID)" />
-            </div>
-            <div class="col-sm-4">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_4" />
-                </div>
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_5" />
-                </div>
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_6" />
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <input type="button" class="btn btn-default btn-sm" value="NEXT THROW --->" onclick="NextThrow(@Model.ID)" />
-            </div>
-        </div>
-        <div class="row"><br /></div>
-        <div class="row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4">
-                <div class="col-sm-2"></div>
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_2" />
-                </div>
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_3" />
-                </div>
-            </div>
-        </div>
-        <div class="row"><br /></div>
-        <div class="row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-2">
-                    <input type="checkbox" id="Missed_1" />
-                </div>
-            </div>
-        </div>
-    </div>
-*@
 
 <div class="row">
     <div class="col-sm-3"></div>
@@ -167,8 +104,6 @@
 
 <style type="text/css">
 </style>
-
-<input type="hidden" id="hidGameID" value="@Model.ID" />
 
 
 <input type="button" class="btn btn-success" value="Save" onclick="SaveGame(@Model.ID)" />

@@ -1,4 +1,4 @@
-﻿@model BowlingCoreMVC.Models.Series
+﻿@model BowlingCoreMVC.Models.Game
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,13 +12,5 @@
 
 
 
-
-
-
-@* The Model.ID here will be in a for each loop later (for each game in series, etc) *@
-@foreach (var g in Model.Games)
-{
-    @await Component.InvokeAsync("EditGame", new { GameID = g.ID })
-
-}
+@await Component.InvokeAsync("EditGame", new { GameID = Model.ID })
 

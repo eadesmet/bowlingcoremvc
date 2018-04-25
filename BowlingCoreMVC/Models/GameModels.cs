@@ -58,7 +58,7 @@ namespace BowlingCoreMVC.Models
 
         public int SeriesIndex { get; set; }
 
-        //public int SeriesID { get; set; }
+        public int SeriesID { get; set; }
 
     }
 

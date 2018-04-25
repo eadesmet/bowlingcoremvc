@@ -39,21 +39,21 @@ namespace BowlingCoreMVC.Data
             if (context.Games.Any())
                 return;
 
-            var Games = new List<Game>
-            {
-                new Game{Score=300, CreatedDate=DateTime.Parse("2018-02-22"), ModifiedDate=DateTime.Parse("2018-03-02"), CurrentFrame=1, CurrentThrow=1, SeriesIndex=1},
-                new Game{Score=155, CreatedDate=DateTime.Parse("2018-03-09"), ModifiedDate=DateTime.Parse("2018-03-09"), CurrentFrame=1, CurrentThrow=1, SeriesIndex=1},
-            };
-
-            Games.ForEach(s => context.Games.Add(s));
-            context.SaveChanges();
-
             var Series = new List<Series>
             {
                 new Series{CreatedDate=DateTime.Parse("2018-04-23"), ModifiedDate=DateTime.Parse("2018-04-23"),},
             };
 
             Series.ForEach(s => context.Series.Add(s));
+            context.SaveChanges();
+
+            var Games = new List<Game>
+            {
+                new Game{Score=300, CreatedDate=DateTime.Parse("2018-02-22"), ModifiedDate=DateTime.Parse("2018-03-02"), CurrentFrame=1, CurrentThrow=1, SeriesIndex=1, SeriesID=1},
+                new Game{Score=155, CreatedDate=DateTime.Parse("2018-03-09"), ModifiedDate=DateTime.Parse("2018-03-09"), CurrentFrame=1, CurrentThrow=1, SeriesIndex=1, SeriesID=1},
+            };
+
+            Games.ForEach(s => context.Games.Add(s));
             context.SaveChanges();
 
             var frames = new List<Frame>

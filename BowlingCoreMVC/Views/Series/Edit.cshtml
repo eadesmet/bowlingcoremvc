@@ -1,0 +1,21 @@
+﻿@model BowlingCoreMVC.Models.Series
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@{
+    var m = Model;
+}
+<h2>Edit</h2>
+
+
+
+
+
+@foreach (var g in Model.Games)
+{
+    @await Component.InvokeAsync("EditGame", new { GameID = g.ID })
+
+}
+
