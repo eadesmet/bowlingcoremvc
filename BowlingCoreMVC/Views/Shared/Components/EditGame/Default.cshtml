@@ -1,13 +1,20 @@
 ﻿@model BowlingCoreMVC.Models.Game
-
 @*
-@Html.HiddenFor(mod => mod.ID, new { @class = "hidGameID" })
+    @Html.HiddenFor(mod => mod.ID, new { @class = "hidGameID" })
 *@
 @Html.HiddenFor(mod => mod.CurrentFrame, new { @id = Model.ID + "_CurrentFrame" })
 @Html.HiddenFor(mod => mod.CurrentThrow, new { @id = Model.ID + "_CurrentThrow" })
+@Html.HiddenFor(mod => mod.ScoreUpToFrame, new { @id = Model.ID + "_ScoreUpToFrame" })
 
 
 <input type="hidden" class="hidGameID" value="@Model.ID" />
+
+<div class="alert alert-success alert-dismissible" role="alert" id="SavedAlert" style="display: none; position: fixed; width:80%;">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    Game Saved!
+</div>
 
 <table class="table table-bordered table-condensed GameTable">
     <thead>
@@ -52,10 +59,13 @@
 </table>
 
 <div class="row">
-    <div class="col-sm-3"></div>
-    <div class="col-sm-1">
-        <button class="btn btn-default btn-sm" onclick="PreviousThrow(@Model.ID)"><span class="glyphicon glyphicon-arrow-left" /></button>
+    <div class="col-sm-4">
+        <button class="btn btn-default btn-sm" onclick="PreviousClickSendGame(@Model.ID)"><span class="glyphicon glyphicon-arrow-left" /></button>
+        <button class="btn btn-default btn-sm" onclick="NextClickSendGame(@Model.ID)"><span class="glyphicon glyphicon-arrow-right" /></button>
     </div>
+    @*<div class="col-sm-2">
+        
+    </div>*@
     <div class="col-sm-4">
         <table class="table table-condensed" id="PinsTable">
             <tr>
@@ -97,7 +107,7 @@
         </table>
     </div>
     <div class="col-sm-1">
-        <button class="btn btn-default btn-sm" onclick="NextClickSendGame(@Model.ID)"><span class="glyphicon glyphicon-arrow-right" /></button>
+        
     </div>
     <div class="col-sm-2"></div>
 </div>
@@ -106,6 +116,6 @@
 </style>
 
 
-<input type="button" class="btn btn-success" value="Save" onclick="SaveGame(@Model.ID)" />
+<input type="button" class="btn btn-success" value="Save" onclick="SaveGameClick(@Model.ID)" />
 
 

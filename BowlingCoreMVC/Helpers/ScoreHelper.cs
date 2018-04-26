@@ -24,6 +24,10 @@ namespace BowlingCoreMVC.Helpers
             g = CalculateNext(g, ThrowOneScore);
 
             g = ScoreGame(g);
+
+            if (g.ScoreUpToFrame < g.CurrentFrame)
+                g.ScoreUpToFrame = g.CurrentFrame;
+
             return (g);
         }
 

@@ -55,3 +55,32 @@ game/frame tag helpers
 What if I had ONE set of checkboxes for the pins
 that would make it look a LOT cleaner..
 but then I would want to view the missed pins at a glance, without it being selected..
+
+
+
+
+
+
+How the games are getting loaded for edit currently: (just as a reminder)
+
+	Game/Edit.cshtml
+		loads EditGame ViewComponent [/ViewComponenets/EditGameViewComponent.cs] for each game
+			loads game from DB and returns View(game) [Views/shared/Components/EditGame/Default.cshtml]
+				loads the game and uses tag helpers
+
+		.js is located in site.js
+
+
+
+
+
+
+I need to figure out this UpdateGame stuff
+Currently, I have trying to mash together the Game from the database in with the one from the Page
+this isn't working because it is overriding correct values with incorrect ones
+
+I can probably keep it the way it is (page game not having every field)
+but I still need to do this mashing together before an update
+
+*I shouldn't need to call this update on next or previous click*
+

@@ -28,6 +28,12 @@ namespace BowlingCoreMVC.Controllers
             return View(await _db.Games.ToListAsync());
         }
 
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View("Edit", new Game()); //TODO: Make sure this is ID 0
+        }
+
         // GET Edit page (Edit a single game by ID)
         [HttpGet]
         public ActionResult Edit(int id)
@@ -66,37 +72,28 @@ namespace BowlingCoreMVC.Controllers
                 {
                     if (g.ID == GameID)
                     {
-                        DBGame = _db.Games.Include(o => o.Frames).Where(o => o.ID == GameID).SingleOrDefault();
-                        DBGame.Frames = DBGame.Frames.OrderBy(f => f.FrameNum).ToList();
-                        SeriesID = DBGame.SeriesID;
+                        //DBGame = _db.Games.Include(o => o.Frames).Where(o => o.ID == GameID).SingleOrDefault();
+                        //DBGame.Frames = DBGame.Frames.OrderBy(f => f.FrameNum).ToList();
+                        //SeriesID = DBGame.SeriesID;
 
                         //TODO: Mush together g and DBGame, score it, and save it
                         // Take the fields I want from g and set them to DBGame, and save that (g won't have everything)
 
                         g = ScoreHelper.ThrowCurrent(g); //this also scores the game and updates the fields
 
-                        DBGame = DataHelper.UpdateGame(g, DBGame); //this updates DBGame from g
-                        _db.SaveChanges();
+                        //DBGame = DataHelper.UpdateGame(g, DBGame); //this updates DBGame from g
+                        //_db.SaveChanges();
 
                         //NOTE: This forces it to camelCase in javascript!!! It will not know different capitalization
-                        return Json(new { jsonGameReturned = JsonConvert.SerializeObject(DBGame) });
+                        return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
 
                     }
                 }
-                //TODO: Get the series and return the view
-                // Once we get here, the game will be saved, and the query for the Series will include the updated game
-                //Series s = _db.Series.Include(o => o.Games).Where(o => o.ID == SeriesID).SingleOrDefault();
-
-                //NOTE: Consider making the Edit page shared?
-                //I just don't want to have to make a 'fake' series with one game in it every time
-
-                //return View("~/Views/Series/Edit.cshtml", s);
                 
             }
             else
             {
-                //return GameController's Edit (editing a single game)
-                //return View("Edit", g);
+                g = ScoreHelper.ThrowCurrent(g);
                 
             }
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
@@ -104,5 +101,30 @@ namespace BowlingCoreMVC.Controllers
 
             //return View("Edit", g);
         }
+
+        [HttpPost]
+        public JsonResult PreviousThrowClick(string JSONGame, int[] GameIDs)
+        {
+            Game g = JsonConvert.DeserializeObject<Game>(JSONGame);
+
+            g = ScoreHelper.CalculatePrevious(g);
+
+            
+
+            //g = DataHelper.UpdateGame(g, DBGame);
+
+            return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
+        }
+
+        [HttpPost]
+        public JsonResult SaveGameClick(string JSONGame, int GameID)
+        {
+            Game g = JsonConvert.DeserializeObject<Game>(JSONGame);
+            g = ScoreHelper.ScoreGame(g);
+            DataHelper.SaveGame(g, _db);
+
+            return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
+        }
+
     }
 }
