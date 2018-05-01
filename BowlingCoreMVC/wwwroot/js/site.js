@@ -61,11 +61,20 @@ function GetJSONFromPage(GameID)
         //Update the hidden values for the score/pins of the current throw
         if (i == game.CurrentFrame)
         {
-            var ThrowNum = GetThrowNum(game.currentThrow);
+            var ThrowNum = GetThrowNum(parseInt(game.CurrentThrow));
+
             var CurrentThrowData = GetThrowPins(GameID, game.CurrentFrame, ThrowNum);
-            //CONFIRM THESE .VAL ARE GETTING SET (might be overwritten in refresh game? make sure framedetails is getting updated)
+            //(might be overwritten in refresh game? make sure framedetails is getting updated)
             $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
             $(prefixID + ThrowNum + "_hidPins").val(CurrentThrowData.missed);
+
+            //Overwrite second throw score to be calculated from throw one score
+            if (ThrowNum == 2)
+            {
+                //NOTE: GetThrowPins gets the score from the pins only! getThrowHidVals gets any score that has been saved
+                var FirstThrowData = GetThrowHidVals(GameID, game.CurrentFrame, 1);
+                $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
+            }
         }
 
         frameDetails["ThrowOneScore"] = $(prefixID + "1_hidFrame").val();
@@ -75,7 +84,7 @@ function GetJSONFromPage(GameID)
         frameDetails["ThrowTwoPins"] = $(prefixID + "2_hidPins").val();
 
         
-
+        //TODO: 10th frame updating here
         if (i == 10)
         {
             frameDetails["ThrowThreeScore"] = $(prefixID + "3_hidFrame").val();
@@ -117,6 +126,13 @@ function GetThrowPins(GameID, frameNum, throwNum)
     if (ten)   { missed_pins = missed_pins + MISSED_10; throw_score = throw_score - 1; };
 
     return { missed: missed_pins, score: throw_score };
+}
+
+function GetThrowHidVals(GameID, frameNum, throwNum)
+{
+    var score = $("#" + GameID + "_" + frameNum + "_" + throwNum + "_hidFrame").val();
+    var missed = $("#" + GameID + "_" + frameNum + "_" + throwNum + "_hidPins").val();
+    return { missed: missed, score: score };
 }
 
 //------------------Refresh functions------------------
@@ -572,17 +588,17 @@ function GetGameIDs()
     return (result);
 }
 
-function GetThrowNum(currentThrow)
+function GetThrowNum(CurrentThrow)
 {
-    if (currentThrow == 21)
+    if (CurrentThrow == 21)
     {
         return (3);
     }
-    else if (currentThrow % 2 == 0)
+    else if (CurrentThrow % 2 == 0)
     {
         return (2);
     }
-    else if (currentThrow % 2 == 1)
+    else if (CurrentThrow % 2 == 1)
     {
         return (1);
     }

@@ -63,39 +63,9 @@ namespace BowlingCoreMVC.Controllers
         public JsonResult NextThrowClick(string JSONGame, int[] GameIDs)
         {
             Game g = JsonConvert.DeserializeObject<Game>(JSONGame);
-            Game DBGame;
-            int SeriesID = 0;
-            if (GameIDs.Length > 1)
-            {
-                //return a series
-                foreach (var GameID in GameIDs)
-                {
-                    if (g.ID == GameID)
-                    {
-                        //DBGame = _db.Games.Include(o => o.Frames).Where(o => o.ID == GameID).SingleOrDefault();
-                        //DBGame.Frames = DBGame.Frames.OrderBy(f => f.FrameNum).ToList();
-                        //SeriesID = DBGame.SeriesID;
+            
+            g = ScoreHelper.ThrowCurrent(g);
 
-                        //TODO: Mush together g and DBGame, score it, and save it
-                        // Take the fields I want from g and set them to DBGame, and save that (g won't have everything)
-
-                        g = ScoreHelper.ThrowCurrent(g); //this also scores the game and updates the fields
-
-                        //DBGame = DataHelper.UpdateGame(g, DBGame); //this updates DBGame from g
-                        //_db.SaveChanges();
-
-                        //NOTE: This forces it to camelCase in javascript!!! It will not know different capitalization
-                        return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
-
-                    }
-                }
-                
-            }
-            else
-            {
-                g = ScoreHelper.ThrowCurrent(g);
-                
-            }
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
 
 
@@ -109,7 +79,7 @@ namespace BowlingCoreMVC.Controllers
 
             g = ScoreHelper.CalculatePrevious(g);
 
-            
+
 
             //g = DataHelper.UpdateGame(g, DBGame);
 
