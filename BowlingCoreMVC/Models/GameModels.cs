@@ -35,6 +35,28 @@ namespace BowlingCoreMVC.Models
 
     public class Game
     {
+        public static Game Create()
+        {
+            var g = new Game();
+            g.ID = 0;
+            g.CurrentFrame = 1;
+            g.CurrentThrow = 1;
+            g.ScoreUpToFrame = 1;
+            g.CreatedDate = DateTime.Now;
+            g.ModifiedDate = DateTime.Now;
+
+            g.Frames = new List<Frame>();
+
+            for (int i = 1; i <= 10; i++)
+            {
+                Frame f = new Frame();
+                f.FrameNum = i;
+
+                g.Frames.Add(f);
+            }
+            return (g);
+        }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
@@ -49,6 +71,7 @@ namespace BowlingCoreMVC.Models
         //this number should only go up, max of 10
         public int ScoreUpToFrame { get; set; }
 
+        [ForeignKey("GameID")]
         public virtual ICollection<Frame> Frames { get; set; }
 
 
@@ -58,7 +81,7 @@ namespace BowlingCoreMVC.Models
 
         public int SeriesIndex { get; set; }
 
-        public int SeriesID { get; set; }
+        public int? SeriesID { get; set; }
 
     }
 

@@ -63,7 +63,9 @@ namespace BowlingCoreMVC.Helpers
                 DBGame.Frames = PageGame.Frames;
                 DBGame.Score = PageGame.Score;
                 DBGame.ScoreUpToFrame = PageGame.ScoreUpToFrame;
-                
+
+                DBGame.ModifiedDate = DateTime.Now;
+
                 db.SaveChanges();
 
             }
@@ -75,8 +77,19 @@ namespace BowlingCoreMVC.Helpers
                 DBGame.ModifiedDate = DateTime.Now;
                 //Other fields??
 
+                //NOTE: Maybe db.Games.Add(DBGame); here
                 db.Attach(DBGame);
                 db.Entry(DBGame).State = EntityState.Added;
+                db.SaveChanges();
+
+                
+                foreach (var f in DBGame.Frames)
+                {
+                    f.GameID = DBGame.ID;
+                }
+
+                //TODO: Confirm State is picked up automatically on Frame update
+                //db.Entry(DBGame).State = EntityState.Modified;
                 db.SaveChanges();
             }
             

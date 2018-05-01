@@ -22,9 +22,17 @@ namespace BowlingCoreMVC.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync(int GameID)
         {
             var game = await _db.Games.Include(o => o.Frames).Where(g => g.ID == GameID).SingleOrDefaultAsync();
-            game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
-
+            if (game == null)
+            {
+                game = Game.Create();
+            }
+            else
+            {
+                game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
+            }
+            
             return View(game);
         }
+
     }
 }

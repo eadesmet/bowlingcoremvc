@@ -74,7 +74,36 @@ function GetJSONFromPage(GameID)
                 //NOTE: GetThrowPins gets the score from the pins only! getThrowHidVals gets any score that has been saved
                 var FirstThrowData = GetThrowHidVals(GameID, game.CurrentFrame, 1);
                 $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
+
+                if (i == 10)
+                {
+                    if (FirstThrowData.score == 10)
+                    {
+                        //first ball of 10th is strike, second ball is the current score only (not sub from first)
+                        $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
+                    }
+                }
             }
+
+            if (ThrowNum == 3)
+            {
+                //last ball 10th frame. if we are here, just take what the pins are as it's score
+                //current throw is third..
+                var TenthSecondThrowData = GetThrowHidVals(GameID, i, 2);
+                if (TenthSecondThrowData.score < 10)
+                {
+                    $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
+                }
+                
+            }
+
+            //10th frame scenerios
+            //first ball strike, second ball fresh
+            //first ball strike, second ball strike, third ball fresh
+            //first ball strike, second ball not strike, third ball from second
+            //first + second spare, third ball fresh
+            //forst + second not spare, no third ball
+
         }
 
         frameDetails["ThrowOneScore"] = $(prefixID + "1_hidFrame").val();
@@ -157,8 +186,10 @@ function RefreshGameHid(g)
             $("#" + g.ID + "_" + i + "_3_hidPins").val(g.Frames[i - 1].ThrowThreePins);
         }
 
-        SetLabelsFromHid(g.ID, i);
-
+        if (i <= g.ScoreUpToFrame)
+        {
+            SetLabelsFromHid(g.ID, i);
+        }
         // : MissedPinsINT Bitwise & MISSED_1 : (In javascript, this should return 1 if it was missed)
         //$("#" + i + "_1_MissedPinOne").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_1) == MISSED_1);
         
@@ -551,6 +582,13 @@ function SaveGameClick(GameID)
         success: function (result)
         {
             var returnedGame = JSON.parse(result.jsonGameReturned);
+            if (result.redirect)
+            {
+                //Redirect to the Edit page after a new game has been created
+                window.location = "/Game/Edit/" + returnedGame.ID;
+                return;
+            }
+            
             RefreshGameHid(returnedGame);
 
             HighlightSelectedFrame(returnedGame.ID, returnedGame.CurrentFrame, returnedGame.CurrentThrow);

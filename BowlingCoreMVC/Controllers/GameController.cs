@@ -31,7 +31,8 @@ namespace BowlingCoreMVC.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            return View("Edit", new Game()); //TODO: Make sure this is ID 0
+            Game g = Game.Create();
+            return View("Edit", g);
         }
 
         // GET Edit page (Edit a single game by ID)
@@ -90,11 +91,27 @@ namespace BowlingCoreMVC.Controllers
         public JsonResult SaveGameClick(string JSONGame, int GameID)
         {
             Game g = JsonConvert.DeserializeObject<Game>(JSONGame);
-            g = ScoreHelper.ScoreGame(g);
-            DataHelper.SaveGame(g, _db);
+
+            if (g.ID == 0)
+            {
+                g = ScoreHelper.ScoreGame(g);
+                DataHelper.SaveGame(g, _db);
+                //Refresh the page with the edit page
+
+                //NOTE: Consider passing back more things, like flags or error messages
+
+                return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g), redirect = true });
+            }
+            else
+            {
+                g = ScoreHelper.ScoreGame(g);
+                DataHelper.SaveGame(g, _db);
+            }
+            
 
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
         }
+
 
     }
 }
