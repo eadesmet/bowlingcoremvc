@@ -123,3 +123,6 @@ Easy to follow blog about setting up secrets:
 https://blogs.msdn.microsoft.com/mihansen/2017/09/10/managing-secrets-in-net-core-2-0-apps/
 
 
+really good answer about getting lists into a view
+https://stackoverflow.com/questions/34624034/select-tag-helper-in-asp-net-core-mvc?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+

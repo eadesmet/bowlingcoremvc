@@ -48,10 +48,10 @@ namespace BowlingCoreMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                Series s = new Series();
-                //TODO: NEW SERIES HERE
-                _db.Add(model);
-                _db.SaveChanges();
+                Series s = Series.Create(model.NumberOfGames, model.LeagueID ?? 0);
+                
+                Helpers.DataHelper.CreateSeries(s, _db);
+                
                 return View("Edit", model);
             }
             return View(model);

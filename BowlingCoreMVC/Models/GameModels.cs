@@ -35,7 +35,7 @@ namespace BowlingCoreMVC.Models
 
     public class Game
     {
-        public static Game Create()
+        public static Game Create(int SeriesID = 0)
         {
             var g = new Game();
             g.ID = 0;
@@ -44,6 +44,8 @@ namespace BowlingCoreMVC.Models
             g.ScoreUpToFrame = 1;
             g.CreatedDate = DateTime.Now;
             g.ModifiedDate = DateTime.Now;
+            g.SeriesID = SeriesID;
+            //g.UserID = ; //TODO: Set current User
 
             g.Frames = new List<Frame>();
 
@@ -87,6 +89,26 @@ namespace BowlingCoreMVC.Models
 
     public class Series
     {
+        public static Series Create(int NumberOfGames, int LeagueID = 0)
+        {
+            Series s = new Series();
+            s.CreatedDate = DateTime.Now;
+            s.ModifiedDate = DateTime.Now;
+            s.LeagueID = LeagueID;
+            //s.UserID = ; //TODO: Set current User
+            s.SeriesScore = 0;
+
+            s.Games = new List<Game>();
+            for (int i = 0; i < NumberOfGames; i++)
+            {
+                Game g = Game.Create(); //NOTE: SeriesID here? I don't think I can...
+                s.Games.Add(g);
+            }
+
+            return (s);
+        }
+
+
         public int ID { get; set; }
 
         [StringLength(128)]

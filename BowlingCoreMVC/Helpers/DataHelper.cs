@@ -66,14 +66,19 @@ namespace BowlingCoreMVC.Helpers
         }
         #endregion
         #region Series/leagues
-        //public static Dictionary<string, int> GetCurrentLeagueDict()
-        //{
-        //    Dictionary<string, int> LeagueDict = new Dictionary<string, int>();
+        public static void CreateSeries(Series s, ApplicationDbContext db)
+        {
+            db.Attach(s);
+            db.Entry(s).State = EntityState.Added;
+            db.SaveChanges();
 
-        //    LeagueDict = db.Leagues.Where(o => o.EndDate <= DateTime.Today).ToDictionary(o => o.Name, o => o.ID);
+            foreach (var g in s.Games)
+            {
+                g.SeriesID = s.ID;
+            }
 
-        //    return (LeagueDict);
-        //}
+            db.SaveChanges();
+        }
         #endregion
     }
 }
