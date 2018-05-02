@@ -110,4 +110,16 @@ make sure scoreupto is being passed through JSON to the game
 TODO: (features)
 	css rule for formatting the frames text
 		(no css rule exists for 'contains')
-	set a flag and warn the user if they have made changes but haven't saved them before leaving the page
+	warn the user if they have made changes and haven't saved them before leaving the page
+
+
+
+
+Secrets are only used for development, to prevent passwords being put into source control
+For production, there is Azure Key Vault configurations
+	https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-2.1&tabs=aspnetcore2x
+
+Easy to follow blog about setting up secrets:
+https://blogs.msdn.microsoft.com/mihansen/2017/09/10/managing-secrets-in-net-core-2-0-apps/
+
+

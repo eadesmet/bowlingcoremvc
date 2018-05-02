@@ -76,6 +76,17 @@ namespace BowlingCoreMVC.Controllers
                     _logger.LogWarning("User account locked out.");
                     return RedirectToAction(nameof(Lockout));
                 }
+                if (result.IsNotAllowed)
+                {
+                    //resend code
+                    var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+                    await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+
+                    ModelState.AddModelError(string.Empty, "Email confirmation required. Please check your email to confirm your account.");
+                    return View(model);
+                }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -230,9 +241,16 @@ namespace BowlingCoreMVC.Controllers
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    //TODO: Notify the user that they need to confirm their email?
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
+
                     _logger.LogInformation("User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+
+
+                    ViewBag.Title = "Thank you for registering!";
+                    ViewBag.Message = "You must check your email and confirm your account before logging in.";
+                    return View("Info");
+                    //return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
             }
