@@ -33,7 +33,7 @@ function GetJSONFromPage(GameID)
 {
     var frameDetails = {};
     var game = {};
-    game.frames = [];
+    game.Frames = [];
     game.ID = GameID;
     //game.CreatedDate = $("#game_CreatedDate").val();
     //game.ModifiedDate = $("#game_ModifiedDate").val();
@@ -120,7 +120,7 @@ function GetJSONFromPage(GameID)
             frameDetails["ThrowThreePins"] = $(prefixID + "3_hidPins").val();
         }
 
-        game.frames.push(frameDetails)
+        game.Frames.push(frameDetails)
     }
     return JSON.stringify(game);
 }
@@ -170,6 +170,7 @@ function RefreshGameHid(g)
 {
     $("#" + g.ID + "_CurrentFrame").val(g.CurrentFrame);
     $("#" + g.ID + "_CurrentThrow").val(g.CurrentThrow);
+    $("#" + g.ID + "_ScoreUpToFrame").val(g.ScoreUpToFrame);
 
     for (var i = 1; i <= 10; i++)
     {
@@ -211,6 +212,10 @@ function RefreshPinsOfCurrentThrow(GameID, MissedPins, FrameNum, CurrentThrow, S
 
     //reset (enable all)
     EnableAllMissedPins(GameID);
+
+    //ensure CurrentThrow is an int (.has doesn't work otherwise)
+    CurrentThrow = parseInt(CurrentThrow);
+    ScoreUpToFrame = parseInt(ScoreUpToFrame);
 
     if (FirstThrows.has(CurrentThrow))
     {
@@ -319,20 +324,6 @@ function RefreshPinsOfCurrentThrow(GameID, MissedPins, FrameNum, CurrentThrow, S
     }
 }
 
-function CheckAndSetMissedPins(GameID, FrameNum, MissedPins, ScoreUpToFrame)
-{
-    //var previousThrowMissed = $("#" + GameID + "_" + CurrentFrame + "_" + CurrentThrow - 1 + "_hidPins").val();
-    //if (ScoreUpToFrame > FrameNum)
-    //{
-    //    //set to what our value is
-    //    SetMissedPinsChecked(GameID, MissedPins)
-    //}
-    //else
-    //{
-        
-    //}
-}
-
 function SetMissedPinsChecked(GameID, MissedPins)
 {
     $("#" + GameID + "-Missed_1").prop("checked", (MissedPins & MISSED_1) == MISSED_1);
@@ -383,13 +374,14 @@ function SetLabelsFromHid(GameID, FrameNum)
     EmptyFrameLabels(GameID, FrameNum)
 
     $("#" + GameID + "_" + FrameNum + "_lblFrameTotal").append($("#" + GameID + "_" + FrameNum + "_hidFrameTotal").val());
-    $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append($("#" + GameID + "_" + FrameNum + "_1_hidFrame").val());
-    $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append($("#" + GameID + "_" + FrameNum + "_2_hidFrame").val());
+    //$("#" + GameID + "_" + FrameNum + "_1_lblFrame").append($("#" + GameID + "_" + FrameNum + "_1_hidFrame").val());
+    //$("#" + GameID + "_" + FrameNum + "_2_lblFrame").append($("#" + GameID + "_" + FrameNum + "_2_hidFrame").val());
+    FormatFrameThrowLabels(GameID, FrameNum);
 
-    if (FrameNum == 10)
-    {
-        $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append($("#" + GameID + "_" + FrameNum + "_3_hidFrame").val());
-    }
+    //if (FrameNum == 10)
+    //{
+    //    $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append($("#" + GameID + "_" + FrameNum + "_3_hidFrame").val());
+    //}
 
 }
 
@@ -402,6 +394,86 @@ function EmptyFrameLabels(GameID, FrameNum)
     {
         $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty();
     }
+}
+
+function FormatFrameThrowLabels(GameID, FrameNum)
+{
+    var FirstThrowScore = parseInt($("#" + GameID + "_" + FrameNum + "_1_hidFrame").val());
+    var SecondThrowScore = parseInt($("#" + GameID + "_" + FrameNum + "_2_hidFrame").val());
+
+    if (FrameNum != 10)
+    {
+        if (FirstThrowScore == 10)
+        {
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append("X");
+        }
+        else if (FirstThrowScore + SecondThrowScore == 10)
+        {
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append(FirstThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append("/");
+        }
+        else
+        {
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append(FirstThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
+        }
+    }
+    else
+    {
+        var ThirdThrowScore = parseInt($("#" + GameID + "_" + FrameNum + "_3_hidFrame").val());
+        if (FirstThrowScore == 10)
+        {
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append("X");
+            if (SecondThrowScore == 10)
+            {
+                $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append("X");
+            }
+            else
+            {
+                $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
+            }
+        }
+        else if (FirstThrowScore + SecondThrowScore == 10)
+        {
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append(FirstThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append("/");
+        }
+        else
+        {
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append(FirstThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
+        }
+
+        if (ThirdThrowScore == 10)
+        {
+            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append("X");
+        }
+        else if (SecondThrowScore + ThirdThrowScore == 10)
+        {
+            //$("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append("/");
+        }
+        else
+        {
+            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append(ThirdThrowScore);
+        }
+
+        if (ThirdThrowScore == 0)
+        {
+            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append("-");
+        }
+    }
+
+    if (FirstThrowScore == 0)
+    {
+        $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append("-");
+    }
+
+    if (SecondThrowScore == 0 && FirstThrowScore != 10)
+    {
+        $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("-");
+    }
+    
 }
 
 
@@ -435,6 +507,7 @@ function ClearHighlight(GameID, FrameNum)
 
 function HighlightSelectedFrame(GameID, FrameNum, CurrentThrow)
 {
+    //TODO: Refactor this a bit. Can get ThrowNum and condense this a lot
     //NOTE: Might not need CurrentThrow, we can get it ourselves here
     var prefixID = "#" + GameID + "_" + FrameNum + "_";
 
@@ -487,6 +560,16 @@ $(document).ready(function ()
         //look up the current game / frame
         var CurrentFrame = $("#" + GameIDs[i] + "_CurrentFrame").val();
         var CurrentThrow = $("#" + GameIDs[i] + "_CurrentThrow").val();
+        
+
+        //var ThrowNum = GetThrowNum(CurrentThrow);
+
+        //var MissedPins = $("#" + GameIDs[i] + "_" + CurrentFrame + "_" + ThrowNum + "_hidPins").val();
+        //var ScoreUpTo = $("#" + GameIDs[i] + "_ScoreUpToFrame").val();
+
+        //RefreshPinsOfCurrentThrow(GameIDs[i], MissedPins, CurrentFrame, CurrentThrow, ScoreUpTo);
+        RefreshGameHid(JSON.parse(GetJSONFromPage(GameIDs[i])));
+
         HighlightSelectedFrame(GameIDs[i], CurrentFrame, CurrentThrow);
     }
 });

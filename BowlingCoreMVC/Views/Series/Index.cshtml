@@ -12,48 +12,82 @@
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.LeagueID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SeriesScore)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CreatedDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ModifiedDate)
-                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeagueID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SeriesScore)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModifiedDate)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LeagueID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SeriesScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LeagueID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SeriesScore)
+                    @if (item.Games != null)
+                    {
+                        @foreach (var g in item.Games)
+                        {
+                            <br />
+                            @g.Score
+
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModifiedDate)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+            @*if (item.Games != null)
+                {
+                    <tr>
+                        <th></th>
+                        <th>Game Score</th>
+                        <th>Frame, Throw</th>
+                        <th>Created Date</th>
+                        <th>Modified Date</th>
+                    </tr>
+                    @foreach (var g in item.Games)
+                    {
+                        <tr>
+                            <td> > </td>
+                            <td>@g.Score</td>
+                            <td>@g.CurrentFrame, @g.CurrentThrow</td>
+                            <td>@g.CreatedDate</td>
+                            <td>@g.ModifiedDate</td>
+                            <td>
+                                @Html.ActionLink("Edit Game", "Edit", "Game", g.ID)
+                            </td>
+                        </tr>
+
+                    }
+                }*@
+        }
     </tbody>
 </table>

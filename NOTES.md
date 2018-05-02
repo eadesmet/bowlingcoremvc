@@ -84,3 +84,30 @@ but I still need to do this mashing together before an update
 
 *I shouldn't need to call this update on next or previous click*
 
+
+
+
+
+
+
+
+
+soooo, couple issues, trying to finish up scoring
+
+the second ball on all but the 10th frame is not saving
+	this is leading to the score being adjusted when it sholdn't
+
+on page load, the pins aren't being loaded
+
+
+
+todo:
+make sure scoreupto is being passed through JSON to the game
+	done; it was, just not being updated in js (refresh)
+
+
+
+TODO: (features)
+	css rule for formatting the frames text
+		(no css rule exists for 'contains')
+	set a flag and warn the user if they have made changes but haven't saved them before leaving the page

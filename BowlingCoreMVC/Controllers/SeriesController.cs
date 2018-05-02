@@ -22,7 +22,8 @@ namespace BowlingCoreMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _db.Series.ToListAsync());
+            var SeriesList = await _db.Series.Include(s => s.Games).ToListAsync();
+            return View(SeriesList);
         }
 
         [HttpGet]

@@ -52,6 +52,7 @@
 .GameTable td {
     text-align: center;
     vertical-align: middle;
+    min-width: 20px;
 }
 
 #PinsTable td {
@@ -89,12 +90,12 @@ input[type='checkbox'].pins-checkbox + label:before {
 */
 
 input[type='checkbox']:checked.pins-checkbox + label:before { /*checked icon*/
-    //content: "\e165";
+    /*content: "\e165";*/
     content: "\25cf";
 }
 
 input[type='checkbox']:disabled.pins-checkbox + label:before {
-    content: "\2298"; //"\e090";
+    content: "\2298"; /*"\e090";*/
     font-size: 2em;
 }
 
