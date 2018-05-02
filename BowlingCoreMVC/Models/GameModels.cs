@@ -91,7 +91,9 @@ namespace BowlingCoreMVC.Models
 
         [StringLength(128)]
         public string UserID { get; set; }
-        public int LeagueID { get; set; }
+
+        [Display(Name ="Name")]
+        public int? LeagueID { get; set; }
 
         public int SeriesScore { get; set; }
 

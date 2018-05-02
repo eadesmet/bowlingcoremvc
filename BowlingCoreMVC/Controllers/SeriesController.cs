@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BowlingCoreMVC.Controllers
 {
@@ -32,6 +33,44 @@ namespace BowlingCoreMVC.Controllers
             var s = _db.Series.Include(o => o.Games).Where(o => o.ID == id).SingleOrDefault();
 
             return View(s);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            Models.GameViewModels.GameViewModels.SeriesViewModel model = new Models.GameViewModels.GameViewModels.SeriesViewModel();
+            model.Leagues = GetCurrentLeagues();
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Create(Models.GameViewModels.GameViewModels.SeriesViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Series s = new Series();
+                //TODO: NEW SERIES HERE
+                _db.Add(model);
+                _db.SaveChanges();
+                return View("Edit", model);
+            }
+            return View(model);
+        }
+
+
+
+
+        //Helpers
+        public List<SelectListItem> GetCurrentLeagues()
+        {
+            var result = new List<SelectListItem>();
+            var leagues = _db.Leagues.Where(o => o.EndDate >= DateTime.Today).ToList();
+            foreach (var l in leagues)
+            {
+                result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });
+            }
+
+            return (result);
         }
     }
 }

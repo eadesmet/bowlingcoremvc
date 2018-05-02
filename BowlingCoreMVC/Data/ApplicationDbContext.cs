@@ -25,9 +25,17 @@ namespace BowlingCoreMVC.Data
 
         public DbSet<BowlingCoreMVC.Models.Game> Games { get; set; }
         public DbSet<BowlingCoreMVC.Models.Frame> Frames { get; set; }
-        
-        public DbSet<Series> Series { get; set; }
 
+        public DbSet<Series> Series { get; set; }
+        public DbSet<League> Leagues { get; set; }
+
+
+        //Moved From DataHelper; might just have helper functions here instead
+        //This so we wouildn't have to mess wtih context everywhere..
+        //public static Dictionary<string, int> GetCurrentLeagueDict()
+        //{
+        //    return (Leagues.Where(o => o.EndDate <= DateTime.Today).ToDictionary(o => o.Name, o => o.ID));
+        //}
     }
 
     public static class DbInitializer
