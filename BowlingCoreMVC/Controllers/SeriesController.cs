@@ -52,7 +52,7 @@ namespace BowlingCoreMVC.Controllers
                 
                 Helpers.DataHelper.CreateSeries(s, _db);
                 
-                return View("Edit", model);
+                return View("Edit", s);
             }
             return View(model);
         }

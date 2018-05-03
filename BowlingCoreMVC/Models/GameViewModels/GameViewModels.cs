@@ -13,11 +13,12 @@ namespace BowlingCoreMVC.Models.GameViewModels
     {
         public class SeriesViewModel
         {
+            [Display(Name="League")]
             public int? LeagueID { get; set; }
 
             public List<SelectListItem> Leagues { get; set; }
 
-            [Range(0, 9)]
+            [Range(1, 9)]
             public int NumberOfGames { get; set; }
         }
     }

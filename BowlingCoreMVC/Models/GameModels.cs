@@ -114,7 +114,7 @@ namespace BowlingCoreMVC.Models
         [StringLength(128)]
         public string UserID { get; set; }
 
-        [Display(Name ="Name")]
+        //[Display(Name ="League")]
         public int? LeagueID { get; set; }
 
         public int SeriesScore { get; set; }
@@ -126,6 +126,7 @@ namespace BowlingCoreMVC.Models
 
     }
 
+    [DisplayColumn("Name")]
     public class League
     {
         public int ID { get; set; }
@@ -135,7 +136,12 @@ namespace BowlingCoreMVC.Models
         [StringLength(128)]
         public string CreatedByID { get; set; }
 
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = @"{0: MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = @"{0: MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
         public DateTime CreatedDate { get; set; }
