@@ -25,9 +25,10 @@ namespace BowlingCoreMVC.Controllers
         public async Task<IActionResult> Index()
         {
             //TODO: Filter by user. group/filter by series?
-            return View(await _db.Games.ToListAsync());
+            return View(await _db.Games.OrderByDescending(o => o.CreatedDate).ToListAsync());
         }
 
+        // GET Create (Create a new game, redirect to Edit page)
         [HttpGet]
         public ActionResult Create()
         {
@@ -35,31 +36,19 @@ namespace BowlingCoreMVC.Controllers
             return View("Edit", g);
         }
 
+        
+
         // GET Edit page (Edit a single game by ID)
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            //Old code that worked (edit a single game)
             var game = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
             game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
             return View(game);
-
-            //New 'fake' series because the view takes a series now
-            //Series s = new Series();
-
-            //var game1 = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
-            //game1.Frames = game1.Frames.OrderBy(f => f.FrameNum).ToList();
-
-            //var game2 = _db.Games.Include(o => o.Frames).Where(g => g.ID == 2).SingleOrDefault();
-            //game2.Frames = game2.Frames.OrderBy(f => f.FrameNum).ToList();
-
-            //s.Games = new List<Game>();
-            //s.Games.Add(game1);
-            //s.Games.Add(game2);
-
-            //return View(s);
         }
 
+        #region buttons
+        // Next Throw buton handler
         [HttpPost]
         public JsonResult NextThrowClick(string JSONGame, int[] GameIDs)
         {
@@ -68,11 +57,9 @@ namespace BowlingCoreMVC.Controllers
             g = ScoreHelper.ThrowCurrent(g);
 
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
-
-
-            //return View("Edit", g);
         }
 
+        // Previous throw button handler
         [HttpPost]
         public JsonResult PreviousThrowClick(string JSONGame, int[] GameIDs)
         {
@@ -80,13 +67,10 @@ namespace BowlingCoreMVC.Controllers
 
             g = ScoreHelper.CalculatePrevious(g);
 
-
-
-            //g = DataHelper.UpdateGame(g, DBGame);
-
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
         }
 
+        // Save game button handler
         [HttpPost]
         public JsonResult SaveGameClick(string JSONGame, int GameID)
         {
@@ -111,7 +95,7 @@ namespace BowlingCoreMVC.Controllers
 
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
         }
-
+        #endregion
 
     }
 }

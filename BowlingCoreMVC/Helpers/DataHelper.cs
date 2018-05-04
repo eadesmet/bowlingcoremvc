@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
-
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace BowlingCoreMVC.Helpers
@@ -80,5 +80,30 @@ namespace BowlingCoreMVC.Helpers
             db.SaveChanges();
         }
         #endregion
+
+
+        public static List<SelectListItem> GetCurrentLeagues(ApplicationDbContext _db)
+        {
+            var result = new List<SelectListItem>();
+            var leagues = _db.Leagues.Where(o => o.EndDate >= DateTime.Today).ToList();
+            foreach (var l in leagues)
+            {
+                result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });
+            }
+
+            return (result);
+        }
+
+        public static List<SelectListItem> GetAllLocations(ApplicationDbContext _db)
+        {
+            var result = new List<SelectListItem>();
+            var locations = _db.Locations.ToList();
+            foreach (var l in locations)
+            {
+                result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });
+            }
+
+            return (result);
+        }
     }
 }

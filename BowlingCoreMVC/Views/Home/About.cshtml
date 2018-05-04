@@ -4,4 +4,100 @@
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 
-<p>Use this area to provide additional information.</p>
+<h4>Here at [site name here] you can track all of your bowling scores! Whether you are in multiple leagues, or you just want to track your practice, you can do it all here.</h4>
+
+<br />
+<br />
+<h4>HELP, I'm scoring a game but I don't know what to do! No worries, here is how it works:</h4>
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            <div><input type="checkbox" id="ExamplePin10Missed" class="pins-checkbox sr-only" /><label for="ExamplePin10Missed"></label></div>
+            <div><input type="checkbox" id="ExamplePin10Knocked" class="pins-checkbox sr-only" /><label for="ExamplePin10Knocked"></label></div>
+            <div><input type="checkbox" id="ExamplePinDisabled" class="pins-checkbox sr-only" /><label for="ExamplePinDisabled"></label></div>
+        </div>
+        <div class="col-sm-10">
+            <p>When scoring a game, you will see a set of pins that look something like this. This is the bread and butter of scoring a game. You will select pins you MISSED and press the Right Arrow to move forward through the game.</p>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-2">
+            <div><input type="checkbox" id="ExamplePin10Missed" class="pins-checkbox sr-only" /><label for="ExamplePin10Missed"></label></div>
+        </div>
+        <div class="col-sm-10">
+            <p>When a pin is filled in, it means you have MISSED that pin.</p>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-2">
+            <div><input type="checkbox" id="ExamplePin10Knocked" class="pins-checkbox sr-only" /><label for="ExamplePin10Knocked"></label></div>
+        </div>
+        <div class="col-sm-10">
+            <p>When a pin is NOT filled in, it means you have knocked that pin down.</p>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-2">
+            <div><input type="checkbox" id="ExamplePinDisabled" class="pins-checkbox sr-only" /><label for="ExamplePinDisabled"></label></div>
+        </div>
+        <div class="col-sm-10">
+            <p>When a pin appears as a circle with a line through it, it means you have knocked that pin down already! You cannot say that you missed a pin on your second throw when you knocked it down on your first throw.</p>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-2">
+            <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left" /></button>
+            <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right" /></button>
+        </div>
+        <div class="col-sm-10">
+            <p>These arrow buttons allow you to move forward and backward through the game. Pressing the Right Arrow will "Throw" the current ball (indicated by purple on the scoreboard). "Filled in" pins will be counted as missed and move the game forward. The Left Arrow is mainly for correcting mistakes and viewing previous missed pins.</p>
+            <p>Please note: When arriving at the end of the game, press the Right Arrow button again to see your final score. This is because your last ball still has to be "Thrown".</p>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-2">
+            <button class="btn btn-success">Save</button>
+        </div>
+        <div class="col-sm-10">
+            <p>IMPORTANT: Remember to SAVE your game by clicking this button often and before you leave the page!</p>
+        </div>
+    </div>
+    <hr />
+</div>
+
+
+
+
+<style type="text/css">
+    .ExamplePin {
+        position: relative;
+        top: 1px;
+        display: inline-block;
+        font-family: 'Glyphicons Halflings';
+        font-style: normal;
+        font-size: 2.5em;
+        font-weight: 400;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    #ExamplePin10Missed + label:before {
+        content: "\2793";
+    }
+
+    #ExamplePin10Knocked + label:before {
+        content: "\2469";
+    }
+
+    #ExamplePinDisabled + label:before {
+        content: "\2298";
+    }
+</style>

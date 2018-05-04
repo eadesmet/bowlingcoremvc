@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BowlingCoreMVC.Models.Series>
+﻿@model IEnumerable<BowlingCoreMVC.Models.GameViewModels.GameViewModels.SeriesListViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,19 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LeagueID)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.SeriesScore)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
+                Games
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ModifiedDate)
+                @Html.DisplayNameFor(model => model.LeagueName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BowlDate)
             </th>
             <th></th>
         </tr>
@@ -35,59 +32,40 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LeagueID)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.SeriesScore)
-                    @if (item.Games != null)
-                    {
-                        @foreach (var g in item.Games)
-                        {
-                            <br />
-                            @g.Score
+                </td>
+                <td>
+                    @{
+                        var i = 0;
+                        var count = item.Games.Count();
 
+                        @if (item.Games != null)
+                        {
+                            @foreach (var g in item.Games)
+                            {
+                                @g.Score
+                                if (++i != count)
+                                {
+                                    <span>,</span>
+
+                                }
+
+                            }
                         }
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                    @Html.DisplayFor(modelItem => item.LeagueName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ModifiedDate)
+                    @Html.DisplayFor(modelItem => item.BowlDate)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.SeriesID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.SeriesID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.SeriesID">Delete</a>
                 </td>
             </tr>
-            @*if (item.Games != null)
-                {
-                    <tr>
-                        <th></th>
-                        <th>Game Score</th>
-                        <th>Frame, Throw</th>
-                        <th>Created Date</th>
-                        <th>Modified Date</th>
-                    </tr>
-                    @foreach (var g in item.Games)
-                    {
-                        <tr>
-                            <td> > </td>
-                            <td>@g.Score</td>
-                            <td>@g.CurrentFrame, @g.CurrentThrow</td>
-                            <td>@g.CreatedDate</td>
-                            <td>@g.ModifiedDate</td>
-                            <td>
-                                @Html.ActionLink("Edit Game", "Edit", "Game", g.ID)
-                            </td>
-                        </tr>
-
-                    }
-                }*@
         }
     </tbody>
 </table>

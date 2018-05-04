@@ -126,3 +126,26 @@ https://blogs.msdn.microsoft.com/mihansen/2017/09/10/managing-secrets-in-net-cor
 really good answer about getting lists into a view
 https://stackoverflow.com/questions/34624034/select-tag-helper-in-asp-net-core-mvc?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 
+
+
+goals for today (5-4):
+
+Confirm creation of series and leagues is done properly; done
+series list showing league name instead of ID; done
+clean up lists and order them by created date; done?
+finish up game scoring, make sure there are no bugs
+clean up authentication; comment out things the user shouldn't see
+???
+publish v1 to azure
+
+
+
+I need to add locations to the app
+	any user can add a 'location'
+	leagues will be organized per location
+		"Grand Raapids Area" - where all leagues in that location are held
+	this will be to minimize what leagues are shown as an option
+
+maybe add a 'view league' page/s
+	show weekly stats/summaries
+	keep track of highscores

@@ -21,7 +21,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.ModifiedDate)
                 </th>
-                <th>
+                @*<th>
                     @Html.DisplayNameFor(model => model.CurrentFrame)
                 </th>
                 <th>
@@ -29,7 +29,7 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.UserID)
-                </th>
+                </th>*@
             <th></th>
         </tr>
     </thead>
@@ -45,7 +45,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ModifiedDate)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.CurrentFrame)
             </td>
             <td>
@@ -53,7 +53,7 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserID)
-            </td>
+            </td>*@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |

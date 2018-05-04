@@ -63,7 +63,13 @@ namespace BowlingCoreMVC.Models
         public int ID { get; set; }
 
         public int Score { get; set; }
+
+        [Display(Name="Created")]
+        [DisplayFormat(DataFormatString = "{0: MM/dd/yyyy hh:mm}")]
         public DateTime CreatedDate { get; set; }
+
+        [Display(Name = "Modified")]
+        [DisplayFormat(DataFormatString = "{0: MM/dd/yyyy hh:mm}")]
         public DateTime ModifiedDate { get; set; }
 
         public int CurrentFrame { get; set; }
@@ -129,12 +135,20 @@ namespace BowlingCoreMVC.Models
     [DisplayColumn("Name")]
     public class League
     {
+        public static League Create()
+        {
+            League l = new League();
+            l.CreatedDate = DateTime.Now;
+            l.ModifiedDate = DateTime.Now;
+            return (l);
+        }
+
+        [Display(Name="Name")]
         public int ID { get; set; }
 
-        public string Name { get; set; }
+        public int LocationID { get; set; }
 
-        [StringLength(128)]
-        public string CreatedByID { get; set; }
+        public string Name { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = @"{0: MM/dd/yyyy}", ApplyFormatInEditMode = true)]
@@ -144,6 +158,9 @@ namespace BowlingCoreMVC.Models
         [DisplayFormat(DataFormatString = @"{0: MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
+
+        [StringLength(128)]
+        public string CreatedByID { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
 
@@ -166,4 +183,17 @@ namespace BowlingCoreMVC.Models
      * Series > Game
      * 
      * */
+
+
+    public class Location
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+
+        [StringLength(128)]
+        public string CreatedByID { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime ModifiedDate { get; set; }
+    }
+
 }

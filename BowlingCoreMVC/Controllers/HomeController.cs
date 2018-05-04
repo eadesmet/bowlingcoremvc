@@ -17,17 +17,17 @@ namespace BowlingCoreMVC.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = "So, what is this place?";
 
             return View();
         }
 
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
+        //public IActionResult Contact()
+        //{
+        //    ViewData["Message"] = "Your contact page.";
 
-            return View();
-        }
+        //    return View();
+        //}
 
         public IActionResult Error()
         {

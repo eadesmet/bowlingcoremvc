@@ -28,6 +28,7 @@ namespace BowlingCoreMVC.Data
 
         public DbSet<Series> Series { get; set; }
         public DbSet<League> Leagues { get; set; }
+        public DbSet<Location> Locations { get; set; }
 
 
         //Moved From DataHelper; might just have helper functions here instead
