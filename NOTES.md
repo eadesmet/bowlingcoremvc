@@ -149,3 +149,30 @@ I need to add locations to the app
 maybe add a 'view league' page/s
 	show weekly stats/summaries
 	keep track of highscores
+
+
+ok ok ok, some changes
+when creating a series, the league list needs to be filtered by WHAT LEAGUES THE USER IS IN
+needs to be a 'join league' page (manage league too? see it's users?)
+	if we want to be really thourough, have a user request to join a league
+	and have the creator of the league approve or deny it.
+
+more permissions rules
+only the person who has created the location can delete the location
+only the person who has created the league can delete the league
+	maybe have a limit on these? if it has existed for more than 10 days, don't allow delete ever
+
+
+toolbar
+	make login panel a dropdown
+
+	other dropdowns possibly
+	Manage Leagues > 
+		locations
+		leagues
+		view leagues?
+	My Stuff > 
+		Games
+		Series
+		Leagues
+
