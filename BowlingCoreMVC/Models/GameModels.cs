@@ -173,6 +173,8 @@ namespace BowlingCoreMVC.Models
 
         [StringLength(128)]
         public string UserID { get; set; }
+
+        //Add a flag here?
     }
     
 

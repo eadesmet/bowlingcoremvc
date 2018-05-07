@@ -1,0 +1,374 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "BowlingCoreMVC.sublime-project",
+			"settings":
+			{
+				"buffer_size": 115,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Controllers/GameController.cs",
+			"settings":
+			{
+				"buffer_size": 2583,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 71.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			],
+			[
+				"omni",
+				"OmniSharpSublime: Show Info Panel"
+			],
+			[
+				"omnisharp",
+				"OmniSharpSublime: Build"
+			],
+			[
+				"setsyn json",
+				"Set Syntax: JSON"
+			],
+			[
+				"pack",
+				"Package Control: Remove Package"
+			],
+			[
+				"package insta",
+				"Package Control: Install Package"
+			],
+			[
+				"ssxml",
+				"Set Syntax: XML"
+			],
+			[
+				"color",
+				"UI: Select Color Scheme"
+			],
+			[
+				"theme",
+				"UI: Select Theme"
+			],
+			[
+				"install pa",
+				"Package Control: Install Package"
+			],
+			[
+				"package",
+				"Install Package Control"
+			]
+		],
+		"width": 444.0
+	},
+	"console":
+	{
+		"height": 130.0,
+		"history":
+		[
+			"dir",
+			"ls",
+			"cd c:/",
+			"pwd",
+			"dir"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": false,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": true
+	},
+	"expanded_folders":
+	[
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Controllers"
+	],
+	"file_history":
+	[
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Controllers/GameController.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/OmniCoreMVCProj.sublime-project",
+		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/Kulture/README.md",
+		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/OmniSharpSublime.sublime-settings",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/wwwroot/js/site.js",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/NOTES.md",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/ScoringTagHelpers/FrameScoreTagHelper.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Views/Leagues/Create.cshtml",
+		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/OmniSharp/OmniSharpSublime.sublime-settings",
+		"/C/Users/EDeSmet/Documents/EDI/new testing notes.txt",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Models/GameModels.cs",
+		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/HH/HH.tmTheme",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingSiteMVC/NOTES.md",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingSiteMVC/.hgignore",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/.hgignore",
+		"/C/Users/EDeSmet/Documents/concrete/salesperson_id.txt",
+		"/C/Users/EDeSmet/Documents/concrete/insert_usercompany.sql",
+		"/C/Users/EDeSmet/Documents/concrete/user_ids",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingSite/BowlingSite/README.md",
+		"/C/Users/EDeSmet/Documents/Eric/test.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/bowling_types.cs",
+		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/HH/HH.tmTheme.xml",
+		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/HH/HH.tmTheme.xml",
+		"/C/Temp/CrmConnection.cs",
+		"/C/Users/EDeSmet/Documents/Eric/daily_schedule.txt",
+		"/C/Users/EDeSmet/Documents/Eric/BowlingCoreAzure/.vs/config/applicationhost.config",
+		"/C/Users/EDeSmet/Documents/Eric/BowlingCoreAzure/BowlingEFAzure/GameList.aspx.cs",
+		"/C/Users/EDeSmet/Documents/Eric/BowlingCoreAzure/Bowling_CoreAzure.sublime-project",
+		"/C/Users/EDeSmet/Documents/test.cs",
+		"/C/Users/EDeSmet/AppData/Local/Microsoft/Windows/INetCache/Content.Outlook/SYI0CO3V/frmRedTailImport.cs",
+		"/C/Users/EDeSmet/Documents/Eric/misc/algorithms.cs"
+	],
+	"find":
+	{
+		"height": 41.0
+	},
+	"find_in_files":
+	{
+		"height": 104.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"},",
+			"???",
+			"2209",
+			"default"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"},\\n"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "BowlingCoreMVC.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 115,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								112,
+								112
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "BowlingCoreMVC/Controllers/GameController.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2583,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								487,
+								487
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": false,
+	"output.exec":
+	{
+		"height": 102.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.variable_get":
+	{
+		"height": 199.0
+	},
+	"pinned_build_system": "",
+	"project": "BowlingCoreMVC.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"gamecont\t",
+				"BowlingCoreMVC\\Controllers\\GameController.cs"
+			],
+			[
+				"gamecontro",
+				"BowlingCoreMVC\\Controllers\\GameController.cs"
+			],
+			[
+				"tagehelper",
+				"BowlingCoreMVC\\ScoringTagHelpers\\FrameScoreTagHelper.cs"
+			],
+			[
+				"site.js",
+				"BowlingCoreMVC\\wwwroot\\js\\site.js"
+			],
+			[
+				"leagues/create",
+				"BowlingCoreMVC\\Views\\Leagues\\Create.cshtml"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 285.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 2
+	}
+}

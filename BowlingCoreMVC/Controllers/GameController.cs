@@ -76,24 +76,12 @@ namespace BowlingCoreMVC.Controllers
         {
             Game g = JsonConvert.DeserializeObject<Game>(JSONGame);
 
-            if (g.ID == 0)
-            {
-                g = ScoreHelper.ScoreGame(g);
-                DataHelper.SaveGame(g, _db);
-                //Refresh the page with the edit page
-
-                //NOTE: Consider passing back more things, like flags or error messages
-
-                return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g), redirect = true });
-            }
-            else
-            {
-                g = ScoreHelper.ScoreGame(g);
-                DataHelper.SaveGame(g, _db);
-            }
+            bool IsNewGame = (g.ID == 0);
             
-
-            return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
+            g = ScoreHelper.ScoreGame(g);
+            DataHelper.SaveGame(g, _db);
+            
+            return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g), redirect = IsNewGame });
         }
         #endregion
 

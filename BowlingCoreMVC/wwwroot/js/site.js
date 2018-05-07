@@ -59,52 +59,52 @@ function GetJSONFromPage(GameID)
         frameDetails["FrameNum"] = $(prefixID + "hidFrameNum").val();
 
         //Update the hidden values for the score/pins of the current throw
-        if (i == game.CurrentFrame)
-        {
-            var ThrowNum = GetThrowNum(parseInt(game.CurrentThrow));
+        //if (i == game.CurrentFrame)
+        //{
+        //    var ThrowNum = GetThrowNum(parseInt(game.CurrentThrow));
 
-            var CurrentThrowData = GetThrowPins(GameID, game.CurrentFrame, ThrowNum);
-            //(might be overwritten in refresh game? make sure framedetails is getting updated)
-            $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
-            $(prefixID + ThrowNum + "_hidPins").val(CurrentThrowData.missed);
+        //    var CurrentThrowData = GetThrowPins(GameID, game.CurrentFrame, ThrowNum);
+        //    //(might be overwritten in refresh game? make sure framedetails is getting updated)
+        //    $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
+        //    $(prefixID + ThrowNum + "_hidPins").val(CurrentThrowData.missed);
 
-            //Overwrite second throw score to be calculated from throw one score
-            if (ThrowNum == 2)
-            {
-                //NOTE: GetThrowPins gets the score from the pins only! getThrowHidVals gets any score that has been saved
-                var FirstThrowData = GetThrowHidVals(GameID, game.CurrentFrame, 1);
-                $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
+        //    //Overwrite second throw score to be calculated from throw one score
+        //    if (ThrowNum == 2)
+        //    {
+        //        //NOTE: GetThrowPins gets the score from the pins only! getThrowHidVals gets any score that has been saved
+        //        var FirstThrowData = GetThrowHidVals(GameID, game.CurrentFrame, 1);
+        //        $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
 
-                if (i == 10)
-                {
-                    if (FirstThrowData.score == 10)
-                    {
-                        //first ball of 10th is strike, second ball is the current score only (not sub from first)
-                        $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
-                    }
-                }
-            }
+        //        if (i == 10)
+        //        {
+        //            if (FirstThrowData.score == 10)
+        //            {
+        //                //first ball of 10th is strike, second ball is the current score only (not sub from first)
+        //                $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
+        //            }
+        //        }
+        //    }
 
-            if (ThrowNum == 3)
-            {
-                //last ball 10th frame. if we are here, just take what the pins are as it's score
-                //current throw is third..
-                var TenthSecondThrowData = GetThrowHidVals(GameID, i, 2);
-                if (TenthSecondThrowData.score < 10)
-                {
-                    $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
-                }
+        //    if (ThrowNum == 3)
+        //    {
+        //        //last ball 10th frame. if we are here, just take what the pins are as it's score
+        //        //current throw is third..
+        //        var TenthSecondThrowData = GetThrowHidVals(GameID, i, 2);
+        //        if (TenthSecondThrowData.score < 10)
+        //        {
+        //            $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
+        //        }
                 
-            }
+        //    }
 
-            //10th frame scenerios
-            //first ball strike, second ball fresh
-            //first ball strike, second ball strike, third ball fresh
-            //first ball strike, second ball not strike, third ball from second
-            //first + second spare, third ball fresh
-            //forst + second not spare, no third ball
+        //    //10th frame scenerios
+        //    //first ball strike, second ball fresh
+        //    //first ball strike, second ball strike, third ball fresh
+        //    //first ball strike, second ball not strike, third ball from second
+        //    //first + second spare, third ball fresh
+        //    //forst + second not spare, no third ball
 
-        }
+        //}
 
         frameDetails["ThrowOneScore"] = $(prefixID + "1_hidFrame").val();
         frameDetails["ThrowTwoScore"] = $(prefixID + "2_hidFrame").val();
@@ -124,6 +124,59 @@ function GetJSONFromPage(GameID)
     }
     return JSON.stringify(game);
 }
+
+function UpdateCurrentThrowVal(GameID)
+{
+    //Update the hidden values for the score/pins of the current throw
+    var CurrentThrow = $("#" + GameID + "_CurrentThrow").val();
+    var CurrentFrame = $("#" + GameID + "_CurrentFrame").val();
+    var prefixID = "#" + GameID + "_" + CurrentFrame + "_";
+    var ThrowNum = GetThrowNum(parseInt(CurrentThrow));
+
+    var CurrentThrowData = GetThrowPins(GameID, CurrentFrame, ThrowNum);
+    //(might be overwritten in refresh game? make sure framedetails is getting updated)
+    $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
+    $(prefixID + ThrowNum + "_hidPins").val(CurrentThrowData.missed);
+
+    //Overwrite second throw score to be calculated from throw one score
+    if (ThrowNum == 2)
+    {
+       //NOTE: GetThrowPins gets the score from the pins only! getThrowHidVals gets any score that has been saved
+       var FirstThrowData = GetThrowHidVals(GameID, CurrentFrame, 1);
+       $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
+
+       if (CurrentFrame == 10)
+       {
+           if (FirstThrowData.score == 10)
+           {
+               //first ball of 10th is strike, second ball is the current score only (not sub from first)
+               $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
+           }
+       }
+    }
+
+    if (ThrowNum == 3)
+    {
+       //last ball 10th frame. if we are here, just take what the pins are as it's score
+       //current throw is third..
+       var TenthSecondThrowData = GetThrowHidVals(GameID, CurrentFrame, 2);
+       if (TenthSecondThrowData.score < 10)
+       {
+           $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
+       }
+        
+   
+
+       //10th frame scenerios
+       //first ball strike, second ball fresh
+       //first ball strike, second ball strike, third ball fresh
+       //first ball strike, second ball not strike, third ball from second
+       //first + second spare, third ball fresh
+       //forst + second not spare, no third ball
+
+    }
+}
+
 
 ///Goes through the checkboxes and gets the Integer of missed pins
 function GetThrowPins(GameID, frameNum, throwNum)
@@ -187,7 +240,7 @@ function RefreshGameHid(g)
             $("#" + g.ID + "_" + i + "_3_hidPins").val(g.Frames[i - 1].ThrowThreePins);
         }
 
-        if (i <= g.ScoreUpToFrame)
+        if (i < g.ScoreUpToFrame)
         {
             SetLabelsFromHid(g.ID, i);
         }
@@ -581,6 +634,7 @@ $(document).ready(function ()
 
 function NextClickSendGame(GameID)
 {
+    UpdateCurrentThrowVal(GameID);
     var JSONGame = GetJSONFromPage(GameID);
     var GameIDs = GetGameIDs();
     var getReportColumnsParams = {

@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.LocationName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedByID)
+                @Html.DisplayNameFor(model => model.CreatedByUserName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.StartDate)
@@ -41,7 +41,7 @@
                     @Html.DisplayFor(modelItem => item.LocationName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreatedByID)
+                    @Html.DisplayFor(modelItem => item.CreatedByUserName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.StartDate)
@@ -50,9 +50,18 @@
                     @Html.DisplayFor(modelItem => item.EndDate)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.LeagueID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.LeagueID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.LeagueID">Delete</a>
+                    @*TODO: Check if Current User has created this league or not*@
+                    @{ 
+                        if (ViewData["CurrentUserID"].ToString() == item.CreatedByID)
+                        {
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-route-id="@item.LeagueID" class="btn btn-primary">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.LeagueID" class="btn btn-default">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.LeagueID" class="btn btn-danger">Delete</a>
+                            </div>
+                        }
+                    }
+                    
                 </td>
             </tr>
         }

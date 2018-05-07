@@ -62,6 +62,8 @@ namespace BowlingCoreMVC.Controllers
         public IActionResult Create()
         {
             Models.GameViewModels.GameViewModels.SeriesViewModel model = new Models.GameViewModels.GameViewModels.SeriesViewModel();
+
+            //TODO: League list here needs to filter what leagues this user is in
             model.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
             return View(model);
         }

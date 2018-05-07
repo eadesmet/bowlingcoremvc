@@ -176,3 +176,39 @@ toolbar
 		Series
 		Leagues
 
+
+
+
+
+
+
+
+
+
+so, dependency injection is kinda neat
+	https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1#registering-services
+
+Instead of passing the datacontext directly to each controller,
+you could instead pass in an interface of the type you are dealing with
+and have that interface implement whatever dataaccess you need
+with the interface getting the context instead.
+(yet another layer of abstraction just to organize things...)
+
+so it's   startup > dbcontext > ILeague > LeaguesController  
+insead of startup > dbcontext > LeaguesController
+
+
+
+
+
+if (ScoreUpToFrame < currentFrame)
+	format 0s as ' '
+else
+	format 0s as '-'
+
+
+
+
+TODO: The Create new game redirecting to the Edit page is a little jarring
+
+hidden value is getting set when refresh game is getting called on current frame before it is getting thrown

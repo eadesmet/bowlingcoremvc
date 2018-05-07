@@ -5,19 +5,28 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
 
+
 namespace BowlingCoreMVC.Controllers
 {
+    [Authorize]
     public class LeaguesController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public LeaguesController(ApplicationDbContext context)
+        public LeaguesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _db = context;
+            _userManager = userManager;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Leagues
         public async Task<IActionResult> Index()
@@ -26,6 +35,14 @@ namespace BowlingCoreMVC.Controllers
             var LeaguesList = await _db.Leagues.ToListAsync();
             var ViewModelList = new List<Models.GameViewModels.GameViewModels.LeagueListViewModel>();
 
+            var user = await GetCurrentUserAsync();
+            if (user != null)
+            {
+                ViewData["CurrentUserID"] = user.Id;
+            }
+            else { return View("Error"); }
+            
+
             foreach (var l in LeaguesList)
             {
                 var ViewModel = new Models.GameViewModels.GameViewModels.LeagueListViewModel();
@@ -33,10 +50,13 @@ namespace BowlingCoreMVC.Controllers
                 //Location will be required by league
                 var location = _db.Locations.Where(o => o.ID == l.LocationID).SingleOrDefault();
 
+                ViewModel.LeagueID = l.ID;
                 ViewModel.LocationName = location.Name;
                 ViewModel.LeagueName = l.Name;
                 ViewModel.StartDate = l.StartDate;
                 ViewModel.EndDate = l.EndDate;
+                ViewModel.CreatedByID = l.CreatedByID;
+                ViewModel.CreatedByUserName = user.UserName;
                 
                 ViewModelList.Add(ViewModel);
             }

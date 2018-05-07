@@ -57,10 +57,15 @@ namespace BowlingCoreMVC.Models.GameViewModels
             public string LeagueName { get; set; }
             public string LocationName { get; set; }
 
+            [Display(Name ="Created By")]
+            public string CreatedByUserName { get; set; }
+
             [StringLength(128)]
             public string CreatedByID { get; set; }
 
+            [DataType(DataType.Date)]
             public DateTime StartDate { get; set; }
+            [DataType(DataType.Date)]
             public DateTime EndDate { get; set; }
         }
     }
