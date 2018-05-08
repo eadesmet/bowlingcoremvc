@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BowlingCoreMVC.Models.GameViewModels.GameViewModels.SeriesListViewModel>
+﻿@model IEnumerable<BowlingCoreMVC.Models.Series>
 
 @{
     ViewData["Title"] = "Index";
@@ -22,7 +22,7 @@
                 @Html.DisplayNameFor(model => model.LeagueName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BowlDate)
+                @Html.DisplayNameFor(model => model.CreatedDate)
             </th>
             <th></th>
         </tr>
@@ -58,12 +58,12 @@
                     @Html.DisplayFor(modelItem => item.LeagueName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BowlDate)
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.SeriesID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.SeriesID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.SeriesID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                 </td>
             </tr>
         }

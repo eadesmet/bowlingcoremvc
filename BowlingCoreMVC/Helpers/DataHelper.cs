@@ -79,6 +79,20 @@ namespace BowlingCoreMVC.Helpers
 
             db.SaveChanges();
         }
+
+        public static void UpdateSeries(int SeriesID, ApplicationDbContext db)
+        {
+            var series = db.Series.Where(o => o.ID == SeriesID).Include(o => o.Games).SingleOrDefault();
+            series.SeriesScore = 0;
+            series.ModifiedDate = DateTime.Now;
+
+            foreach (var g in series.Games)
+            {
+                series.SeriesScore += g.Score;
+            }
+
+            db.SaveChanges();
+        }
         #endregion
 
 

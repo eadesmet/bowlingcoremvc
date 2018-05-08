@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BowlingCoreMVC.Models
 {
@@ -130,6 +131,16 @@ namespace BowlingCoreMVC.Models
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
 
+
+        [NotMapped]
+        public List<SelectListItem> Leagues { get; set; }
+
+        [NotMapped]
+        [Range(1, 9)]
+        public int NumberOfGames { get; set; }
+
+        [NotMapped]
+        public string LeagueName { get; set; }
     }
 
     [DisplayColumn("Name")]
@@ -164,6 +175,15 @@ namespace BowlingCoreMVC.Models
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
 
+        public virtual Location Location { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Created By")]
+        public string CreatedByUserName { get; set; }
+
+        [NotMapped]
+        public List<SelectListItem> Locations { get; set; }
+
     }
 
     public class LeagueUsers
@@ -196,6 +216,10 @@ namespace BowlingCoreMVC.Models
         public string CreatedByID { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
+
+        [NotMapped]
+        [Display(Name="Created By")]
+        public string CreatedByUserName { get; set; }
     }
 
 }

@@ -79,7 +79,13 @@ namespace BowlingCoreMVC.Controllers
             bool IsNewGame = (g.ID == 0);
             
             g = ScoreHelper.ScoreGame(g);
-            DataHelper.SaveGame(g, _db);
+            g = DataHelper.SaveGame(g, _db);
+
+            if (g.SeriesID != null && g.SeriesID != 0)
+            {
+                //update series
+                DataHelper.UpdateSeries(Convert.ToInt32(g.SeriesID), _db);
+            }
             
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g), redirect = IsNewGame });
         }

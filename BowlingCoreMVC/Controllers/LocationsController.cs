@@ -5,24 +5,37 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
 
 namespace BowlingCoreMVC.Controllers
 {
+    [Authorize]
     public class LocationsController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public LocationsController(ApplicationDbContext context)
+        public LocationsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _db = context;
+            _userManager = userManager;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Locations
         public async Task<IActionResult> Index()
         {
-            return View(await _db.Locations.ToListAsync());
+            var LocationList = await _db.Locations.ToListAsync();
+            foreach (var l in LocationList)
+            {
+                l.CreatedByUserName = (await _userManager.FindByIdAsync(l.CreatedByID)).UserName;
+            }
+            return View(LocationList);
         }
 
         // GET: Locations/Details/5
@@ -40,6 +53,9 @@ namespace BowlingCoreMVC.Controllers
                 return NotFound();
             }
 
+            var user = await _userManager.FindByIdAsync(location.CreatedByID);
+            location.CreatedByUserName = user.UserName;
+
             return View(location);
         }
 
@@ -54,10 +70,18 @@ namespace BowlingCoreMVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,CreatedByID,CreatedDate,ModifiedDate")] Location location)
+        public async Task<IActionResult> Create([Bind("Name")] Location location)
         {
             if (ModelState.IsValid)
             {
+                location.CreatedDate = DateTime.Now;
+                location.ModifiedDate = DateTime.Now;
+                var user = await GetCurrentUserAsync();
+                if (user != null) //should never be null..
+                {
+                    location.CreatedByID = user.Id;
+                }
+                
                 _db.Add(location);
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +110,7 @@ namespace BowlingCoreMVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,CreatedByID,CreatedDate,ModifiedDate")] Location location)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name")] Location location)
         {
             if (id != location.ID)
             {
@@ -97,6 +121,7 @@ namespace BowlingCoreMVC.Controllers
             {
                 try
                 {
+                    location.ModifiedDate = DateTime.Now;
                     _db.Update(location);
                     await _db.SaveChangesAsync();
                 }
@@ -130,6 +155,9 @@ namespace BowlingCoreMVC.Controllers
             {
                 return NotFound();
             }
+
+            var user = await _userManager.FindByIdAsync(location.CreatedByID);
+            location.CreatedByUserName = user.UserName;
 
             return View(location);
         }

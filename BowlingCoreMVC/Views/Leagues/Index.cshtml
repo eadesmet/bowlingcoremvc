@@ -1,4 +1,5 @@
-﻿@model IEnumerable<BowlingCoreMVC.Models.GameViewModels.GameViewModels.LeagueListViewModel>
+﻿@*@model IEnumerable<BowlingCoreMVC.Models.GameViewModels.GameViewModels.LeagueListViewModel>*@
+@model IEnumerable<BowlingCoreMVC.Models.League>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,10 +14,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.LeagueName)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LocationName)
+                @Html.DisplayNameFor(model => model.Location)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreatedByUserName)
@@ -35,10 +36,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.LeagueName)
+                    @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.LocationName)
+                    @Html.DisplayFor(modelItem => item.Location.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedByUserName)
@@ -55,9 +56,9 @@
                         if (ViewData["CurrentUserID"].ToString() == item.CreatedByID)
                         {
                             <div class="btn-group">
-                                <a asp-action="Edit" asp-route-id="@item.LeagueID" class="btn btn-primary">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.LeagueID" class="btn btn-default">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.LeagueID" class="btn btn-danger">Delete</a>
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-default">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</a>
                             </div>
                         }
                     }

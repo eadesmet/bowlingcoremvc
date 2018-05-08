@@ -31,7 +31,6 @@ Misc
 ///Returns JSON string of the Game
 function GetJSONFromPage(GameID)
 {
-    var frameDetails = {};
     var game = {};
     game.Frames = [];
     game.ID = GameID;
@@ -59,7 +58,7 @@ function GetJSONFromPage(GameID)
         frameDetails["FrameNum"] = $(prefixID + "hidFrameNum").val();
 
         //Update the hidden values for the score/pins of the current throw
-        //if (i == game.CurrentFrame)
+        //if (i === game.CurrentFrame)
         //{
         //    var ThrowNum = GetThrowNum(parseInt(game.CurrentThrow));
 
@@ -69,15 +68,15 @@ function GetJSONFromPage(GameID)
         //    $(prefixID + ThrowNum + "_hidPins").val(CurrentThrowData.missed);
 
         //    //Overwrite second throw score to be calculated from throw one score
-        //    if (ThrowNum == 2)
+        //    if (ThrowNum === 2)
         //    {
         //        //NOTE: GetThrowPins gets the score from the pins only! getThrowHidVals gets any score that has been saved
         //        var FirstThrowData = GetThrowHidVals(GameID, game.CurrentFrame, 1);
         //        $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
 
-        //        if (i == 10)
+        //        if (i === 10)
         //        {
-        //            if (FirstThrowData.score == 10)
+        //            if (FirstThrowData.score === 10)
         //            {
         //                //first ball of 10th is strike, second ball is the current score only (not sub from first)
         //                $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
@@ -85,7 +84,7 @@ function GetJSONFromPage(GameID)
         //        }
         //    }
 
-        //    if (ThrowNum == 3)
+        //    if (ThrowNum === 3)
         //    {
         //        //last ball 10th frame. if we are here, just take what the pins are as it's score
         //        //current throw is third..
@@ -114,13 +113,13 @@ function GetJSONFromPage(GameID)
 
         
         //TODO: 10th frame updating here
-        if (i == 10)
+        if (i === 10)
         {
             frameDetails["ThrowThreeScore"] = $(prefixID + "3_hidFrame").val();
             frameDetails["ThrowThreePins"] = $(prefixID + "3_hidPins").val();
         }
 
-        game.Frames.push(frameDetails)
+        game.Frames.push(frameDetails);
     }
     return JSON.stringify(game);
 }
@@ -138,7 +137,7 @@ function UpdateCurrentThrowVal(GameID)
     $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
     $(prefixID + ThrowNum + "_hidPins").val(CurrentThrowData.missed);
 
-    if (CurrentFrame == 10 && ThrowNum == 1)
+    if (CurrentFrame === 10 && ThrowNum === 1)
     {
         //Reset the 10th frame when setting the first ball
         $(prefixID + 2 + "_hidFrame").val(0);
@@ -148,15 +147,15 @@ function UpdateCurrentThrowVal(GameID)
     }
 
     //Overwrite second throw score to be calculated from throw one score
-    if (ThrowNum == 2)
+    if (ThrowNum === 2)
     {
        //NOTE: GetThrowPins gets the score from the pins only! getThrowHidVals gets any score that has been saved
        var FirstThrowData = GetThrowHidVals(GameID, CurrentFrame, 1);
        $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
 
-       if (CurrentFrame == 10)
+       if (CurrentFrame === 10)
        {
-           if (FirstThrowData.score == 10)
+           if (FirstThrowData.score === 10)
            {
                //first ball of 10th is strike, second ball is the current score only (not sub from first)
                $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
@@ -164,7 +163,7 @@ function UpdateCurrentThrowVal(GameID)
        }
     }
 
-    if (ThrowNum == 3)
+    if (ThrowNum === 3)
     {
        //last ball 10th frame. if we are here, just take what the pins are as it's score
        //current throw is third..
@@ -213,16 +212,16 @@ function GetThrowPins(GameID, frameNum, throwNum)
     var ten =   $("#" + GameID + "-Missed_10").is(':checked');
 
 
-    if (one)   { missed_pins = missed_pins + MISSED_1; throw_score = throw_score - 1; };
-    if (two)   { missed_pins = missed_pins + MISSED_2; throw_score = throw_score - 1; };
-    if (three) { missed_pins = missed_pins + MISSED_3; throw_score = throw_score - 1; };
-    if (four)  { missed_pins = missed_pins + MISSED_4; throw_score = throw_score - 1; };
-    if (five)  { missed_pins = missed_pins + MISSED_5; throw_score = throw_score - 1; };
-    if (six)   { missed_pins = missed_pins + MISSED_6; throw_score = throw_score - 1; };
-    if (seven) { missed_pins = missed_pins + MISSED_7; throw_score = throw_score - 1; };
-    if (eight) { missed_pins = missed_pins + MISSED_8; throw_score = throw_score - 1; };
-    if (nine)  { missed_pins = missed_pins + MISSED_9; throw_score = throw_score - 1; };
-    if (ten)   { missed_pins = missed_pins + MISSED_10; throw_score = throw_score - 1; };
+    if (one)   { missed_pins = missed_pins + MISSED_1; throw_score = throw_score - 1; }
+    if (two)   { missed_pins = missed_pins + MISSED_2; throw_score = throw_score - 1; }
+    if (three) { missed_pins = missed_pins + MISSED_3; throw_score = throw_score - 1; }
+    if (four)  { missed_pins = missed_pins + MISSED_4; throw_score = throw_score - 1; }
+    if (five)  { missed_pins = missed_pins + MISSED_5; throw_score = throw_score - 1; }
+    if (six)   { missed_pins = missed_pins + MISSED_6; throw_score = throw_score - 1; }
+    if (seven) { missed_pins = missed_pins + MISSED_7; throw_score = throw_score - 1; }
+    if (eight) { missed_pins = missed_pins + MISSED_8; throw_score = throw_score - 1; }
+    if (nine)  { missed_pins = missed_pins + MISSED_9; throw_score = throw_score - 1; }
+    if (ten)   { missed_pins = missed_pins + MISSED_10; throw_score = throw_score - 1; }
 
     return { missed: missed_pins, score: throw_score };
 }
@@ -251,19 +250,19 @@ function RefreshGameHid(g)
         $("#" + g.ID + "_" + i + "_1_hidPins").val(g.Frames[i - 1].ThrowOnePins);
         $("#" + g.ID + "_" + i + "_2_hidPins").val(g.Frames[i - 1].ThrowTwoPins);
 
-        if (i == 10)
+        if (i === 10)
         {
             $("#" + g.ID + "_" + i + "_3_hidFrame").val(g.Frames[i - 1].ThrowThreeScore);
             $("#" + g.ID + "_" + i + "_3_hidPins").val(g.Frames[i - 1].ThrowThreePins);
         }
 
-        if (i < g.ScoreUpToFrame || g.ScoreUpToFrame == 10)
+        if (i < g.ScoreUpToFrame || g.ScoreUpToFrame === 10)
         {
             SetLabelsFromHid(g.ID, i);
         }
         FormatFrameThrowLabels(g.ID, i);
         // : MissedPinsINT Bitwise & MISSED_1 : (In javascript, this should return 1 if it was missed)
-        //$("#" + i + "_1_MissedPinOne").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_1) == MISSED_1);
+        //$("#" + i + "_1_MissedPinOne").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_1) === MISSED_1);
         
     }
 
@@ -278,7 +277,7 @@ function RefreshPinsOfCurrentThrow(GameID, MissedPins, FrameNum, CurrentThrow, S
     const FirstThrows = new Set([1, 3, 5, 7, 9, 11, 13, 15, 17, 19]);
     const SecondThrows = new Set([2, 4, 6, 8, 10, 12, 14, 16, 18]);
     const Tenth = new Set([20, 21]);
-    //NOTE: This will be null if CurrentThrow == 1, but we don't use it then anyway
+    //NOTE: This will be null if CurrentThrow === 1, but we don't use it then anyway
     var PrevMissedPins = $("#" + GameID + "_" + FrameNum + "_" + (GetThrowNum(CurrentThrow-1)) + "_hidPins").val();
 
     //reset (enable all)
@@ -311,10 +310,10 @@ function RefreshPinsOfCurrentThrow(GameID, MissedPins, FrameNum, CurrentThrow, S
     }
     else if (Tenth.has(CurrentThrow))
     {
-        if (PrevMissedPins == 0)
+        if (PrevMissedPins === 0)
         {
             //all enabled, set saved missed
-            SetMissedPinsChecked(GameID, MissedPins)
+            SetMissedPinsChecked(GameID, MissedPins);
         }
         else
         {
@@ -323,105 +322,35 @@ function RefreshPinsOfCurrentThrow(GameID, MissedPins, FrameNum, CurrentThrow, S
             SetMissedPinsChecked(GameID, MissedPins);
         }
     }
-
-
-
-
-    if (0)
-    {
-        //TODO: Check previous throw and other logic here
-
-        //If first throw on any frame, enable all and set checked
-        //If second throw on frames 1-9, disable pins from previous throw, set missed pins checked
-        //If 10th second throw, if first throw 10, all enabled and set checked
-        //if 10th third throw, if second throw 10 OR first+second == 10, all enabled and set checked
-
-        //remember, we ONLY need to do the CURRENT throw
-
-        //var ThrowNum = GetThrowNum(CurrentThrow);
-        //var previousThrowMissed = $("#" + GameID + "_" + CurrentFrame + "_" + CurrentThrow - 1 + "_hidPins").val();
-
-        //if (ThrowNum == 1)
-        //{
-        //    //set checked (if there were any)
-        //    SetMissedPinsChecked(GameID);
-
-        //}
-        //else if (ThrowNum == 2 && FrameNum != 10)
-        //{
-        //    //frames 1-9 second throw
-        //    //If we get here (thrownum == 2) then there WERE missed pins on the previous throw
-
-
-        //    if (ScoreUpToFrame < FrameNum)
-        //    {
-        //        //if we haven't scored up to this point yet, set the second throw fresh from the first throw
-        //        SetMissedPinsChecked(previousThrowMissed);
-        //    }
-        //    else
-        //    {
-        //        //If we have scored up  to this point before, set them to what has been saved for the second throw
-        //        SetMissedPinsChecked(MissedPins);
-        //    }
-
-        //}
-
-        //if (FrameNum == 10 && ThrowNum == 2)
-        //{
-        //    //10th frame, second throw. check if first was strike
-        //    if (previousThrowMissed == 0)
-        //    {
-        //        //10th frame first throw was a strike, enable all
-        //    }
-        //    else
-        //    {
-        //        //10th frame first throw was not a strike, enable missed
-        //    }
-        //}
-        //else if (FrameNum == 10 && ThrowNum == 3)
-        //{
-        //    //10th frame, third throw. check if second ball 10 OR first+second == 10
-        //    if (previousThrowMissed > 0)
-        //    {
-        //        //if second throw missed any, and ThrowNum is considered 3, then this is for a spare
-
-        //    }
-        //    else
-        //    {
-        //        //enable all
-        //    }
-
-        //}
-    }
 }
 
 function SetMissedPinsChecked(GameID, MissedPins)
 {
-    $("#" + GameID + "-Missed_1").prop("checked", (MissedPins & MISSED_1) == MISSED_1);
-    $("#" + GameID + "-Missed_2").prop("checked", (MissedPins & MISSED_2) == MISSED_2);
-    $("#" + GameID + "-Missed_3").prop("checked", (MissedPins & MISSED_3) == MISSED_3);
-    $("#" + GameID + "-Missed_4").prop("checked", (MissedPins & MISSED_4) == MISSED_4);
-    $("#" + GameID + "-Missed_5").prop("checked", (MissedPins & MISSED_5) == MISSED_5);
-    $("#" + GameID + "-Missed_6").prop("checked", (MissedPins & MISSED_6) == MISSED_6);
-    $("#" + GameID + "-Missed_7").prop("checked", (MissedPins & MISSED_7) == MISSED_7);
-    $("#" + GameID + "-Missed_8").prop("checked", (MissedPins & MISSED_8) == MISSED_8);
-    $("#" + GameID + "-Missed_9").prop("checked", (MissedPins & MISSED_9) == MISSED_9);
-    $("#" + GameID + "-Missed_10").prop("checked", (MissedPins & MISSED_10) == MISSED_10);
+    $("#" + GameID + "-Missed_1").prop("checked", (MissedPins & MISSED_1) === MISSED_1);
+    $("#" + GameID + "-Missed_2").prop("checked", (MissedPins & MISSED_2) === MISSED_2);
+    $("#" + GameID + "-Missed_3").prop("checked", (MissedPins & MISSED_3) === MISSED_3);
+    $("#" + GameID + "-Missed_4").prop("checked", (MissedPins & MISSED_4) === MISSED_4);
+    $("#" + GameID + "-Missed_5").prop("checked", (MissedPins & MISSED_5) === MISSED_5);
+    $("#" + GameID + "-Missed_6").prop("checked", (MissedPins & MISSED_6) === MISSED_6);
+    $("#" + GameID + "-Missed_7").prop("checked", (MissedPins & MISSED_7) === MISSED_7);
+    $("#" + GameID + "-Missed_8").prop("checked", (MissedPins & MISSED_8) === MISSED_8);
+    $("#" + GameID + "-Missed_9").prop("checked", (MissedPins & MISSED_9) === MISSED_9);
+    $("#" + GameID + "-Missed_10").prop("checked", (MissedPins & MISSED_10) === MISSED_10);
 }
 
 function SetMissedPinsEnabled(GameID, MissedPins)
 {
-    //MissedPins here should be the previous frames missed pins (also, disabled false == enabled)
-    $("#" + GameID + "-Missed_1").prop("disabled", (MissedPins & MISSED_1) != MISSED_1);
-    $("#" + GameID + "-Missed_2").prop("disabled", (MissedPins & MISSED_2) != MISSED_2);
-    $("#" + GameID + "-Missed_3").prop("disabled", (MissedPins & MISSED_3) != MISSED_3);
-    $("#" + GameID + "-Missed_4").prop("disabled", (MissedPins & MISSED_4) != MISSED_4);
-    $("#" + GameID + "-Missed_5").prop("disabled", (MissedPins & MISSED_5) != MISSED_5);
-    $("#" + GameID + "-Missed_6").prop("disabled", (MissedPins & MISSED_6) != MISSED_6);
-    $("#" + GameID + "-Missed_7").prop("disabled", (MissedPins & MISSED_7) != MISSED_7);
-    $("#" + GameID + "-Missed_8").prop("disabled", (MissedPins & MISSED_8) != MISSED_8);
-    $("#" + GameID + "-Missed_9").prop("disabled", (MissedPins & MISSED_9) != MISSED_9);
-    $("#" + GameID + "-Missed_10").prop("disabled", (MissedPins & MISSED_10) != MISSED_10);
+    //MissedPins here should be the previous frames missed pins (also, disabled false === enabled)
+    $("#" + GameID + "-Missed_1").prop("disabled", (MissedPins & MISSED_1) !== MISSED_1);
+    $("#" + GameID + "-Missed_2").prop("disabled", (MissedPins & MISSED_2) !== MISSED_2);
+    $("#" + GameID + "-Missed_3").prop("disabled", (MissedPins & MISSED_3) !== MISSED_3);
+    $("#" + GameID + "-Missed_4").prop("disabled", (MissedPins & MISSED_4) !== MISSED_4);
+    $("#" + GameID + "-Missed_5").prop("disabled", (MissedPins & MISSED_5) !== MISSED_5);
+    $("#" + GameID + "-Missed_6").prop("disabled", (MissedPins & MISSED_6) !== MISSED_6);
+    $("#" + GameID + "-Missed_7").prop("disabled", (MissedPins & MISSED_7) !== MISSED_7);
+    $("#" + GameID + "-Missed_8").prop("disabled", (MissedPins & MISSED_8) !== MISSED_8);
+    $("#" + GameID + "-Missed_9").prop("disabled", (MissedPins & MISSED_9) !== MISSED_9);
+    $("#" + GameID + "-Missed_10").prop("disabled", (MissedPins & MISSED_10) !== MISSED_10);
 }
 
 function EnableAllMissedPins(GameID)
@@ -442,7 +371,7 @@ function EnableAllMissedPins(GameID)
 //-----------------------Setting Labels---------------------
 function SetLabelsFromHid(GameID, FrameNum)
 {
-    EmptyFrameLabels(GameID, FrameNum)
+    EmptyFrameLabels(GameID, FrameNum);
 
     $("#" + GameID + "_" + FrameNum + "_lblFrameTotal").append($("#" + GameID + "_" + FrameNum + "_hidFrameTotal").val());
     //$("#" + GameID + "_" + FrameNum + "_1_lblFrame").append($("#" + GameID + "_" + FrameNum + "_1_hidFrame").val());
@@ -450,7 +379,7 @@ function SetLabelsFromHid(GameID, FrameNum)
     
     //FormatFrameThrowLabels(GameID, FrameNum);
 
-    //if (FrameNum == 10)
+    //if (FrameNum === 10)
     //{
     //    $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append($("#" + GameID + "_" + FrameNum + "_3_hidFrame").val());
     //}
@@ -462,7 +391,7 @@ function EmptyFrameLabels(GameID, FrameNum)
     $("#" + GameID + "_" + FrameNum + "_lblFrameTotal").empty();
     $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty();
     $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty();
-    if (FrameNum == 10)
+    if (FrameNum === 10)
     {
         $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty();
     }
@@ -474,13 +403,13 @@ function FormatFrameThrowLabels(GameID, FrameNum)
     var SecondThrowScore = parseInt($("#" + GameID + "_" + FrameNum + "_2_hidFrame").val());
     var ScoreUpToFrame = parseInt($("#" + GameID + "_ScoreUpToFrame").val());
 
-    if (FrameNum != 10)
+    if (FrameNum !== 10)
     {
-        if (FirstThrowScore == 10)
+        if (FirstThrowScore === 10)
         {
             $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("X");
         }
-        else if (FirstThrowScore + SecondThrowScore == 10)
+        else if (FirstThrowScore + SecondThrowScore === 10)
         {
             $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append(FirstThrowScore);
             $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("/");
@@ -494,10 +423,10 @@ function FormatFrameThrowLabels(GameID, FrameNum)
     else
     {
         var ThirdThrowScore = parseInt($("#" + GameID + "_" + FrameNum + "_3_hidFrame").val());
-        if (FirstThrowScore == 10)
+        if (FirstThrowScore === 10)
         {
             $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append("X");
-            if (SecondThrowScore == 10)
+            if (SecondThrowScore === 10)
             {
                 $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("X");
             }
@@ -506,7 +435,7 @@ function FormatFrameThrowLabels(GameID, FrameNum)
                 $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append(SecondThrowScore);
             }
         }
-        else if (FirstThrowScore + SecondThrowScore == 10)
+        else if (FirstThrowScore + SecondThrowScore === 10)
         {
             $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append(FirstThrowScore);
             $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("/");
@@ -517,11 +446,11 @@ function FormatFrameThrowLabels(GameID, FrameNum)
             $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append(SecondThrowScore);
         }
 
-        if (ThirdThrowScore == 10)
+        if (ThirdThrowScore === 10)
         {
             $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append("X");
         }
-        else if (SecondThrowScore + ThirdThrowScore == 10)
+        else if (SecondThrowScore + ThirdThrowScore === 10)
         {
             //$("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
             $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append("/");
@@ -531,7 +460,7 @@ function FormatFrameThrowLabels(GameID, FrameNum)
             $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append(ThirdThrowScore);
         }
 
-        if (ThirdThrowScore == 0)
+        if (ThirdThrowScore === 0)
         {
             if (ScoreUpToFrame <= FrameNum)
             {
@@ -545,7 +474,7 @@ function FormatFrameThrowLabels(GameID, FrameNum)
         }
     }
 
-    if (FirstThrowScore == 0)
+    if (FirstThrowScore === 0)
     {
         if (ScoreUpToFrame <= FrameNum)
         {
@@ -557,7 +486,7 @@ function FormatFrameThrowLabels(GameID, FrameNum)
         }
     }
 
-    if (SecondThrowScore == 0 && FirstThrowScore != 10)
+    if (SecondThrowScore === 0 && FirstThrowScore !== 10)
     {
         if (ScoreUpToFrame <= FrameNum)
         {
@@ -594,7 +523,7 @@ function ClearHighlight(GameID, FrameNum)
     $(prefixID + "2_tdFrame").css("background-color", "White");
     $(prefixID + "tdFrameScore").css("background-color", "White");
 
-    if (FrameNum == 10)
+    if (FrameNum === 10)
     {
         $(prefixID + "3_tdFrame").css("background-color", "White");
     }
@@ -609,22 +538,22 @@ function HighlightSelectedFrame(GameID, FrameNum, CurrentThrow)
     $(prefixID + "1_tdFrame").css("background-color", "Aquamarine");
     $(prefixID + "2_tdFrame").css("background-color", "Aquamarine");
     $(prefixID + "tdFrameScore").css("background-color", "Aquamarine");
-    if (FrameNum == 10)
+    if (FrameNum === 10)
     {
         $(prefixID + "3_tdFrame").css("background-color", "Aquamarine");
-        if (CurrentThrow == 21)
+        if (CurrentThrow === 21)
         {
             $(prefixID + "3_tdFrame").css("background-color", "Plum");
         }
         else
         {
             var fThrow = CurrentThrow % 2;
-            if (fThrow == 0) { fThrow = 2; }
-            if (fThrow == 1)
+            if (fThrow === 0) { fThrow = 2; }
+            if (fThrow === 1)
             {
                 $(prefixID + "1_tdFrame").css("background-color", "Plum");
             }
-            else if (fThrow == 2)
+            else if (fThrow === 2)
             {
                 $(prefixID + "2_tdFrame").css("background-color", "Plum");
             }
@@ -633,12 +562,12 @@ function HighlightSelectedFrame(GameID, FrameNum, CurrentThrow)
     else
     {
         var fThrow = CurrentThrow % 2;
-        if (fThrow == 0) { fThrow = 2; }
-        if (fThrow == 1)
+        if (fThrow === 0) { fThrow = 2; }
+        if (fThrow === 1)
         {
             $(prefixID + "1_tdFrame").css("background-color", "Plum");
         }
-        else if (fThrow == 2)
+        else if (fThrow === 2)
         {
             $(prefixID + "2_tdFrame").css("background-color", "Plum");
         }
@@ -807,15 +736,15 @@ function GetGameIDs()
 
 function GetThrowNum(CurrentThrow)
 {
-    if (CurrentThrow == 21)
+    if (CurrentThrow === 21)
     {
         return (3);
     }
-    else if (CurrentThrow % 2 == 0)
+    else if (CurrentThrow % 2 === 0)
     {
         return (2);
     }
-    else if (CurrentThrow % 2 == 1)
+    else if (CurrentThrow % 2 === 1)
     {
         return (1);
     }

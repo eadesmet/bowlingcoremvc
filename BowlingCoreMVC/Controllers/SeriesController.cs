@@ -24,30 +24,20 @@ namespace BowlingCoreMVC.Controllers
         public async Task<IActionResult> Index()
         {
             var SeriesList = await _db.Series.Include(s => s.Games).ToListAsync();
-            var ViewModelList = new List<Models.GameViewModels.GameViewModels.SeriesListViewModel>();
+            //var ViewModelList = new List<Models.GameViewModels.GameViewModels.SeriesListViewModel>();
 
             foreach (var s in SeriesList)
             {
-                var ViewModel = new Models.GameViewModels.GameViewModels.SeriesListViewModel();
-
-                ViewModel.SeriesID = s.ID;
                 var league = _db.Leagues.Where(o => o.ID == s.LeagueID).SingleOrDefault();
                 if (league != null)
                 {
-                    ViewModel.LeagueName = league.Name;
+                    s.LeagueName = league.Name;
                 }
-                
-                ViewModel.BowlDate = s.CreatedDate;
-                ViewModel.SeriesScore = s.SeriesScore;
-                ViewModel.Games = s.Games.ToList();
-                
-
-                ViewModelList.Add(ViewModel);
             }
 
-            ViewModelList = ViewModelList.OrderByDescending(o => o.BowlDate).ToList();
+            SeriesList = SeriesList.OrderByDescending(o => o.CreatedDate).ToList();
 
-            return View(ViewModelList);
+            return View(SeriesList);
         }
 
         [HttpGet]
@@ -61,7 +51,7 @@ namespace BowlingCoreMVC.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            Models.GameViewModels.GameViewModels.SeriesViewModel model = new Models.GameViewModels.GameViewModels.SeriesViewModel();
+            Series model = new Series(); //hmmm
 
             //TODO: League list here needs to filter what leagues this user is in
             model.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
@@ -69,7 +59,7 @@ namespace BowlingCoreMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Models.GameViewModels.GameViewModels.SeriesViewModel model)
+        public IActionResult Create(Series model)
         {
             if (ModelState.IsValid)
             {
@@ -82,32 +72,5 @@ namespace BowlingCoreMVC.Controllers
             return View(model);
         }
 
-
-
-
-        //Helpers
-        //public List<SelectListItem> GetCurrentLeagues()
-        //{
-        //    var result = new List<SelectListItem>();
-        //    var leagues = _db.Leagues.Where(o => o.EndDate >= DateTime.Today).ToList();
-        //    foreach (var l in leagues)
-        //    {
-        //        result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });
-        //    }
-
-        //    return (result);
-        //}
-
-        //public List<SelectListItem> GetAllLocations()
-        //{
-        //    var result = new List<SelectListItem>();
-        //    var locations = _db.Locations.ToList();
-        //    foreach (var l in locations)
-        //    {
-        //        result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });
-        //    }
-
-        //    return (result);
-        //}
     }
 }
