@@ -3,29 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Helpers;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+
 
 namespace BowlingCoreMVC.Controllers
 {
+    //[Authorize]
     public class GameController : Controller
     {
         private ApplicationDbContext _db { get; set; }
+        private readonly UserManager<ApplicationUser> _userManager;
+        
 
-        public GameController(ApplicationDbContext db)
+        public GameController(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
             _db = db;
+            _userManager = userManager;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET Index (game list page)
         public async Task<IActionResult> Index()
         {
             //TODO: Filter by user. group/filter by series?
-            return View(await _db.Games.OrderByDescending(o => o.CreatedDate).ToListAsync());
+            var user = await GetCurrentUserAsync();
+            if (user == null) { return RedirectToAction("Login", "Account"); }
+
+            List<Game> GamesList = await _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate).ToListAsync();
+
+            return View(GamesList);
         }
 
         // GET Create (Create a new game, redirect to Edit page)
@@ -79,6 +93,8 @@ namespace BowlingCoreMVC.Controllers
             bool IsNewGame = (g.ID == 0);
             
             g = ScoreHelper.ScoreGame(g);
+
+            g.UserID = _userManager.GetUserId(User);
             g = DataHelper.SaveGame(g, _db);
 
             if (g.SeriesID != null && g.SeriesID != 0)

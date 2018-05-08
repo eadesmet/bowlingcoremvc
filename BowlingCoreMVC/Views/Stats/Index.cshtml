@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewData["Title"] = "Sitewide Scores";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+
+<div class="body-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <h4>Weekly High Games</h4>
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <th>
+                            User
+                        </th>
+                        <th>
+                            Score
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                    </tr>
+
+                    @foreach (var g in (List<Game>)ViewData["WeeklyGames"])
+                    {
+                        <tr>
+                            <td>@g.UserName</td>
+                            <td>@g.Score</td>
+                            <td>@g.CreatedDate.ToShortDateString()</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+
+
+            <div class="col-lg-4">
+                <h4>High Score Games</h4>
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <th>
+                            User
+                        </th>
+                        <th>
+                            Score
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                    </tr>
+
+                    @foreach (var g in (List<Game>)ViewData["AllTimeGames"])
+                    {
+                        <tr>
+                            <td>@g.UserName</td>
+                            <td>@g.Score</td>
+                            <td>@g.CreatedDate.ToShortDateString()</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+
+
+            <div class="col-lg-4">
+                <h4>High Score Series</h4>
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <th>
+                            User
+                        </th>
+                        <th>
+                            Score
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                    </tr>
+
+                    @foreach (var s in (List<Series>)ViewData["AllTimeSeries"])
+                    {
+                        <tr>
+                            <td>@s.UserName</td>
+                            <td>@s.SeriesScore</td>
+                            <td>@s.CreatedDate.ToShortDateString()</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

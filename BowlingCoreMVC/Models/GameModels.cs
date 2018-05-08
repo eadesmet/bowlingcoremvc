@@ -66,11 +66,11 @@ namespace BowlingCoreMVC.Models
         public int Score { get; set; }
 
         [Display(Name="Created")]
-        [DisplayFormat(DataFormatString = "{0: MM/dd/yyyy hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
         public DateTime CreatedDate { get; set; }
 
         [Display(Name = "Modified")]
-        [DisplayFormat(DataFormatString = "{0: MM/dd/yyyy hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
         public DateTime ModifiedDate { get; set; }
 
         public int CurrentFrame { get; set; }
@@ -92,6 +92,8 @@ namespace BowlingCoreMVC.Models
 
         public int? SeriesID { get; set; }
 
+        [NotMapped]
+        public string UserName { get; set; }
     }
 
     public class Series
@@ -106,9 +108,10 @@ namespace BowlingCoreMVC.Models
             s.SeriesScore = 0;
 
             s.Games = new List<Game>();
-            for (int i = 0; i < NumberOfGames; i++)
+            for (int i = 1; i <= NumberOfGames; i++)
             {
-                Game g = Game.Create(); //NOTE: SeriesID here? I don't think I can...
+                Game g = Game.Create();
+                g.SeriesIndex = i;
                 s.Games.Add(g);
             }
 
@@ -141,6 +144,9 @@ namespace BowlingCoreMVC.Models
 
         [NotMapped]
         public string LeagueName { get; set; }
+
+        [NotMapped]
+        public string UserName { get; set; }
     }
 
     [DisplayColumn("Name")]

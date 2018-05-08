@@ -57,53 +57,6 @@ function GetJSONFromPage(GameID)
         frameDetails["FrameTotal"] = $(prefixID + "hidFrameTotal").val();
         frameDetails["FrameNum"] = $(prefixID + "hidFrameNum").val();
 
-        //Update the hidden values for the score/pins of the current throw
-        //if (i === game.CurrentFrame)
-        //{
-        //    var ThrowNum = GetThrowNum(parseInt(game.CurrentThrow));
-
-        //    var CurrentThrowData = GetThrowPins(GameID, game.CurrentFrame, ThrowNum);
-        //    //(might be overwritten in refresh game? make sure framedetails is getting updated)
-        //    $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
-        //    $(prefixID + ThrowNum + "_hidPins").val(CurrentThrowData.missed);
-
-        //    //Overwrite second throw score to be calculated from throw one score
-        //    if (ThrowNum === 2)
-        //    {
-        //        //NOTE: GetThrowPins gets the score from the pins only! getThrowHidVals gets any score that has been saved
-        //        var FirstThrowData = GetThrowHidVals(GameID, game.CurrentFrame, 1);
-        //        $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
-
-        //        if (i === 10)
-        //        {
-        //            if (FirstThrowData.score === 10)
-        //            {
-        //                //first ball of 10th is strike, second ball is the current score only (not sub from first)
-        //                $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
-        //            }
-        //        }
-        //    }
-
-        //    if (ThrowNum === 3)
-        //    {
-        //        //last ball 10th frame. if we are here, just take what the pins are as it's score
-        //        //current throw is third..
-        //        var TenthSecondThrowData = GetThrowHidVals(GameID, i, 2);
-        //        if (TenthSecondThrowData.score < 10)
-        //        {
-        //            $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
-        //        }
-                
-        //    }
-
-        //    //10th frame scenerios
-        //    //first ball strike, second ball fresh
-        //    //first ball strike, second ball strike, third ball fresh
-        //    //first ball strike, second ball not strike, third ball from second
-        //    //first + second spare, third ball fresh
-        //    //forst + second not spare, no third ball
-
-        //}
 
         frameDetails["ThrowOneScore"] = $(prefixID + "1_hidFrame").val();
         frameDetails["ThrowTwoScore"] = $(prefixID + "2_hidFrame").val();
@@ -127,10 +80,10 @@ function GetJSONFromPage(GameID)
 function UpdateCurrentThrowVal(GameID)
 {
     //Update the hidden values for the score/pins of the current throw
-    var CurrentThrow = $("#" + GameID + "_CurrentThrow").val();
-    var CurrentFrame = $("#" + GameID + "_CurrentFrame").val();
+    var CurrentThrow = parseInt($("#" + GameID + "_CurrentThrow").val());
+    var CurrentFrame = parseInt($("#" + GameID + "_CurrentFrame").val());
     var prefixID = "#" + GameID + "_" + CurrentFrame + "_";
-    var ThrowNum = GetThrowNum(parseInt(CurrentThrow));
+    var ThrowNum = parseInt(GetThrowNum(parseInt(CurrentThrow)));
 
     var CurrentThrowData = GetThrowPins(GameID, CurrentFrame, ThrowNum);
     //(might be overwritten in refresh game? make sure framedetails is getting updated)
@@ -174,12 +127,12 @@ function UpdateCurrentThrowVal(GameID)
        
        if (FirstThrowData.score + TenthSecondThrowData.score > 10)
        {
-           $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
+           $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
        }
-       // else if (TenthSecondThrowData.score < 10)
-       // {
-       //      $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
-       // }
+        else if (TenthSecondThrowData.score < 10)
+        {
+           $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
+        }
         
    
 
@@ -278,7 +231,7 @@ function RefreshPinsOfCurrentThrow(GameID, MissedPins, FrameNum, CurrentThrow, S
     const SecondThrows = new Set([2, 4, 6, 8, 10, 12, 14, 16, 18]);
     const Tenth = new Set([20, 21]);
     //NOTE: This will be null if CurrentThrow === 1, but we don't use it then anyway
-    var PrevMissedPins = $("#" + GameID + "_" + FrameNum + "_" + (GetThrowNum(CurrentThrow-1)) + "_hidPins").val();
+    var PrevMissedPins = parseInt($("#" + GameID + "_" + FrameNum + "_" + (GetThrowNum(CurrentThrow-1)) + "_hidPins").val());
 
     //reset (enable all)
     EnableAllMissedPins(GameID);
