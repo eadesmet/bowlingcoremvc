@@ -102,9 +102,6 @@ namespace BowlingCoreMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Models.GameViewModels.GameViewModels.LeagueViewModel ViewModel)
         {
-            //league.CreatedByID = ; //TODO: Logged in User
-            
-
             if (ModelState.IsValid)
             {
                 League l = League.Create();
@@ -113,12 +110,16 @@ namespace BowlingCoreMVC.Controllers
 
                 l.LocationID = ViewModel.LocationID;
                 l.Name = ViewModel.LeagueName;
+
+                var user = await GetCurrentUserAsync();
+                l.CreatedByID = user.Id;
                 
                 _db.Add(l);
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
+            //if modelstate is invalid, get the locations again and redisplay form
             ViewModel.Locations = Helpers.DataHelper.GetAllLocations(_db);
             return View(ViewModel);
         }
@@ -144,7 +145,7 @@ namespace BowlingCoreMVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,StartDate,EndDate")] League league)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,StartDate,EndDate")] League league)
         {
             if (id != league.ID)
             {

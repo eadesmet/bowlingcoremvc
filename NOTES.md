@@ -212,3 +212,22 @@ else
 TODO: The Create new game redirecting to the Edit page is a little jarring
 
 hidden value is getting set when refresh game is getting called on current frame before it is getting thrown
+
+
+
+
+So I don't like using the ViewModels everywhere
+it seems like bad design that I have 3 different models for 1 db object
+
+my idea now is to have EVERYTHING in my main model
+would this have any issues?...
+
+
+so it's one to many vs. many to one
+
+a Game has a list of Frames, the frame has a GameID
+	Game 1 --> * Frames
+
+a League has a LocationID, locations have all possible locations
+	League 1 <-- * Locations
+

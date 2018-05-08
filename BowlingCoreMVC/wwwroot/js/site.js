@@ -138,6 +138,15 @@ function UpdateCurrentThrowVal(GameID)
     $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
     $(prefixID + ThrowNum + "_hidPins").val(CurrentThrowData.missed);
 
+    if (CurrentFrame == 10 && ThrowNum == 1)
+    {
+        //Reset the 10th frame when setting the first ball
+        $(prefixID + 2 + "_hidFrame").val(0);
+        $(prefixID + 2 + "_hidPins").val(0);
+        $(prefixID + 3 + "_hidFrame").val(0);
+        $(prefixID + 3 + "_hidPins").val(0);
+    }
+
     //Overwrite second throw score to be calculated from throw one score
     if (ThrowNum == 2)
     {
@@ -159,11 +168,19 @@ function UpdateCurrentThrowVal(GameID)
     {
        //last ball 10th frame. if we are here, just take what the pins are as it's score
        //current throw is third..
+
+       var FirstThrowData = GetThrowHidVals(GameID, CurrentFrame, 1);
        var TenthSecondThrowData = GetThrowHidVals(GameID, CurrentFrame, 2);
-       if (TenthSecondThrowData.score < 10)
+       //if (TenthSecondThrowData.score < 10)
+       
+       if (FirstThrowData.score + TenthSecondThrowData.score > 10)
        {
            $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
        }
+       // else if (TenthSecondThrowData.score < 10)
+       // {
+       //      $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
+       // }
         
    
 
@@ -212,8 +229,8 @@ function GetThrowPins(GameID, frameNum, throwNum)
 
 function GetThrowHidVals(GameID, frameNum, throwNum)
 {
-    var score = $("#" + GameID + "_" + frameNum + "_" + throwNum + "_hidFrame").val();
-    var missed = $("#" + GameID + "_" + frameNum + "_" + throwNum + "_hidPins").val();
+    var score = parseInt($("#" + GameID + "_" + frameNum + "_" + throwNum + "_hidFrame").val());
+    var missed = parseInt($("#" + GameID + "_" + frameNum + "_" + throwNum + "_hidPins").val());
     return { missed: missed, score: score };
 }
 
@@ -240,10 +257,11 @@ function RefreshGameHid(g)
             $("#" + g.ID + "_" + i + "_3_hidPins").val(g.Frames[i - 1].ThrowThreePins);
         }
 
-        if (i < g.ScoreUpToFrame)
+        if (i < g.ScoreUpToFrame || g.ScoreUpToFrame == 10)
         {
             SetLabelsFromHid(g.ID, i);
         }
+        FormatFrameThrowLabels(g.ID, i);
         // : MissedPinsINT Bitwise & MISSED_1 : (In javascript, this should return 1 if it was missed)
         //$("#" + i + "_1_MissedPinOne").prop("checked", (g.Frames[i - 1].ThrowOnePins & MISSED_1) == MISSED_1);
         
@@ -429,7 +447,8 @@ function SetLabelsFromHid(GameID, FrameNum)
     $("#" + GameID + "_" + FrameNum + "_lblFrameTotal").append($("#" + GameID + "_" + FrameNum + "_hidFrameTotal").val());
     //$("#" + GameID + "_" + FrameNum + "_1_lblFrame").append($("#" + GameID + "_" + FrameNum + "_1_hidFrame").val());
     //$("#" + GameID + "_" + FrameNum + "_2_lblFrame").append($("#" + GameID + "_" + FrameNum + "_2_hidFrame").val());
-    FormatFrameThrowLabels(GameID, FrameNum);
+    
+    //FormatFrameThrowLabels(GameID, FrameNum);
 
     //if (FrameNum == 10)
     //{
@@ -453,22 +472,23 @@ function FormatFrameThrowLabels(GameID, FrameNum)
 {
     var FirstThrowScore = parseInt($("#" + GameID + "_" + FrameNum + "_1_hidFrame").val());
     var SecondThrowScore = parseInt($("#" + GameID + "_" + FrameNum + "_2_hidFrame").val());
+    var ScoreUpToFrame = parseInt($("#" + GameID + "_ScoreUpToFrame").val());
 
     if (FrameNum != 10)
     {
         if (FirstThrowScore == 10)
         {
-            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append("X");
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("X");
         }
         else if (FirstThrowScore + SecondThrowScore == 10)
         {
-            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append(FirstThrowScore);
-            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append("/");
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append(FirstThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("/");
         }
         else
         {
-            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append(FirstThrowScore);
-            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append(FirstThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append(SecondThrowScore);
         }
     }
     else
@@ -476,55 +496,77 @@ function FormatFrameThrowLabels(GameID, FrameNum)
         var ThirdThrowScore = parseInt($("#" + GameID + "_" + FrameNum + "_3_hidFrame").val());
         if (FirstThrowScore == 10)
         {
-            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append("X");
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append("X");
             if (SecondThrowScore == 10)
             {
-                $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append("X");
+                $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("X");
             }
             else
             {
-                $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
+                $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append(SecondThrowScore);
             }
         }
         else if (FirstThrowScore + SecondThrowScore == 10)
         {
-            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append(FirstThrowScore);
-            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append("/");
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append(FirstThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("/");
         }
         else
         {
-            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").append(FirstThrowScore);
-            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append(FirstThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append(SecondThrowScore);
         }
 
         if (ThirdThrowScore == 10)
         {
-            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append("X");
+            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append("X");
         }
         else if (SecondThrowScore + ThirdThrowScore == 10)
         {
             //$("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
-            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append("/");
+            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append("/");
         }
         else
         {
-            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").append(ThirdThrowScore);
+            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append(ThirdThrowScore);
         }
 
         if (ThirdThrowScore == 0)
         {
-            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append("-");
+            if (ScoreUpToFrame <= FrameNum)
+            {
+                $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty();
+            }
+            else
+            {
+                $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append("-");
+            }
+            
         }
     }
 
     if (FirstThrowScore == 0)
     {
-        $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append("-");
+        if (ScoreUpToFrame <= FrameNum)
+        {
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty();
+        }
+        else
+        {
+            $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty().append("-");
+        }
     }
 
     if (SecondThrowScore == 0 && FirstThrowScore != 10)
     {
-        $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("-");
+        if (ScoreUpToFrame <= FrameNum)
+        {
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty();
+        }
+        else
+        {
+            $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty().append("-");
+        }
     }
     
 }
