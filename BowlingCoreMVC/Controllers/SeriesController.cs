@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Data;
@@ -14,16 +15,21 @@ namespace BowlingCoreMVC.Controllers
     public class SeriesController : Controller
     {
         private ApplicationDbContext _db { get; set; }
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SeriesController(ApplicationDbContext db)
+        public SeriesController(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
             _db = db;
+            _userManager = userManager;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var SeriesList = await _db.Series.Include(s => s.Games).ToListAsync();
+            var user = await GetCurrentUserAsync();
+            var SeriesList = await _db.Series.Where(s => s.UserID == user.Id).Include(s => s.Games).ToListAsync();
             //var ViewModelList = new List<Models.GameViewModels.GameViewModels.SeriesListViewModel>();
 
             foreach (var s in SeriesList)

@@ -30,6 +30,9 @@ namespace BowlingCoreMVC.Controllers
         // GET: Locations
         public async Task<IActionResult> Index()
         {
+            var user = await GetCurrentUserAsync();
+            ViewData["CurrentUserID"] = user.Id;
+
             var LocationList = await _db.Locations.ToListAsync();
             foreach (var l in LocationList)
             {

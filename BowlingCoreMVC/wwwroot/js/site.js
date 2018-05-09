@@ -209,7 +209,7 @@ function RefreshGameHid(g)
             $("#" + g.ID + "_" + i + "_3_hidPins").val(g.Frames[i - 1].ThrowThreePins);
         }
 
-        if (i < g.ScoreUpToFrame || g.ScoreUpToFrame === 10)
+        if (i < parseInt(g.ScoreUpToFrame) || parseInt(g.ScoreUpToFrame) === 10)
         {
             SetLabelsFromHid(g.ID, i);
         }
@@ -487,7 +487,7 @@ function HighlightSelectedFrame(GameID, FrameNum, CurrentThrow)
     //TODO: Refactor this a bit. Can get ThrowNum and condense this a lot
     //NOTE: Might not need CurrentThrow, we can get it ourselves here
     var prefixID = "#" + GameID + "_" + FrameNum + "_";
-
+    
     $(prefixID + "1_tdFrame").css("background-color", "Aquamarine");
     $(prefixID + "2_tdFrame").css("background-color", "Aquamarine");
     $(prefixID + "tdFrameScore").css("background-color", "Aquamarine");
@@ -535,8 +535,8 @@ $(document).ready(function ()
     for (var i = 0; i < GameIDs.length; i++)
     {
         //look up the current game / frame
-        var CurrentFrame = $("#" + GameIDs[i] + "_CurrentFrame").val();
-        var CurrentThrow = $("#" + GameIDs[i] + "_CurrentThrow").val();
+        var CurrentFrame = parseInt($("#" + GameIDs[i] + "_CurrentFrame").val());
+        var CurrentThrow = parseInt($("#" + GameIDs[i] + "_CurrentThrow").val());
         
 
         //var ThrowNum = GetThrowNum(CurrentThrow);
