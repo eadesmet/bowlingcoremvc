@@ -23,6 +23,7 @@ namespace BowlingCoreMVC.Controllers
             _userManager = userManager;
         }
 
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         public async Task<IActionResult> Index()
         {
@@ -58,10 +59,57 @@ namespace BowlingCoreMVC.Controllers
         }
 
         [Authorize]
-        public IActionResult MyStats()
+        public async Task<IActionResult> MyStats()
         {
+            var user = await GetCurrentUserAsync();
 
-            return View();
+            var AllGames = _db.Games.Where(o => o.UserID == user.Id).Include(o => o.Frames).ToList();
+
+            int SinglePinsTotal = 0;
+            int SinglePinsSpares = 0;
+            int TotalStrikes = 0;
+            int TotalFrames = 0;
+            int GamesOver200 = 0;
+            int TotalPossibleStrikes = 0;
+            int TotalGames = AllGames.Count();
+
+
+            foreach (var g in AllGames)
+            {
+                if (g.Score >= 200)
+                    GamesOver200++;
+
+                TotalPossibleStrikes += 12;
+
+                //single pin spare percentage
+                foreach (var f in g.Frames)
+                {
+                    TotalFrames++;
+                    if (f.ThrowOneScore == 9)
+                    {
+                        SinglePinsTotal++;
+                        if (f.ThrowTwoScore == 1)
+                        {
+                            SinglePinsSpares++;
+                        }
+                    }
+                    else if (f.ThrowOneScore == 10)
+                    {
+                        TotalStrikes++;
+                    }
+                }
+            }
+
+            var StatsList = new List<StatsViewModel>();
+            var s1 = new StatsViewModel { StatTitle = "Single Pin Spare Percentage", Conversions = SinglePinsSpares, Total = SinglePinsTotal };
+            var s2 = new StatsViewModel { StatTitle = "Strike Percentage", Conversions = TotalStrikes, Total = TotalPossibleStrikes };
+            var s3 = new StatsViewModel { StatTitle = "Over 200 Games", Conversions = GamesOver200, Total = TotalGames};
+
+            StatsList.Add(s1);
+            StatsList.Add(s2);
+            StatsList.Add(s3);
+
+            return View(StatsList);
         }
     }
 }

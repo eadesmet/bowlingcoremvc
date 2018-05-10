@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Data;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BowlingCoreMVC.Controllers
 {
+    [Authorize]
     public class SeriesController : Controller
     {
         private ApplicationDbContext _db { get; set; }

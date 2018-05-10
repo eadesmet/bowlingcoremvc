@@ -1,0 +1,45 @@
+﻿@model IEnumerable<BowlingCoreMVC.Models.StatsViewModel>
+
+@{
+    ViewData["Title"] = "Statistics! Yay!";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-condensed table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StatTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Conversions)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Percentage)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StatTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Conversions)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Total)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Percentage)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
