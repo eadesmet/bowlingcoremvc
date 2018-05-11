@@ -9,8 +9,12 @@ namespace BowlingCoreMVC.Models.AccountViewModels
     public class LoginViewModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        [StringLength(100)]
+        [Display(Name = "Username")]
+        public string UserName { get; set; }
+        //[Required]
+        //[EmailAddress]
+        //public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

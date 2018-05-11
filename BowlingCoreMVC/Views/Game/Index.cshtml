@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<BowlingCoreMVC.Models.Game>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "My Games";
 }
 
-<h2>Index</h2>
+<h2>@ViewData["Title"]</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">New Game</a>
 </p>
 <table class="table">
     <thead>
@@ -56,9 +56,9 @@
                         @Html.DisplayFor(modelItem => item.UserID)
                     </td>*@
                 <td>
-                    <div class="btn-group">
+                    <div>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a>
+                        @*<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a>*@
                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</a>
                     </div>
                 </td>

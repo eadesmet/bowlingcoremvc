@@ -42,6 +42,7 @@ namespace BowlingCoreMVC.Helpers
                 DBGame = PageGame;
                 DBGame.CreatedDate = DateTime.Now;
                 DBGame.ModifiedDate = DateTime.Now;
+                DBGame.UserID = PageGame.UserID;
                 //Other fields??
 
                 //NOTE: Maybe db.Games.Add(DBGame); here
@@ -66,8 +67,9 @@ namespace BowlingCoreMVC.Helpers
         }
         #endregion
         #region Series/leagues
-        public static void CreateSeries(Series s, ApplicationDbContext db)
+        public static void CreateSeries(Series s, ApplicationDbContext db, string UserID)
         {
+            s.UserID = UserID;
             db.Attach(s);
             db.Entry(s).State = EntityState.Added;
             db.SaveChanges();

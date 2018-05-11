@@ -50,8 +50,6 @@ namespace BowlingCoreMVC.Controllers
             return View("Edit", g);
         }
 
-        
-
         // GET Edit page (Edit a single game by ID)
         [HttpGet]
         public ActionResult Edit(int id)
@@ -61,7 +59,37 @@ namespace BowlingCoreMVC.Controllers
             return View(game);
         }
 
-        #region buttons
+        // GET: Games/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var game = await _db.Games
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            return View(game);
+        }
+
+        // POST: Games/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var game= await _db.Games.SingleOrDefaultAsync(m => m.ID == id);
+            _db.Games.Remove(game);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        #region "editgame buttons"
         // Next Throw buton handler
         [HttpPost]
         public JsonResult NextThrowClick(string JSONGame, int[] GameIDs)

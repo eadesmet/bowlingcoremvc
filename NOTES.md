@@ -215,7 +215,7 @@ hidden value is getting set when refresh game is getting called on current frame
 
 
 
-
+{
 So I don't like using the ViewModels everywhere
 it seems like bad design that I have 3 different models for 1 db object
 
@@ -230,4 +230,15 @@ a Game has a list of Frames, the frame has a GameID
 
 a League has a LocationID, locations have all possible locations
 	League 1 <-- * Locations
+
+
+I did this ^
+removed the viewmodels and using [notmapped] fields
+}
+
+
+
+
+
+
 

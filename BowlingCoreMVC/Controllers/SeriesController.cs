@@ -67,18 +67,46 @@ namespace BowlingCoreMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Series model)
+        public async Task<IActionResult> Create(Series model)
         {
             if (ModelState.IsValid)
             {
                 Series s = Series.Create(model.NumberOfGames, model.LeagueID ?? 0);
-                
-                Helpers.DataHelper.CreateSeries(s, _db);
+                var user = await GetCurrentUserAsync();
+                Helpers.DataHelper.CreateSeries(s, _db, user.Id);
                 
                 return View("Edit", s);
             }
             return View(model);
         }
 
+        // GET: Series/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var s = await _db.Series
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (s == null)
+            {
+                return NotFound();
+            }
+
+            return View(s);
+        }
+
+        // POST: Games/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var s = await _db.Series.SingleOrDefaultAsync(m => m.ID == id);
+            _db.Series.Remove(s);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

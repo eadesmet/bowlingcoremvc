@@ -21,6 +21,13 @@ namespace BowlingCoreMVC.Data
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
+            builder.Entity<Game>()
+                .HasOne(g => g.Series)
+                .WithMany(s => s.Games)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            
+                
         }
 
         public DbSet<BowlingCoreMVC.Models.Game> Games { get; set; }
@@ -30,13 +37,6 @@ namespace BowlingCoreMVC.Data
         public DbSet<League> Leagues { get; set; }
         public DbSet<Location> Locations { get; set; }
 
-
-        //Moved From DataHelper; might just have helper functions here instead
-        //This so we wouildn't have to mess wtih context everywhere..
-        //public static Dictionary<string, int> GetCurrentLeagueDict()
-        //{
-        //    return (Leagues.Where(o => o.EndDate <= DateTime.Today).ToDictionary(o => o.Name, o => o.ID));
-        //}
     }
 
     public static class DbInitializer

@@ -61,7 +61,7 @@ namespace BowlingCoreMVC.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -79,12 +79,15 @@ namespace BowlingCoreMVC.Controllers
                 if (result.IsNotAllowed)
                 {
                     //resend code
-                    var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                    var user = await _signInManager.UserManager.FindByNameAsync(model.UserName);
+                    if (!user.EmailConfirmed)
+                    {
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+                        await _emailSender.SendEmailConfirmationAsync(user.Email, callbackUrl);
 
-                    ModelState.AddModelError(string.Empty, "Email confirmation required. Please check your email to confirm your account.");
+                        ModelState.AddModelError(string.Empty, "Email confirmation required. Please check your email to confirm your account.");
+                    }
                     return View(model);
                 }
                 else
@@ -231,7 +234,7 @@ namespace BowlingCoreMVC.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

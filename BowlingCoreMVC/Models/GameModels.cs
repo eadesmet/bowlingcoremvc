@@ -92,6 +92,9 @@ namespace BowlingCoreMVC.Models
 
         public int? SeriesID { get; set; }
 
+        //test
+        public virtual Series Series { get; set; }
+
         [NotMapped]
         public string UserName { get; set; }
     }
@@ -131,7 +134,12 @@ namespace BowlingCoreMVC.Models
 
         public virtual ICollection<Game> Games { get; set; }
 
+        [Display(Name = "Created")]
+        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
         public DateTime CreatedDate { get; set; }
+
+        [Display(Name = "Modified")]
+        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
         public DateTime ModifiedDate { get; set; }
 
 
@@ -139,10 +147,11 @@ namespace BowlingCoreMVC.Models
         public List<SelectListItem> Leagues { get; set; }
 
         [NotMapped]
-        [Range(1, 9)]
+        [Range(2, 9)]
         public int NumberOfGames { get; set; }
 
         [NotMapped]
+        [Display(Name = "League")]
         public string LeagueName { get; set; }
 
         [NotMapped]
@@ -178,7 +187,13 @@ namespace BowlingCoreMVC.Models
 
         [StringLength(128)]
         public string CreatedByID { get; set; }
+
+        [Display(Name = "Created")]
+        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
         public DateTime CreatedDate { get; set; }
+
+        [Display(Name = "Modified")]
+        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
         public DateTime ModifiedDate { get; set; }
 
         public virtual Location Location { get; set; }
