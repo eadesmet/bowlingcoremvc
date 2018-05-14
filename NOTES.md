@@ -240,5 +240,16 @@ removed the viewmodels and using [notmapped] fields
 
 
 
+5-14
+{
+	deleting a series, maybe have it warn the user if it still has games?
+	delete the games first before deleting the series?
 
+	the game list should have some series/league info if it is available
+		with a link to the series
+
+	somehow enable paging on all the lists
+
+	
+}
 

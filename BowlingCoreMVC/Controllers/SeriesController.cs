@@ -88,11 +88,17 @@ namespace BowlingCoreMVC.Controllers
                 return NotFound();
             }
 
-            var s = await _db.Series
+            var s = await _db.Series.Include(o => o.Games)
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (s == null)
             {
                 return NotFound();
+            }
+
+            var league = _db.Leagues.Where(o => o.ID == s.LeagueID).SingleOrDefault();
+            if (league != null)
+            {
+                s.LeagueName = league.Name;
             }
 
             return View(s);
@@ -103,7 +109,7 @@ namespace BowlingCoreMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var s = await _db.Series.SingleOrDefaultAsync(m => m.ID == id);
+            var s = await _db.Series.Include(o => o.Games).SingleOrDefaultAsync(m => m.ID == id);
             _db.Series.Remove(s);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
