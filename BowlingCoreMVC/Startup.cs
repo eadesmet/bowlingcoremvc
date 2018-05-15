@@ -103,6 +103,11 @@ namespace BowlingCoreMVC
             }
             else
             {
+                //TEMPORARY
+                app.UseBrowserLink();
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+
                 app.UseExceptionHandler("/Home/Error");
             }
 
