@@ -26,6 +26,8 @@ namespace BowlingCoreMVC.Services
             SmtpClient client = new SmtpClient();
             MailMessage MailMessage;// = new MailMessage();
 
+            client.UseDefaultCredentials = false;
+
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
                 client.Port = Convert.ToInt32(Environment.GetEnvironmentVariable("GmailPort"));
@@ -44,7 +46,7 @@ namespace BowlingCoreMVC.Services
             client.EnableSsl = true;
             client.Timeout = 30000;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.UseDefaultCredentials = false;
+            
             
 
             //var MailMessage = new MailMessage(Configuration["GmailUser"], email, subject, message);
