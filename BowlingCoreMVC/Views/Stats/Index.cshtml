@@ -24,14 +24,16 @@
                             Date
                         </th>
                     </tr>
-
-                    @foreach (var g in (List<Game>)ViewData["WeeklyGames"])
+                    @if (((List<Game>)ViewData["WeeklyGames"]).Count > 0)
                     {
-                        <tr>
-                            <td>@g.UserName</td>
-                            <td>@g.Score</td>
-                            <td>@g.CreatedDate.ToShortDateString()</td>
-                        </tr>
+                        @foreach (var g in (List<Game>)ViewData["WeeklyGames"])
+                        {
+                            <tr>
+                                <td>@g.UserName</td>
+                                <td>@g.Score</td>
+                                <td>@g.CreatedDate.ToShortDateString()</td>
+                            </tr>
+                        }
                     }
                 </table>
             </div>
@@ -53,13 +55,16 @@
                         </th>
                     </tr>
 
-                    @foreach (var g in (List<Game>)ViewData["AllTimeGames"])
+                    @if (((List<Game>)ViewData["AllTimeGames"]).Count > 0)
                     {
-                        <tr>
-                            <td>@g.UserName</td>
-                            <td>@g.Score</td>
-                            <td>@g.CreatedDate.ToShortDateString()</td>
-                        </tr>
+                        @foreach (var g in (List<Game>)ViewData["AllTimeGames"])
+                        {
+                            <tr>
+                                <td>@g.UserName</td>
+                                <td>@g.Score</td>
+                                <td>@g.CreatedDate.ToShortDateString()</td>
+                            </tr>
+                        }
                     }
                 </table>
             </div>
@@ -81,13 +86,16 @@
                         </th>
                     </tr>
 
-                    @foreach (var s in (List<Series>)ViewData["AllTimeSeries"])
+                    @if (((List<Game>)ViewData["WeeklyGames"]).Count > 0)
                     {
-                        <tr>
-                            <td>@s.UserName</td>
-                            <td>@s.SeriesScore</td>
-                            <td>@s.CreatedDate.ToShortDateString()</td>
-                        </tr>
+                        @foreach (var s in (List<Series>)ViewData["AllTimeSeries"])
+                        {
+                            <tr>
+                                <td>@s.UserName</td>
+                                <td>@s.SeriesScore</td>
+                                <td>@s.CreatedDate.ToShortDateString()</td>
+                            </tr>
+                        }
                     }
                 </table>
             </div>
