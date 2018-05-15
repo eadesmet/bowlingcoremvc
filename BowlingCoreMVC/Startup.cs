@@ -26,8 +26,22 @@ namespace BowlingCoreMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+            else
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration["DefaultConnection"]));
+
+            //execute database migration
+            services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
+
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_DefaultConnection")));
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(Configuration["DefaultConnection"]));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
