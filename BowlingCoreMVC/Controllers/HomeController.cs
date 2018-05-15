@@ -12,6 +12,10 @@ namespace BowlingCoreMVC.Controllers
     {
         public IActionResult Index()
         {
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                ViewData["EnvironmentTest"] = "It worked!";
+            else
+                ViewData["EnvironmentTest"] = "nahh :(";
             return View();
         }
 

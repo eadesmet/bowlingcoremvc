@@ -27,14 +27,17 @@ namespace BowlingCoreMVC
         public void ConfigureServices(IServiceCollection services)
         {
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {
                 services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+                //execute database migration
+                services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
+            }
             else
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration["DefaultConnection"]));
 
-            //execute database migration
-            services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
+            
 
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
