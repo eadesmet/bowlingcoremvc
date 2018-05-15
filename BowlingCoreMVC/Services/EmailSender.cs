@@ -24,15 +24,30 @@ namespace BowlingCoreMVC.Services
         {
             //write my send email code here
             SmtpClient client = new SmtpClient();
-            client.Port = Convert.ToInt32(Configuration["GmailPort"]);
-            client.Host = Configuration["GmailHost"];
+            MailMessage MailMessage;// = new MailMessage();
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {
+                client.Port = Convert.ToInt32(Environment.GetEnvironmentVariable("GmailPort"));
+                client.Host = Environment.GetEnvironmentVariable("GmailHost");
+                client.Credentials = new NetworkCredential(Environment.GetEnvironmentVariable("GmailUser"), Environment.GetEnvironmentVariable("GmailPass"));
+                MailMessage = new MailMessage(Environment.GetEnvironmentVariable("GmailUser"), email, subject, message);
+            }
+            else
+            {
+                client.Port = Convert.ToInt32(Configuration["GmailPort"]);
+                client.Host = Configuration["GmailHost"];
+                client.Credentials = new NetworkCredential(Configuration["GmailUser"], Configuration["GmailPass"]);
+                MailMessage = new MailMessage(Configuration["GmailUser"], email, subject, message);
+            }
+            
             client.EnableSsl = true;
             client.Timeout = 30000;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential(Configuration["GmailUser"], Configuration["GmailPass"]);
+            
 
-            var MailMessage = new MailMessage(Configuration["GmailUser"], email, subject, message);
+            //var MailMessage = new MailMessage(Configuration["GmailUser"], email, subject, message);
             MailMessage.IsBodyHtml = true;
             
             //return Task.CompletedTask;
