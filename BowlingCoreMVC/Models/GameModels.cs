@@ -93,7 +93,7 @@ namespace BowlingCoreMVC.Models
         public int? SeriesID { get; set; }
 
         //test
-        public virtual Series Series { get; set; }
+        //public virtual Series Series { get; set; }
 
         [NotMapped]
         public string UserName { get; set; }

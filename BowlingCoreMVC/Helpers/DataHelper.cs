@@ -67,7 +67,7 @@ namespace BowlingCoreMVC.Helpers
         }
         #endregion
         #region Series/leagues
-        public static void CreateSeries(Series s, ApplicationDbContext db, string UserID)
+        public static Series CreateSeries(Series s, ApplicationDbContext db, string UserID)
         {
             s.UserID = UserID;
             db.Attach(s);
@@ -77,9 +77,12 @@ namespace BowlingCoreMVC.Helpers
             foreach (var g in s.Games)
             {
                 g.SeriesID = s.ID;
+                g.UserID = UserID;
             }
 
             db.SaveChanges();
+
+            return (s);
         }
 
         public static void UpdateSeries(int SeriesID, ApplicationDbContext db)

@@ -250,6 +250,24 @@ removed the viewmodels and using [notmapped] fields
 
 	somehow enable paging on all the lists
 
-	
+
 }
 
+5-15
+{
+	this tutorial is the one that ended up working
+	https://docs.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-dotnetcore-sqldb
+
+
+}
+
+
+
+Production Update checklist
+{
+	Any database changes, run: dotnet migrations add [name]
+	Any .js or .css changes, run: dotnet bundle
+
+
+	push to source control default branch
+}

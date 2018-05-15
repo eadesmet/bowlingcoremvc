@@ -73,7 +73,7 @@ namespace BowlingCoreMVC.Controllers
             {
                 Series s = Series.Create(model.NumberOfGames, model.LeagueID ?? 0);
                 var user = await GetCurrentUserAsync();
-                Helpers.DataHelper.CreateSeries(s, _db, user.Id);
+                s = Helpers.DataHelper.CreateSeries(s, _db, user.Id);
                 
                 return View("Edit", s);
             }
