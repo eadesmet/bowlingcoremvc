@@ -31,24 +31,33 @@ namespace BowlingCoreMVC.Controllers
             //weekly/monthly highscores, sitewide high averages, etc..
             var lastweek = DateTime.Now.AddDays(-7);
             var WeeklyGames = _db.Games.Where(o => o.CreatedDate >= lastweek).OrderByDescending(o => o.Score).Take(10).ToList();
-            foreach (var g in WeeklyGames)
+            if (WeeklyGames.Count > 0)
             {
-                var user = await _userManager.FindByIdAsync(g.UserID);
-                g.UserName = user.UserName;
+                foreach (var g in WeeklyGames)
+                {
+                    var user = await _userManager.FindByIdAsync(g.UserID);
+                    g.UserName = user.UserName;
+                }
             }
 
             var AllTimeGames = _db.Games.OrderByDescending(o => o.Score).Take(10).ToList();
-            foreach (var g in AllTimeGames)
+            if (AllTimeGames.Count > 0)
             {
-                var user = await _userManager.FindByIdAsync(g.UserID);
-                g.UserName = user.UserName;
+                foreach (var g in AllTimeGames)
+                {
+                    var user = await _userManager.FindByIdAsync(g.UserID);
+                    g.UserName = user.UserName;
+                }
             }
 
             var AllTimeSeries = _db.Series.OrderByDescending(o => o.SeriesScore).Take(10).ToList();
-            foreach (var s in AllTimeSeries)
+            if (AllTimeSeries.Count > 0)
             {
-                var user = await _userManager.FindByIdAsync(s.UserID);
-                s.UserName = user.UserName;
+                foreach (var s in AllTimeSeries)
+                {
+                    var user = await _userManager.FindByIdAsync(s.UserID);
+                    s.UserName = user.UserName;
+                }
             }
 
             ViewData["WeeklyGames"] = WeeklyGames;
