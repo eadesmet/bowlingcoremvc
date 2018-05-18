@@ -258,7 +258,7 @@ removed the viewmodels and using [notmapped] fields
 	this tutorial is the one that ended up working
 	https://docs.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-dotnetcore-sqldb
 
-
+	REMEMBER TO TURN OFF DEVELOPER ERRORS IN STARTUP AT SOME POINT
 }
 
 

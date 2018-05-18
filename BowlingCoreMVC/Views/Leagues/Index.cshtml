@@ -2,13 +2,13 @@
 @model IEnumerable<BowlingCoreMVC.Models.League>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Leagues";
 }
 
-<h2>Index</h2>
+<h2>@ViewData["Title"]</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">New League</a>
 </p>
 <table class="table">
     <thead>
@@ -51,7 +51,6 @@
                     @Html.DisplayFor(modelItem => item.EndDate)
                 </td>
                 <td>
-                    @*TODO: Check if Current User has created this league or not*@
                     @{ 
                         if (ViewData["CurrentUserID"].ToString() == item.CreatedByID)
                         {
