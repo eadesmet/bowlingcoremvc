@@ -127,8 +127,10 @@ namespace BowlingCoreMVC.Models
         [StringLength(128)]
         public string UserID { get; set; }
 
-        //[Display(Name ="League")]
+        [NotMapped]
         public int? LeagueID { get; set; }
+
+        public int? TeamID {get;set;}
 
         public int SeriesScore { get; set; }
 
@@ -241,6 +243,27 @@ namespace BowlingCoreMVC.Models
         [NotMapped]
         [Display(Name="Created By")]
         public string CreatedByUserName { get; set; }
+    }
+
+    // NOTE: Not implimented yet
+    // Need to update Series: replace LeagueID with TeamID
+    public class Team
+    {
+        public int ID { get; set; }
+        public int LeagueID { get; set; }
+        public string TeamName { get; set; }
+
+        [StringLength(128)]
+        public string CreatedByID { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime ModifiedDate { get; set; }
+    }
+
+    public class TeamToUser
+    {
+        public int ID { get; set; }
+        public string UserID { get; set; }
+        public int TeamID { get; set; }
     }
 
 }

@@ -37,6 +37,9 @@ namespace BowlingCoreMVC.Data
         public DbSet<League> Leagues { get; set; }
         public DbSet<Location> Locations { get; set; }
 
+        public DbSet<Team> Teams {get;set;}
+        public DbSet<TeamToUser> TeamToUsers {get;set;}
+
     }
 
     public static class DbInitializer
@@ -47,6 +50,9 @@ namespace BowlingCoreMVC.Data
 
             if (context.Games.Any())
                 return;
+
+            //var user = new ApplicationUser { UserName = "Eric", Email = "test@email.com" };
+            //var result = await _userManager.CreateAsync(user, "Eric;12345");
 
             var Series = new List<Series>
             {

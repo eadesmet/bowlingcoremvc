@@ -1,17 +1,17 @@
-ASP.NET Core MVC Bowling App
+****ASP.NET Core MVC Bowling App****  
 https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/?view=aspnetcore-2.0
 
 
 
-Secrets
-Storing secret values in the application the safe way:
-	right-click project > Manage User Secrets
+**Secrets**  
+Storing secret values in the application the safe way:  
+	right-click project > Manage User Secrets  
 	This is our configuration info that won't get put into source control
 
 
 
-Look into using a TagHelper for displaying frames
-https://mva.microsoft.com/en-US/training-courses/aspnet-core-intermediate-18154?l=QiFcbpbeE_811787171
+**Look into using a TagHelper for displaying frames**  
+https://mva.microsoft.com/en-US/training-courses/aspnet-core-intermediate-18154?l=QiFcbpbeE_811787171  
 https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/authoring?view=aspnetcore-2.1
 
 
@@ -33,21 +33,21 @@ Load the edit game page
 
 game/frame tag helpers
 
-<table>
-	<tr>
-		<td>[throw one]
-			<label>throw one formatted text</label>
-			<hidden>throw one score</hidden>
-		</td>
-		<td>throw two</td>
-	</tr>
-	<tr>
-		<td>frame score</td>
-	</tr>
-	<tr>
-		<td>frame pins</td>
-	</tr>
-</table>
+    <table>
+	    <tr>
+		    <td>[throw one]
+			    <label>throw one formatted text</label>
+			    <hidden>throw one score</hidden>
+		    </td>
+		    <td>throw two</td>
+	    </tr>
+	    <tr>
+		    <td>frame score</td>
+	    </tr>
+	    <tr>
+		    <td>frame pins</td>
+	    </tr>
+    </table>
 
 
 
@@ -185,7 +185,7 @@ toolbar
 
 
 
-so, dependency injection is kinda neat
+so, dependency injection is kinda neat  
 	https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1#registering-services
 
 Instead of passing the datacontext directly to each controller,
@@ -216,32 +216,34 @@ hidden value is getting set when refresh game is getting called on current frame
 
 
 {
-So I don't like using the ViewModels everywhere
-it seems like bad design that I have 3 different models for 1 db object
 
-my idea now is to have EVERYTHING in my main model
-would this have any issues?...
+    So I don't like using the ViewModels everywhere
+    it seems like bad design that I have 3 different models for 1 db object
 
-
-so it's one to many vs. many to one
-
-a Game has a list of Frames, the frame has a GameID
-	Game 1 --> * Frames
-
-a League has a LocationID, locations have all possible locations
-	League 1 <-- * Locations
+    my idea now is to have EVERYTHING in my main model
+    would this have any issues?...
 
 
-I did this ^
-removed the viewmodels and using [notmapped] fields
+    so it's one to many vs. many to one
+
+    a Game has a list of Frames, the frame has a GameID
+	    Game 1 --> * Frames
+
+    a League has a LocationID, locations have all possible locations
+	    League 1 <-- * Locations
+
+
+    I did this ^
+    removed the viewmodels and using [notmapped] fields
 }
 
 
 
 
 
-5-14
+5-14  
 {
+
 	deleting a series, maybe have it warn the user if it still has games?
 	delete the games first before deleting the series?
 
@@ -253,8 +255,9 @@ removed the viewmodels and using [notmapped] fields
 
 }
 
-5-15
+5-15  
 {
+
 	this tutorial is the one that ended up working
 	https://docs.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-dotnetcore-sqldb
 
@@ -263,11 +266,95 @@ removed the viewmodels and using [notmapped] fields
 
 
 
-Production Update checklist
+Production Update checklist  
 {
+
 	Any database changes, run: dotnet migrations add [name]
 	Any .js or .css changes, run: dotnet bundle
 
 
 	push to source control default branch
+}
+
+5-21  
+{
+
+	happy birthday
+
+	so leagues and series have some work to do
+		leagues need a 'league sheet' with scores etc.
+
+	series editing:
+	for one user editing multiple users games: (also, permission for this user to do that??)
+	distinction between 'edit my own series' vs 'edit multiple users games for a series'
+	an addition to:
+		series?
+		league?
+		new entity: team?
+
+	We should probably just go with the team idea
+	Team Captain will have permission to create/edit the teams games
+	
+
+    {
+        TEAM:
+        TeamID
+        LeagueID
+        TeamName
+        
+        TEAM TO USER:
+        TeamID
+        UserID
+
+
+    }
+
+    I want to be able to get: a specific users games as a part of one team
+    select * from Games g, TeamToUser tu, Team t
+    where g.UserID == tu.UserID
+    and t.TeamID == tu.TeamID
+    and g.UserId == [myuser]
+    
+
+
+
+    should I just change Series and Games to have a TeamID instead of a LeagueID?
+    or maybe have both?
+    and g.TeamID == [myteam]
+
+    when creating a series and picking a league, it should automatically pick the team i am a part of from that league
+
+
+    select * from series s, games g
+    where s.SeriesID = g.ID
+    and s.TeamID = [myteam]
+
+
+    after some thought, here is a design that might work
+    {
+    	TEAM:
+    	ID
+    	LeagueID
+
+    	Series:
+    	-Remove LeagueID
+    	-Add TeamID
+
+    	TeamToUser: (list of users on a team)
+    	ID
+    	UserID
+    	TeamID
+    }
+
+
+
+    After these changes, I would want to be able to filter the Series list by team / league
+    	and view the games! (summary at least)
+
+    
+
+left the day at:
+messing with migrations, will need to get this working for any prod updates
+trying to initialize the db with valid data and a new user
+
 }

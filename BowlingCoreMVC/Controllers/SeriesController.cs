@@ -36,11 +36,17 @@ namespace BowlingCoreMVC.Controllers
 
             foreach (var s in SeriesList)
             {
-                var league = _db.Leagues.Where(o => o.ID == s.LeagueID).SingleOrDefault();
-                if (league != null)
+                var team = _db.Teams.Where(o => o.ID == s.TeamID).SingleOrDefault();
+                if (team != null)
                 {
-                    s.LeagueName = league.Name;
+                    var league = _db.Leagues.Where(o => o.ID == team.LeagueID).SingleOrDefault();
+                    if (league != null)
+                    {
+                        s.LeagueName = league.Name;
+                    }
                 }
+                
+                
             }
 
             SeriesList = SeriesList.OrderByDescending(o => o.CreatedDate).ToList();

@@ -187,11 +187,11 @@ namespace BowlingCoreMVC.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate");
 
-                    b.Property<int?>("LeagueID");
-
                     b.Property<DateTime>("ModifiedDate");
 
                     b.Property<int>("SeriesScore");
+
+                    b.Property<int?>("TeamID");
 
                     b.Property<string>("UserID")
                         .HasMaxLength(128);
@@ -199,6 +199,41 @@ namespace BowlingCoreMVC.Data.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Series");
+                });
+
+            modelBuilder.Entity("BowlingCoreMVC.Models.Team", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CreatedByID")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<int>("LeagueID");
+
+                    b.Property<DateTime>("ModifiedDate");
+
+                    b.Property<string>("TeamName");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("BowlingCoreMVC.Models.TeamToUser", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("TeamID");
+
+                    b.Property<string>("UserID");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("TeamToUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -319,10 +354,9 @@ namespace BowlingCoreMVC.Data.Migrations
 
             modelBuilder.Entity("BowlingCoreMVC.Models.Game", b =>
                 {
-                    b.HasOne("BowlingCoreMVC.Models.Series", "Series")
+                    b.HasOne("BowlingCoreMVC.Models.Series")
                         .WithMany("Games")
-                        .HasForeignKey("SeriesID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SeriesID");
                 });
 
             modelBuilder.Entity("BowlingCoreMVC.Models.League", b =>
