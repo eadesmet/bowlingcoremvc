@@ -25,10 +25,10 @@ namespace BowlingCoreMVC.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
+        // GET /Stats
+        // (Highscores)
         public async Task<IActionResult> Index()
         {
-            //Index will be a home page of the stats sitewide
-            //weekly/monthly highscores, sitewide high averages, etc..
             var lastweek = DateTime.Now.AddDays(-7);
             var WeeklyGames = _db.Games.Where(o => o.CreatedDate >= lastweek).OrderByDescending(o => o.Score).Take(10).ToList();
             if (WeeklyGames.Count > 0)
