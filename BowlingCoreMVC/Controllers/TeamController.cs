@@ -77,28 +77,12 @@ namespace BowlingCoreMVC.Controllers
         // GET: Team/Create
         public IActionResult Create()
         {
-            //var Model = Team.Create();
-            //Model.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
+            var Model = Team.Create();
+            Model.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
 
-            //return View(Model);
-            return ShowCreateForm();
+            return View(Model);
         }
 
-        private IActionResult ShowCreateForm(Team t = null)
-        {
-            League l = new League();
-            l.Locations = Helpers.DataHelper.GetAllLocations(_db);
-            ViewData["League"] = l;
-
-            if (t == null)
-                t = new Team();
-
-            t.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
-            ViewData["Team"] = t;
-
-            return View("Create_LLT_Combined", t);
-        }
-        
         // POST: Leagues/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -120,9 +104,8 @@ namespace BowlingCoreMVC.Controllers
             }
 
             //if modelstate is invalid, get the locations again and redisplay form
-            //Model.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
-            //return View(Model);
-            return ShowCreateForm(Model);
+            Model.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
+            return View(Model);
         }
 
         // GET: Leagues/Edit/5
