@@ -405,6 +405,32 @@ trying to initialize the db with valid data and a new user
     
     Maybe I should create a 'fake' user that someone can add (if those Users don't exist)
     Then someone (ie. a team captain, or user of the site) can log the whole teams scores
+
+    alright, so fake users.
+    fakes users will have a parent
+
+    FakeUser
+    {
+    	ID
+    	ParentUserID
+    	UserName
+
+    }
+
+    FakeUsername will not block actual users names
+    new users should be able to 'connect' themselves with fakeusers somehow?
+    fakeusers will have their own games, series, etc.
+    fakeusers should not be able to really do things, only its parent user
+    when a parentuser creates a new game/series, will they have to establish whos game it is?
+    or should fakeusers be only used as a part of a team?
+    then when there is a league night, the team captain creates the session
+    	which creates a series for all users a part of the team
+
+    is this feature really worth it? who would actually be using this?
+    right?
+    this site is about YOUR OWN SCORES, and competing against other users
+    not necessarily logging EVERYONES scores..
+    
     
 }
 

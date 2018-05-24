@@ -17,6 +17,7 @@ namespace BowlingCoreMVC.Controllers
     //[Authorize]
     public class TeamController : Controller
     {
+/*
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -196,5 +197,6 @@ namespace BowlingCoreMVC.Controllers
         {
             return _db.Teams.Any(e => e.ID == id);
         }
+*/
     }
 }
