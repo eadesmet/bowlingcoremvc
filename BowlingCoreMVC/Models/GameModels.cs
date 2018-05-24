@@ -161,7 +161,7 @@ namespace BowlingCoreMVC.Models
     }
 
     [DisplayColumn("Name")]
-    public class League
+    public class League : IValidatableObject
     {
         public static League Create()
         {
@@ -171,10 +171,10 @@ namespace BowlingCoreMVC.Models
             return (l);
         }
 
-        [Display(Name="Name")]
         public int ID { get; set; }
 
-        public int LocationID { get; set; }
+        [Display(Name = "Select a Location")]
+        public int? LocationID { get; set; }
 
         public string Name { get; set; }
 
@@ -206,6 +206,28 @@ namespace BowlingCoreMVC.Models
 
         [NotMapped]
         public List<SelectListItem> Locations { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Create a new Location?")]
+        public bool NewLocation { get; set; }
+
+        [NotMapped]
+        [Display(Name = "New Location Name")]
+        public string NewLocationName { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext ctx)
+        {
+            if (NewLocation && string.IsNullOrEmpty(NewLocationName))
+            {
+                yield return new ValidationResult("New Location Name Required when creating a new Location.");
+            }
+
+            if (!NewLocation && (LocationID == null || LocationID == 0))
+            {
+                yield return new ValidationResult("Select either a current location or choose to create a new one.");
+            }
+            
+        }
 
     }
 
@@ -249,9 +271,27 @@ namespace BowlingCoreMVC.Models
     // Need to update Series: replace LeagueID with TeamID
     public class Team
     {
+        public static Team Create()
+        {
+            Team t = new Team();
+            t.CreatedDate = DateTime.Now;
+            t.ModifiedDate = DateTime.Now;
+            return (t);
+        }
+
         public int ID { get; set; }
         public int LeagueID { get; set; }
         public string TeamName { get; set; }
+
+        [NotMapped]
+        public List<SelectListItem> Leagues {get;set;}
+
+        public virtual League League { get; set; }
+
+        [NotMapped]
+        [Display(Name="Created By")]
+        public string CreatedByUserName { get; set; }
+
 
         [StringLength(128)]
         public string CreatedByID { get; set; }

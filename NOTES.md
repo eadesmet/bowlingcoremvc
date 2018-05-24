@@ -358,3 +358,55 @@ messing with migrations, will need to get this working for any prod updates
 trying to initialize the db with valid data and a new user
 
 }
+
+
+5-23
+{
+
+	going to attempt to put a bunch of the create screens into partial views
+	doing this will allow inline creation of things
+	current process is to: Create location > create league > create team > create series...
+	that's way too many steps just to get started.
+
+	so in creating a new series, we will have a partial of all those things?
+	series will need to have virtual objects of all these things too then..
+
+
+	actually, let's cut out the series, series is it's own thing
+	location > league > team : should all be combined
+
+	hmmmmmmmmmmm, partial views or tag helpers....
+
+	really kind of annoyed with this project at this point
+	most of the work is being put into making the pages look pretty or function properly
+	I really need a non webdev project to work on
+
+
+	I just need to rethink the combined creation pages a bunch more
+	need to figure out the process and make that air tight before I try to code it
+	Too often I just start coding without thinking through the process
+	this leads to a lot of wasted time
+	maybe come up with a process that i can do every time i want to start on a new feature
+	....some sort of life cycle, for software specifically perhaps.. in like, a waterfall shape..
+	blah.
+}
+
+5-24
+{
+
+    what i did now makes a whole lot more sense and is a lot simpler
+    i simply added the option to create a Location when creating a League
+    It doesn't need to be any more than that
+    everything else is their own entitie and doesn't make sense to combine them so much
+
+    ANYWAY
+    let's move on. Teams.
+    Creation of a Team should include tagging users to that TEam
+    
+    Maybe I should create a 'fake' user that someone can add (if those Users don't exist)
+    Then someone (ie. a team captain, or user of the site) can log the whole teams scores
+    
+}
+
+
+

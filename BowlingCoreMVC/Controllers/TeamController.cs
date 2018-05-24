@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,13 +14,13 @@ using BowlingCoreMVC.Models;
 
 namespace BowlingCoreMVC.Controllers
 {
-    [Authorize]
-    public class LeaguesController : Controller
+    //[Authorize]
+    public class TeamController : Controller
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public LeaguesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public TeamController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _db = context;
             _userManager = userManager;
@@ -28,61 +28,75 @@ namespace BowlingCoreMVC.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-        // GET: Leagues
+        // GET: Team
         public async Task<IActionResult> Index()
         {
-            //var LeaguesList = await _db.Leagues.Include(o => o.Location).ToListAsync();
-            var LeaguesList = await _db.Leagues.ToListAsync();
+            var TeamsList = await _db.Teams.ToListAsync();
 
-            //var ViewModelList = new List<Models.GameViewModels.GameViewModels.LeagueListViewModel>();
+            //var user = await GetCurrentUserAsync();
+            //if (user != null)
+            //{
+            //    ViewData["CurrentUserID"] = user.Id;
+            //}
+            //else { return View("Error"); }
 
-            var user = await GetCurrentUserAsync();
-            if (user != null)
+            ViewData["CurrentUserID"] = "123";
+
+            foreach (var t in TeamsList)
             {
-                ViewData["CurrentUserID"] = user.Id;
-            }
-            else { return View("Error"); }
-            
-            foreach (var l in LeaguesList)
-            {
-                l.CreatedByUserName = (await _userManager.FindByIdAsync(l.CreatedByID)).UserName ?? "";
-                if (l.LocationID != 0)
+                t.CreatedByUserName = (await _userManager.FindByIdAsync(t.CreatedByID)).UserName ?? "";
+                if (t.LeagueID != 0)
                 {
-                    l.Location = _db.Locations.Where(o => o.ID == l.LocationID).SingleOrDefault();
+                    t.League = _db.Leagues.Where(o => o.ID == t.LeagueID).SingleOrDefault();
                 }
             }
             
-            return View(LeaguesList);
+            return View(TeamsList);
         }
 
-        // GET: Leagues/Details/5
+        // GET: Team/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            //TODO: Change this Details page to list the users of the team, how they have done, etc.
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var league = await _db.Leagues
+            var team = await _db.Teams
                 .SingleOrDefaultAsync(m => m.ID == id);
-            if (league == null)
+            if (team == null)
             {
                 return NotFound();
             }
 
-            return View(league);
+            return View(team);
         }
 
-        // GET: Leagues/Create
+        // GET: Team/Create
         public IActionResult Create()
         {
-            var Model = League.Create();
-            Model.Locations = Helpers.DataHelper.GetAllLocations(_db);
+            //var Model = Team.Create();
+            //Model.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
 
-            //COULD put this into ViewData, maybe in the future
-            //ViewData["Locations"] = ViewModel.Locations;
+            //return View(Model);
+            return ShowCreateForm();
+        }
 
-            return View(Model);
+        private IActionResult ShowCreateForm(Team t = null)
+        {
+            League l = new League();
+            l.Locations = Helpers.DataHelper.GetAllLocations(_db);
+            ViewData["League"] = l;
+
+            if (t == null)
+                t = new Team();
+
+            t.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
+            ViewData["Team"] = t;
+
+            return View("Create_LLT_Combined", t);
         }
         
         // POST: Leagues/Create
@@ -90,23 +104,12 @@ namespace BowlingCoreMVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Models.League Model)
+        public async Task<IActionResult> Create(Models.Team Model)
         {
             if (ModelState.IsValid)
             {
                 var user = await GetCurrentUserAsync();
                 Model.CreatedByID = user.Id;
-
-                if (Model.NewLocation && !string.IsNullOrEmpty(Model.NewLocationName))
-                {
-                    Location l = new Location();
-                    l.CreatedByID = user.Id;
-                    l.CreatedDate = DateTime.Now;
-                    l.ModifiedDate = DateTime.Now;
-                    l.Name = Model.NewLocationName;
-                    _db.Add(l);
-                    Model.LocationID = l.ID;
-                }
 
                 Model.CreatedDate = DateTime.Now;
                 Model.ModifiedDate = DateTime.Now;
@@ -117,8 +120,9 @@ namespace BowlingCoreMVC.Controllers
             }
 
             //if modelstate is invalid, get the locations again and redisplay form
-            Model.Locations = Helpers.DataHelper.GetAllLocations(_db);
-            return View(Model);
+            //Model.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
+            //return View(Model);
+            return ShowCreateForm(Model);
         }
 
         // GET: Leagues/Edit/5
@@ -129,40 +133,40 @@ namespace BowlingCoreMVC.Controllers
                 return NotFound();
             }
 
-            var league = await _db.Leagues.SingleOrDefaultAsync(m => m.ID == id);
-            if (league == null)
+            var team = await _db.Teams.SingleOrDefaultAsync(m => m.ID == id);
+            if (team == null)
             {
                 return NotFound();
             }
 
-            league.Locations = Helpers.DataHelper.GetAllLocations(_db);
+            team.Leagues = Helpers.DataHelper.GetAllLocations(_db);
 
-            return View(league);
+            return View(team);
         }
 
-        // POST: Leagues/Edit/5
+        // POST: Teams/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LocationID,CreatedByID,StartDate,EndDate")] League league)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,TeamName,LeagueID,CreatedByID")] Team team)
         {
-            if (id != league.ID)
+            if (id != team.ID)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                league.ModifiedDate = DateTime.Now;
+                team.ModifiedDate = DateTime.Now;
                 try
                 {
-                    _db.Update(league);
+                    _db.Update(team);
                     await _db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LeagueExists(league.ID))
+                    if (!TeamExists(team.ID))
                     {
                         return NotFound();
                     }
@@ -173,10 +177,10 @@ namespace BowlingCoreMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(league);
+            return View(team);
         }
 
-        // GET: Leagues/Delete/5
+        // GET: Team/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -184,30 +188,30 @@ namespace BowlingCoreMVC.Controllers
                 return NotFound();
             }
 
-            var league = await _db.Leagues
+            var team = await _db.Teams
                 .SingleOrDefaultAsync(m => m.ID == id);
-            if (league == null)
+            if (team == null)
             {
                 return NotFound();
             }
 
-            return View(league);
+            return View(team);
         }
 
-        // POST: Leagues/Delete/5
+        // POST: Team/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var league = await _db.Leagues.SingleOrDefaultAsync(m => m.ID == id);
-            _db.Leagues.Remove(league);
+            var team = await _db.Teams.SingleOrDefaultAsync(m => m.ID == id);
+            _db.Teams.Remove(team);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool LeagueExists(int id)
+        private bool TeamExists(int id)
         {
-            return _db.Leagues.Any(e => e.ID == id);
+            return _db.Teams.Any(e => e.ID == id);
         }
     }
 }

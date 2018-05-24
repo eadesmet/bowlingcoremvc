@@ -1,0 +1,56 @@
+@model IEnumerable<BowlingCoreMVC.Models.Team>
+
+@{
+    ViewData["Title"] = "Teams";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">New Team</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TeamName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.League)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedByUserName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TeamName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.League.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedByUserName)
+                </td>
+                <td>
+                    @{ 
+                        if (ViewData["CurrentUserID"].ToString() == item.CreatedByID)
+                        {
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</a>
+                            </div>
+                        }
+                    }
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

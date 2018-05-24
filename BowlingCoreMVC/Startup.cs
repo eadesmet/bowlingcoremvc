@@ -59,7 +59,7 @@ namespace BowlingCoreMVC
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
+                options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequiredUniqueChars = 6;
 
@@ -76,7 +76,7 @@ namespace BowlingCoreMVC
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(300);
                 // If the LoginPath isn't set, ASP.NET Core defaults 
                 // the path to /Account/Login.
                 options.LoginPath = "/Account/Login";
