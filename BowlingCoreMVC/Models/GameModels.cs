@@ -127,10 +127,10 @@ namespace BowlingCoreMVC.Models
         [StringLength(128)]
         public string UserID { get; set; }
 
-        [NotMapped]
+        //[NotMapped]
         public int? LeagueID { get; set; }
 
-        public int? TeamID {get;set;}
+        //public int? TeamID {get;set;}
 
         public int SeriesScore { get; set; }
 
