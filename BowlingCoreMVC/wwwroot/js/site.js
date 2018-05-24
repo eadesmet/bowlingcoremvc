@@ -151,16 +151,16 @@ function GetThrowPins(GameID, frameNum, throwNum)
     var missed_pins = 0;
     var throw_score = 10;
 
-    var one = $("#" + GameID + "-Missed_1").val(this.checked);
-    var two = $("#" + GameID + "-Missed_2").val(this.checked);
-    var three = $("#" + GameID + "-Missed_3").val(this.checked);
-    var four = $("#" + GameID + "-Missed_4").val(this.checked);
-    var five = $("#" + GameID + "-Missed_5").val(this.checked);
-    var six = $("#" + GameID + "-Missed_6").val(this.checked);
-    var seven = $("#" + GameID + "-Missed_7").val(this.checked);
-    var eight = $("#" + GameID + "-Missed_8").val(this.checked);
-    var nine = $("#" + GameID + "-Missed_9").val(this.checked);
-    var ten = $("#" + GameID + "-Missed_10").val(this.checked);
+    var one = $("#" + GameID + "-Missed_1").is(':checked');
+    var two = $("#" + GameID + "-Missed_2").is(':checked');
+    var three = $("#" + GameID + "-Missed_3").is(':checked');
+    var four = $("#" + GameID + "-Missed_4").is(':checked');
+    var five = $("#" + GameID + "-Missed_5").is(':checked');
+    var six = $("#" + GameID + "-Missed_6").is(':checked');
+    var seven = $("#" + GameID + "-Missed_7").is(':checked');
+    var eight = $("#" + GameID + "-Missed_8").is(':checked');
+    var nine = $("#" + GameID + "-Missed_9").is(':checked');
+    var ten = $("#" + GameID + "-Missed_10").is(':checked');
 
 
     if (one) { missed_pins = missed_pins + MISSED_1; throw_score = throw_score - 1; }

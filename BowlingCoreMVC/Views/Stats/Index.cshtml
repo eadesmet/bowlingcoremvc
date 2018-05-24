@@ -29,7 +29,7 @@
                         @foreach (var g in (List<Game>)ViewData["WeeklyGames"])
                         {
                             <tr>
-                                <td>@g.UserName</td>
+                                <td><a asp-action="UserSummary" asp-route-id="@g.UserID">@g.UserName</a></td>
                                 <td>@g.Score</td>
                                 <td>@g.CreatedDate.ToShortDateString()</td>
                             </tr>
@@ -60,7 +60,7 @@
                         @foreach (var g in (List<Game>)ViewData["AllTimeGames"])
                         {
                             <tr>
-                                <td>@g.UserName</td>
+                                <td><a asp-action="UserSummary" asp-route-id="@g.UserID">@g.UserName</a></td>
                                 <td>@g.Score</td>
                                 <td>@g.CreatedDate.ToShortDateString()</td>
                             </tr>
@@ -91,7 +91,7 @@
                         @foreach (var s in (List<Series>)ViewData["AllTimeSeries"])
                         {
                             <tr>
-                                <td>@s.UserName</td>
+                                <td><a asp-action="UserSummary" asp-route-id="@s.UserID">@s.UserName</a></td>
                                 <td>@s.SeriesScore</td>
                                 <td>@s.CreatedDate.ToShortDateString()</td>
                             </tr>

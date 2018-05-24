@@ -120,5 +120,67 @@ namespace BowlingCoreMVC.Controllers
 
             return View(StatsList);
         }
+
+        // NOTE: Might not want to have the UserID in the URL here.. Username instead?
+        // TODO: Make this efficient
+        public async Task<IActionResult> UserSummary(string id)
+        {
+            if (id == null)
+                RedirectToAction("Index");
+
+            if (!_db.Games.Where(o => o.UserID == id).Any())
+                RedirectToAction("Index");
+
+            var user = await _userManager.FindByIdAsync(id);
+            ViewData["UserName"] = user.UserName;
+
+            var AllUsersGames = _db.Games.Include(o => o.Frames).Where(o => o.UserID == id).ToList();
+            var AllUsersSeries = _db.Series.Where(o => o.UserID == id).ToList();
+
+            var Last10Games = AllUsersGames.OrderByDescending(o => o.CreatedDate).Take(10).ToList();
+            ViewData["Last10Games"] = Last10Games;
+
+            double UsersAverage = AllUsersGames.Sum(o => o.Score) / AllUsersGames.Count;
+            ViewData["OverallAverage"] = UsersAverage;
+
+            var Top5Games = AllUsersGames.OrderByDescending(o => o.Score).Take(5).ToList();
+            ViewData["Top5Games"] = Top5Games;
+
+            var Top5Series = AllUsersSeries.OrderByDescending(o => o.SeriesScore).Take(5).ToList();
+            ViewData["Top5Series"] = Top5Series;
+
+            List<double> UsersLeaguesAverages = new List<double>();
+            List<League> UsersLeagues = Helpers.DataHelper.UserLeagues(id, _db);
+            foreach (League l in UsersLeagues)
+            {
+                UsersLeaguesAverages.Add(Helpers.DataHelper.UsersLeagueAverage(id, l.ID, _db));
+            }
+
+            ViewData["UsersLeagues"] = UsersLeagues;
+            ViewData["UsersLeaguesAverages"] = UsersLeaguesAverages;
+
+            double TotalFrames = 0.0, TotalSpares = 0.0, TotalStrikes = 0.0;
+            foreach (Game g in AllUsersGames)
+            {
+                foreach (var f in g.Frames)
+                {
+                    TotalFrames++;
+                    if ((f.ThrowOneScore + f.ThrowTwoScore == 10) && (f.ThrowOneScore != 10))
+                    {
+                        TotalSpares++;
+                    }
+
+                    if (f.ThrowOneScore == 10)
+                    {
+                        TotalStrikes++;
+                    }
+                }
+            }
+
+            ViewData["OverallStrikePerc"] = TotalStrikes / TotalFrames;
+            ViewData["OverallSparePerc"] = TotalSpares / TotalFrames;
+            
+            return View();
+        }
     }
 }

@@ -430,6 +430,8 @@ trying to initialize the db with valid data and a new user
     right?
     this site is about YOUR OWN SCORES, and competing against other users
     not necessarily logging EVERYONES scores..
+    for a tournament feature, i would want everyone who is competing to be a user
+    for teams, it makes sense that they are users too.
     
     
 }

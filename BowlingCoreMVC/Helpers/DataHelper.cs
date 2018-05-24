@@ -124,5 +124,41 @@ namespace BowlingCoreMVC.Helpers
 
             return (result);
         }
+
+        public static List<League> UserLeagues(string UserID, ApplicationDbContext _db)
+        {
+            //user is in a league if they have a series in that league
+            var result = new List<League>();
+            var series = _db.Series.Where(o => o.UserID == UserID).ToList();
+            foreach (var s in series)
+            {
+                if (s.LeagueID != null)
+                {
+                    result.Add(_db.Leagues.Where(o => o.ID == s.LeagueID).SingleOrDefault());
+                }
+            }
+
+            return (result);
+        }
+
+        public static double UsersLeagueAverage(string UserID, int LeagueID, ApplicationDbContext _db)
+        {
+            double result = 0.0;
+            int total = 0;
+            int count = 0;
+            var LeaguesSeries = _db.Series.Include(o => o.Games).Where(o => o.LeagueID == LeagueID && o.UserID == UserID).ToList();
+            foreach (var s in LeaguesSeries)
+            {
+                foreach (var g in s.Games)
+                {
+                    total += g.Score;
+                    count++;
+                }
+            }
+
+            result = total / count;
+
+            return (result);
+        }
     }
 }
