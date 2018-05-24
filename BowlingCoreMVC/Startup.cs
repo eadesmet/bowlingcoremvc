@@ -104,12 +104,12 @@ namespace BowlingCoreMVC
             else
             {
                 //TEMPORARY
-                //app.UseBrowserLink();
-                //app.UseDeveloperExceptionPage();
-                //app.UseDatabaseErrorPage();
+                app.UseBrowserLink();
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
 
                 //DEFAULT
-                app.UseExceptionHandler("/Home/Error");
+                //app.UseExceptionHandler("/Home/Error");
             }
 
             app.UseStaticFiles();
