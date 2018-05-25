@@ -159,7 +159,8 @@ namespace BowlingCoreMVC.Controllers
             ViewData["UsersLeagues"] = UsersLeagues;
             ViewData["UsersLeaguesAverages"] = UsersLeaguesAverages;
 
-            double TotalFrames = 0.0, TotalSpares = 0.0, TotalStrikes = 0.0;
+            //TODO: These stats need to account for the 10th frame.... :(
+            double TotalFrames = 0.0, TotalSpares = 0.0, TotalStrikes = 0.0, TotalSpareFrames = 0.0;
             foreach (Game g in AllUsersGames)
             {
                 foreach (var f in g.Frames)
@@ -170,6 +171,11 @@ namespace BowlingCoreMVC.Controllers
                         TotalSpares++;
                     }
 
+                    if (f.ThrowOneScore != 10)
+                    {
+                        TotalSpareFrames++;
+                    }
+
                     if (f.ThrowOneScore == 10)
                     {
                         TotalStrikes++;
@@ -178,7 +184,7 @@ namespace BowlingCoreMVC.Controllers
             }
 
             ViewData["OverallStrikePerc"] = TotalStrikes / TotalFrames;
-            ViewData["OverallSparePerc"] = TotalSpares / TotalFrames;
+            ViewData["OverallSparePerc"] = TotalSpares / TotalSpareFrames;
             
             return View();
         }

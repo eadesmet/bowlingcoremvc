@@ -104,7 +104,7 @@
                                 }
                             </td>
                             <td>
-                                @if (s.LeagueID != null)
+                                @if (s.LeagueID != null && s.LeagueID != 0)
                                 {
                                     @(((List<League>)ViewData["UsersLeagues"]).Where(o => o.ID == s.LeagueID).SingleOrDefault().Name)
                                 }

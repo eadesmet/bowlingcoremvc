@@ -132,7 +132,7 @@ namespace BowlingCoreMVC.Helpers
             var series = _db.Series.Where(o => o.UserID == UserID).ToList();
             foreach (var s in series)
             {
-                if (s.LeagueID != null)
+                if (s.LeagueID != null && s.LeagueID != 0)
                 {
                     result.Add(_db.Leagues.Where(o => o.ID == s.LeagueID).SingleOrDefault());
                 }

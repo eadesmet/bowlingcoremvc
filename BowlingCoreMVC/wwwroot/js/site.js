@@ -413,7 +413,7 @@ function FormatFrameThrowLabels(GameID, FrameNum)
 
         if (ThirdThrowScore === 0)
         {
-            if (ScoreUpToFrame <= FrameNum)
+            if (ScoreUpToFrame < FrameNum)
             {
                 $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty();
             }
@@ -427,7 +427,7 @@ function FormatFrameThrowLabels(GameID, FrameNum)
 
     if (FirstThrowScore === 0)
     {
-        if (ScoreUpToFrame <= FrameNum)
+        if (ScoreUpToFrame < FrameNum)
         {
             $("#" + GameID + "_" + FrameNum + "_1_lblFrame").empty();
         }
@@ -439,7 +439,7 @@ function FormatFrameThrowLabels(GameID, FrameNum)
 
     if (SecondThrowScore === 0 && FirstThrowScore !== 10)
     {
-        if (ScoreUpToFrame <= FrameNum)
+        if (ScoreUpToFrame < FrameNum)
         {
             $("#" + GameID + "_" + FrameNum + "_2_lblFrame").empty();
         }
@@ -668,7 +668,14 @@ function SaveGameClick(GameID)
     });
 }
 
-
+function SaveAllClick()
+{
+    var GameIDs = GetGameIDs();
+    for (var i = 0; i < GameIDs.length; i++)
+    {
+        SaveGameClick(GameIDs[i]);
+    }
+}
 
 
 
