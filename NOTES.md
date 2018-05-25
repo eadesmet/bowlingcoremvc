@@ -432,8 +432,24 @@ trying to initialize the db with valid data and a new user
     not necessarily logging EVERYONES scores..
     for a tournament feature, i would want everyone who is competing to be a user
     for teams, it makes sense that they are users too.
+
+    ended up addinga usersummary page
     
-    
+}
+
+5-25
+{
+
+	trying to think of other features I could add that would improve on what I already have
+	I want to keep it simple, but think of features I would want out of something like this
+	remember, this is MY application. At this point, I should only add features that I want.
+
+	performance option without moving everything to the client side:
+		only score the game when the game is saved.
+		on next click, only update the frames throws
+		when the game is saved, update the framescores
+
+	
 }
 
 

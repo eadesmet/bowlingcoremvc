@@ -25,6 +25,19 @@ namespace BowlingCoreMVC.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
+        private const Int16 MISSED_10 = 512;   // 0000 0010 0000 0000
+        private const Int16 MISSED_9 = 256;    // 0000 0001 0000 0000
+        private const Int16 MISSED_8 = 128;    // 0000 0000 1000 0000
+        private const Int16 MISSED_7 = 64;     // 0000 0000 0100 0000
+        private const Int16 MISSED_6 = 32;     // 0000 0000 0010 0000
+        private const Int16 MISSED_5 = 16;     // 0000 0000 0001 0000
+        private const Int16 MISSED_4 = 8;      // 0000 0000 0000 1000
+        private const Int16 MISSED_3 = 4;      // 0000 0000 0000 0100
+        private const Int16 MISSED_2 = 2;      // 0000 0000 0000 0010
+        private const Int16 MISSED_1 = 1;      // 0000 0000 0000 0001
+        private const Int16 MISSED_0 = 0;      // 0000 0000 0000 0000
+        private const Int16 MISSED_ALL = 1023; // 0000 0011 1111 1111
+
         // GET /Stats
         // (Highscores)
         public async Task<IActionResult> Index()
@@ -81,7 +94,10 @@ namespace BowlingCoreMVC.Controllers
             int GamesOver200 = 0;
             int TotalPossibleStrikes = 0;
             int TotalGames = AllGames.Count();
-
+            int TenPinSpares = 0;
+            int TenPinConversions = 0;
+            int PossibleSpares = 0;
+            int SpareConversions = 0;
 
             foreach (var g in AllGames)
             {
@@ -90,10 +106,11 @@ namespace BowlingCoreMVC.Controllers
 
                 TotalPossibleStrikes += 12;
 
-                //single pin spare percentage
                 foreach (var f in g.Frames)
                 {
                     TotalFrames++;
+
+                    // Single pin spares
                     if (f.ThrowOneScore == 9)
                     {
                         SinglePinsTotal++;
@@ -101,22 +118,52 @@ namespace BowlingCoreMVC.Controllers
                         {
                             SinglePinsSpares++;
                         }
+
+                        if (f.ThrowOnePins == MISSED_10)
+                        {
+                            TenPinSpares++;
+                            if (f.ThrowTwoPins == MISSED_0)
+                            {
+                                TenPinConversions++;
+                            }
+                        }
                     }
                     else if (f.ThrowOneScore == 10)
                     {
                         TotalStrikes++;
+                        if (f.FrameNum == 10 && f.ThrowTwoScore != 10)
+                        {
+                            // Can only get 1 spare in the 10th frame
+                            // but it might be from the second + third throw
+                            PossibleSpares++;
+                        }
+                    }
+
+                    if (f.ThrowOneScore != 10)
+                    {
+                        PossibleSpares++;
+                        
+                        if (f.ThrowOneScore + f.ThrowTwoScore == 10)
+                        {
+                            SpareConversions++;
+                        }
                     }
                 }
             }
 
             var StatsList = new List<StatsViewModel>();
-            var s1 = new StatsViewModel { StatTitle = "Single Pin Spare Percentage", Conversions = SinglePinsSpares, Total = SinglePinsTotal };
             var s2 = new StatsViewModel { StatTitle = "Strike Percentage", Conversions = TotalStrikes, Total = TotalPossibleStrikes };
-            var s3 = new StatsViewModel { StatTitle = "Over 200 Games", Conversions = GamesOver200, Total = TotalGames};
-
-            StatsList.Add(s1);
             StatsList.Add(s2);
+            var s5 = new StatsViewModel { StatTitle = "Spare Percentage", Conversions = SpareConversions, Total = PossibleSpares };
+            StatsList.Add(s5);
+            var s1 = new StatsViewModel { StatTitle = "Single Pin Spare Percentage", Conversions = SinglePinsSpares, Total = SinglePinsTotal };
+            StatsList.Add(s1);
+            var s4 = new StatsViewModel { StatTitle = "10 Pin Spares", Conversions = TenPinConversions, Total = TenPinSpares };
+            StatsList.Add(s4);
+            var s3 = new StatsViewModel { StatTitle = "Over 200 Games", Conversions = GamesOver200, Total = TotalGames };
             StatsList.Add(s3);
+            
+
 
             return View(StatsList);
         }
