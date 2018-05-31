@@ -453,4 +453,27 @@ trying to initialize the db with valid data and a new user
 }
 
 
+5-30
+{
 
+	it's been a few days since I've thought about this project
+	Not sure what else I want out of it..
+	I think I just need to use it for a while to learn what I want
+	So that means, I need a new project.
+		maybe redesign to be data oriented?
+		what applications do i want to have/use in my life
+		i want to move away from the web for a while if possible
+
+
+		
+	possible new projects:
+		text editor (for fun, see how it works)
+
+		[suggestions from internet]
+		web server
+		operating system (book)
+		bandwidth monitor
+		budjeting app
+		
+
+}
