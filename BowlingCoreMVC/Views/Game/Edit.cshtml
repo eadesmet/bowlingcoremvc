@@ -4,9 +4,6 @@
     ViewData["Title"] = "Edit";
 }
 
-@{
-    var m = Model;
-}
 <h2>Edit</h2>
 
 
@@ -14,3 +11,10 @@
 
 @await Component.InvokeAsync("EditGame", new { GameID = Model.ID })
 
+<environment include="Development">
+    <script src="~/js/editgame.js" asp-append-version="true"></script>
+</environment>
+
+<environment exclude="Development">
+    <script src="~/js/editgame.min.js" asp-append-version="true"></script>
+</environment>
