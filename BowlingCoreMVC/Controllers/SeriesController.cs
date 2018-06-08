@@ -58,7 +58,7 @@ namespace BowlingCoreMVC.Controllers
         public IActionResult Edit(int id)
         {
             var s = _db.Series.Include(o => o.Games).Where(o => o.ID == id).SingleOrDefault();
-
+            
             return View(s);
         }
 

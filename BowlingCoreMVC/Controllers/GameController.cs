@@ -52,10 +52,16 @@ namespace BowlingCoreMVC.Controllers
 
         // GET Edit page (Edit a single game by ID)
         [HttpGet]
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             var game = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
             game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
+
+            var user = await GetCurrentUserAsync();
+            if (user == null) { return RedirectToAction("Login", "Account"); }
+
+            game.UserName = user.UserName;
+
             return View(game);
         }
 

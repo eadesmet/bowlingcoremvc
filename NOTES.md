@@ -477,3 +477,43 @@ trying to initialize the db with valid data and a new user
 		
 
 }
+
+6-7
+{
+
+	moved editgame js code to it's own file, so it only loads on those pages
+	thinking about moving some scoregame code to the client
+		this way it won't make a round trip to the server just to throw a ball
+		really it's just a handfull of functions and shouldn't take too long
+
+	other things to do with it
+		clean up the edit game page
+			move the save button/s, make the arrows bigger, add title bar
+		add more stats?
+		add resources to learn bowling? daily tip?
+		add notes section per frame
+		have the game be fixed to fit the screen?
+			normalize scrolling
+			have each game be a 'card' view?
+			have each frame be clickable to select it
+			maybe have the current frame be 'zoomed' in
+				showing previous and next frames a little smaller on either side
+				[][][][][][][][][][]
+					[]| [] |[]
+					<-  \/  ->
+					[        ]
+		i know it's not 'needed', but maybe add 'X', '/', '-' buttons
+
+}
+
+
+6-8
+{
+
+	todo
+		move all of the data access i'm doing in the controllers to a datahelper
+
+	add a feed of recent games to the homepage?
+		see bootstraps components 'media object'
+	
+}
