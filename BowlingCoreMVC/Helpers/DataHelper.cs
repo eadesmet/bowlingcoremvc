@@ -134,7 +134,11 @@ namespace BowlingCoreMVC.Helpers
             {
                 if (s.LeagueID != null && s.LeagueID != 0)
                 {
-                    result.Add(_db.Leagues.Where(o => o.ID == s.LeagueID).SingleOrDefault());
+                    //Do not add duplicates
+                    if (result.Find(o => o.ID == s.LeagueID) == null)
+                    {
+                        result.Add(_db.Leagues.Where(o => o.ID == s.LeagueID).SingleOrDefault());
+                    }
                 }
             }
 
