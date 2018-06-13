@@ -164,5 +164,20 @@ namespace BowlingCoreMVC.Helpers
 
             return (result);
         }
+
+        public static List<Game> GetAllGamesByUserID(string UserID, ApplicationDbContext _db)
+        {
+            return (_db.Games.Include(o => o.Frames).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).ToList());
+        }
+
+        public static List<Game> GetNonSeriesGamesByUserID(string UserID, ApplicationDbContext _db)
+        {
+            return (_db.Games.Include(o => o.Frames).Where(o => o.UserID == UserID).Where(o => o.SeriesID == 0 || o.SeriesID == null).OrderByDescending(o => o.CreatedDate).ToList());
+        }
+
+        public static List<Series> GetAllSeriesByUserID(string UserID, ApplicationDbContext _db)
+        {
+            return (_db.Series.Include(o => o.Games).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).ToList());
+        }
     }
 }

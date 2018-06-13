@@ -1,0 +1,208 @@
+﻿@model BowlingCoreMVC.Models.Game
+@{
+    ViewData["Title"] = "Default";
+}
+
+<h2>Game Details</h2>
+
+<div class="row">
+    <div id="scoreboard">
+        <table class="table table-bordered table-condensed GameTable">
+            <thead>
+                <tr>
+                    @*OR just 1-10..*@
+                    @foreach (var f in Model.Frames)
+                    {
+                        if (f.FrameNum != 10)
+                        {
+                            <th colspan="2">@f.FrameNum</th>
+                        }
+                        else
+                        {
+                            <th colspan="3">@f.FrameNum</th>
+                        }
+
+
+                    }
+                </tr>
+            </thead>
+            <tr>
+                @foreach (var f in Model.Frames)
+                {
+
+                    <frame-throw frame="@f" throw-num="1"></frame-throw>
+                    <frame-throw frame="@f" throw-num="2"></frame-throw>
+
+                    if (f.FrameNum == 10)
+                    {
+                        <frame-throw frame="@f" throw-num="3"></frame-throw>
+                    }
+
+                }
+            </tr>
+            <tr>
+                @foreach (var f in Model.Frames)
+                {
+                    <frame-score frame="@f"></frame-score>
+
+                }
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+<div class="row">
+    <dl class="dl-horizontal">
+        @foreach (var f in Model.Frames)
+        {
+
+            <dt>
+                Throw 1:
+                @f.ThrowOneScore
+            </dt>
+            <dd id="@f.FrameNum@@_1">
+                @{
+                    if ((f.ThrowOnePins & 1) != 0)
+                    {
+                        @:Missed1
+                    }
+                    if ((f.ThrowOnePins & 2) != 0)
+                    {
+                        @:Missed2
+                    }
+                    if ((f.ThrowOnePins & 4) != 0)
+                    {
+                        @:Missed3
+                    }
+                    if ((f.ThrowOnePins & 8) != 0)
+                    {
+                        @:Missed4
+                    }
+                    if ((f.ThrowOnePins & 16) != 0)
+                    {
+                        @:Missed5
+                    }
+                    if ((f.ThrowOnePins & 32) != 0)
+                    {
+                        @:Missed6
+                    }
+                    if ((f.ThrowOnePins & 64) != 0)
+                    {
+                        @:Missed7
+                    }
+                    if ((f.ThrowOnePins & 128) != 0)
+                    {
+                        @:Missed8
+                    }
+                    if ((f.ThrowOnePins & 256) != 0)
+                    {
+                        @:Missed9
+                    }
+                    if ((f.ThrowOnePins & 512) != 0)
+                    {
+                        @:Missed10
+                    }
+                }
+            </dd>
+
+
+
+
+            <dt>
+                Throw 2:
+                @f.ThrowTwoScore
+            </dt>
+            <dd>
+                @{
+                    if ((f.ThrowTwoPins & 1) != 0)
+                    {
+                        @:Missed1
+                    }
+                    if ((f.ThrowTwoPins & 2) != 0)
+                    {
+                        @:Missed2
+                    }
+                    if ((f.ThrowTwoPins & 4) != 0)
+                    {
+                        @:Missed3
+                    }
+                    if ((f.ThrowTwoPins & 8) != 0)
+                    {
+                        @:Missed4
+                    }
+                    if ((f.ThrowTwoPins & 16) != 0)
+                    {
+                        @:Missed5
+                    }
+                    if ((f.ThrowTwoPins & 32) != 0)
+                    {
+                        @:Missed6
+                    }
+                    if ((f.ThrowTwoPins & 64) != 0)
+                    {
+                        @:Missed7
+                    }
+                    if ((f.ThrowTwoPins & 128) != 0)
+                    {
+                        @:Missed8
+                    }
+                    if ((f.ThrowTwoPins & 256) != 0)
+                    {
+                        @:Missed9
+                    }
+                    if ((f.ThrowTwoPins & 512) != 0)
+                    {
+                        @:Missed10
+                    }
+                }
+            </dd>
+            if (f.FrameNum == 10)
+            {
+                <dt>
+                    Throw 3:
+                    @f.ThrowThreeScore
+                </dt>
+                <dd>
+                    @f.ThrowThreePins
+                </dd>
+
+            }
+        }
+
+    </dl>
+</div>
+
+<script type="text/javascript">
+    //TODO: Move this to server side???
+    //maybe a new field in the game model with a custom GET
+    //$("#1_1").html(GetCondensedPins())
+    //function GetCondensedPins(pins)
+    //{
+    //    var result = "";
+
+    //    var one = pins & MISSED_1;
+    //    var two = pins & MISSED_2;
+    //    var three = pins & MISSED_3;
+    //    var four = pins & MISSED_4;
+    //    var five = pins & MISSED_5;
+    //    var six = pins & MISSED_6;
+    //    var seven = pins & MISSED_7;
+    //    var eight = pins & MISSED_8;
+    //    var nine = pins & MISSED_9;
+    //    var ten = pins & MISSED_10;
+
+    //    if (one) { result += "ONE MISSED" } else { result += "ONE DOWN" }
+    //    if (two) { result += "TWO MISSED" } else { result += "TWO DOWN" }
+    //    if (three) { result += "THREE MISSED" } else { result += "THREE DOWN" }
+    //    if (four) { result += "FOUR MISSED" } else { result += "FOUR DOWN" }
+    //    if (five) { result += "FIVE MISSED" } else { result += "FIVE DOWN" }
+    //    if (six) { result += "SIX MISSED" } else { result += "SIX DOWN" }
+    //    if (seven) { result += "SEVEN MISSED" } else { result += "SEVEN DOWN" }
+    //    if (eight) { result += "EIGHT MISSED" } else { result += "EIGHT DOWN" }
+    //    if (nine) { result += "NINE MISSED" } else { result += "NINE DOWN" }
+    //    if (ten) { result += "TEN MISSED" } else { result += "TEN DOWN" }
+
+    //    return (result);
+    //}
+</script>

@@ -1,19 +1,96 @@
 ﻿@model IEnumerable<BowlingCoreMVC.Models.Game>
 
 @{
-    ViewData["Title"] = "My Games";
+    ViewData["Title"] = "My Scores";
 }
 
 <h2>@ViewData["Title"]</h2>
 
 <p>
+    <a asp-action="Create" asp-controller="Series" class="btn btn-primary">New Series</a>
+</p>
+
+
+<h4>Series</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Series Score
+            </th>
+            <th>
+                Games
+            </th>
+            <th>
+                League
+            </th>
+            <th>
+                Created On
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in (List<Series>)ViewData["UserSeries"])
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SeriesScore)
+                </td>
+                <td>
+                    @{
+                        var i = 0;
+                        var count = item.Games.Count();
+
+                        @if (item.Games != null)
+                        {
+                            @foreach (var g in item.Games)
+                            {
+                                @g.Score
+                                if (++i != count)
+                                {
+                                    <span>,</span>
+
+                                }
+
+                            }
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LeagueName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@item.ID" asp-controller="Series" class="btn btn-primary">Edit</a>
+                        @*<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a>*@
+                        <a asp-action="Delete" asp-route-id="@item.ID" asp-controller="Series" class="btn btn-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br />
+<hr />
+<br />
+
+<p>
     <a asp-action="Create" class="btn btn-primary">New Game</a>
 </p>
+<h4>Games</h4>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Score)
+            </th>
+            <th>
+                Series?
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreatedDate)
@@ -38,7 +115,19 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Score)
+                    <a asp-action="Details" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.Score)</a>
+                </td>
+                <td>
+                    @{
+                        if (item.SeriesID != null || item.SeriesID == 0)
+                        {
+                            @:Yes
+                        }
+                        else
+                        {
+                            @:No
+                        }
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedDate)
@@ -46,6 +135,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ModifiedDate)
                 </td>
+
                 @*<td>
                         @Html.DisplayFor(modelItem => item.CurrentFrame)
                     </td>
@@ -66,3 +156,4 @@
         }
     </tbody>
 </table>
+

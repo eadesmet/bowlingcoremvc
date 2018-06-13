@@ -33,11 +33,13 @@ namespace BowlingCoreMVC.Controllers
         // GET Index (game list page)
         public async Task<IActionResult> Index()
         {
-            //TODO: Filter by user. group/filter by series?
             var user = await GetCurrentUserAsync();
             if (user == null) { return RedirectToAction("Login", "Account"); }
 
-            List<Game> GamesList = await _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate).ToListAsync();
+            //List<Game> GamesList = await _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate).ToListAsync();
+            List<Game> GamesList = DataHelper.GetNonSeriesGamesByUserID(user.Id, _db);
+
+            ViewData["UserSeries"] = DataHelper.GetAllSeriesByUserID(user.Id, _db);
 
             return View(GamesList);
         }
@@ -53,6 +55,21 @@ namespace BowlingCoreMVC.Controllers
         // GET Edit page (Edit a single game by ID)
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
+        {
+            var game = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
+            game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
+
+            var user = await GetCurrentUserAsync();
+            if (user == null) { return RedirectToAction("Login", "Account"); }
+
+            game.UserName = user.UserName;
+
+            return View(game);
+        }
+
+        // GET (new) details page
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
         {
             var game = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
             game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
