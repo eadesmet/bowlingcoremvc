@@ -517,3 +517,87 @@ trying to initialize the db with valid data and a new user
 		see bootstraps components 'media object'
 	
 }
+
+6-12
+{
+	add a game details page
+		show the main scoreboard
+		show pins for every throw
+			this will be a little tricky
+			i don't really want to have 210 checkboxes on the page
+			somehow generate an image? that could be interesting to figure out
+
+	what if I combine the 'my games' and 'my series' into one?
+		that would reaaaaly clean some things up and be really nice
+
+		so instead, i could pass in a list of games that are not in a series
+		and a list of series
+		print both these lists in the same table and combine the series?
+			or have two tables?
+
+	change the buttons on the table to 'View' and 'Edit'
+		view go to a details page, where they can then delete them if they want
+		edit obvious
+
+}
+
+6-13
+{
+	not doing any of this (yet?), just thinking
+	Entity component system
+
+	Series: ID
+	Game: ID, SeriesID
+	Frame: ID, GameID
+	FrameData: ID, FrameID, -data-
+
+	to get a games score, get the first FrameData, then get the next 9?
+}
+
+
+6-18
+{
+	changed over the score game to js
+		(not publishing it yet because league is tonight)
+
+	having a couple issues
+	I think I will need some 'GameCompleted' flag, so it doesn't clear the 10th frame when I navigate through it
+	Or just try to fix some of the logic there?
+		not sure where it's happening acutally
+		in ScoreGame, i'm setting throwthree to 0, but changing that didn't fix it?
+		
+}
+
+^
+Just a note on the Entity component system, or data oriented design
+whatever
+so, it might be useful for scoring and keeping track of the frames
+instead of having 'strike_bonus' and 'spare_bonus'
+just have a 'score_frame(i)'
+then have it handle what frame it is and calculate the score like that
+
+if (i == 10)
+{
+	if (Frames[i].throwone == 10)
+	{
+		score strike
+	}
+	else
+	{
+		score whatever else
+	}
+}
+
+would that be any better?
+requires more thought.
+because the strike bonus, spare bonus code would be repeated
+
+
+7-12
+{
+    So it's been a little while.. I might have to redo a bunch of scoring logic
+    The last thing I did before was move the scoring code to js
+    there is now a couple 10th frame scoring bugs..
+
+
+}

@@ -42,7 +42,7 @@ function GetJSONFromPage(GameID)
     //game.UserID = '@Model.UserID';
 
     //SetPrevious(game);
-    ClearHighlight(GameID, game.CurrentFrame);
+    ClearHighlight(GameID, parseInt(game.CurrentFrame));
 
     for (var i = 1; i <= 10; i++)
     {
@@ -93,10 +93,10 @@ function UpdateCurrentThrowVal(GameID)
     if (CurrentFrame === 10 && ThrowNum === 1)
     {
         //Reset the 10th frame when setting the first ball
-        $(prefixID + 2 + "_hidFrame").val(0);
-        $(prefixID + 2 + "_hidPins").val(0);
-        $(prefixID + 3 + "_hidFrame").val(0);
-        $(prefixID + 3 + "_hidPins").val(0);
+        //$(prefixID + 2 + "_hidFrame").val(0);
+        //$(prefixID + 2 + "_hidPins").val(0);
+        //$(prefixID + 3 + "_hidFrame").val(0);
+        //$(prefixID + 3 + "_hidPins").val(0);
     }
 
     //Overwrite second throw score to be calculated from throw one score
@@ -104,7 +104,7 @@ function UpdateCurrentThrowVal(GameID)
     {
         //NOTE: GetThrowPins gets the score from the pins only! getThrowHidVals gets any score that has been saved
         var FirstThrowData = GetThrowHidVals(GameID, CurrentFrame, 1);
-        $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
+        //$(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - FirstThrowData.score);
 
         if (CurrentFrame === 10)
         {
@@ -151,28 +151,57 @@ function GetThrowPins(GameID, frameNum, throwNum)
     var missed_pins = 0;
     var throw_score = 10;
 
-    var one = $("#" + GameID + "-Missed_1").is(':checked');
-    var two = $("#" + GameID + "-Missed_2").is(':checked');
-    var three = $("#" + GameID + "-Missed_3").is(':checked');
-    var four = $("#" + GameID + "-Missed_4").is(':checked');
-    var five = $("#" + GameID + "-Missed_5").is(':checked');
-    var six = $("#" + GameID + "-Missed_6").is(':checked');
-    var seven = $("#" + GameID + "-Missed_7").is(':checked');
-    var eight = $("#" + GameID + "-Missed_8").is(':checked');
-    var nine = $("#" + GameID + "-Missed_9").is(':checked');
-    var ten = $("#" + GameID + "-Missed_10").is(':checked');
+    var one = $("#" + GameID + "-Missed_1");
+    var two = $("#" + GameID + "-Missed_2");
+    var three = $("#" + GameID + "-Missed_3");
+    var four = $("#" + GameID + "-Missed_4");
+    var five = $("#" + GameID + "-Missed_5");
+    var six = $("#" + GameID + "-Missed_6");
+    var seven = $("#" + GameID + "-Missed_7");
+    var eight = $("#" + GameID + "-Missed_8");
+    var nine = $("#" + GameID + "-Missed_9");
+    var ten = $("#" + GameID + "-Missed_10");
 
 
-    if (one) { missed_pins = missed_pins + MISSED_1; throw_score = throw_score - 1; }
-    if (two) { missed_pins = missed_pins + MISSED_2; throw_score = throw_score - 1; }
-    if (three) { missed_pins = missed_pins + MISSED_3; throw_score = throw_score - 1; }
-    if (four) { missed_pins = missed_pins + MISSED_4; throw_score = throw_score - 1; }
-    if (five) { missed_pins = missed_pins + MISSED_5; throw_score = throw_score - 1; }
-    if (six) { missed_pins = missed_pins + MISSED_6; throw_score = throw_score - 1; }
-    if (seven) { missed_pins = missed_pins + MISSED_7; throw_score = throw_score - 1; }
-    if (eight) { missed_pins = missed_pins + MISSED_8; throw_score = throw_score - 1; }
-    if (nine) { missed_pins = missed_pins + MISSED_9; throw_score = throw_score - 1; }
-    if (ten) { missed_pins = missed_pins + MISSED_10; throw_score = throw_score - 1; }
+    if (one.is(':checked') || one.is(':disabled')) { throw_score = throw_score - 1; }
+    if (two.is(':checked') || two.is(':disabled')) { throw_score = throw_score - 1; }
+    if (three.is(':checked') || three.is(':disabled')) { throw_score = throw_score - 1; }
+    if (four.is(':checked') || four.is(':disabled')) { throw_score = throw_score - 1; }
+    if (five.is(':checked') || five.is(':disabled')) { throw_score = throw_score - 1; }
+    if (six.is(':checked') || six.is(':disabled')) { throw_score = throw_score - 1; }
+    if (seven.is(':checked') || seven.is(':disabled')) { throw_score = throw_score - 1; }
+    if (eight.is(':checked') || eight.is(':disabled')) { throw_score = throw_score - 1; }
+    if (nine.is(':checked') || nine.is(':disabled')) { throw_score = throw_score - 1; }
+    if (ten.is(':checked') || ten.is(':disabled')) { throw_score = throw_score - 1; }
+
+    if (one.is(':checked')) { missed_pins = missed_pins + MISSED_1; }
+    if (two.is(':checked')) { missed_pins = missed_pins + MISSED_2; }
+    if (three.is(':checked')) { missed_pins = missed_pins + MISSED_3; }
+    if (four.is(':checked')) { missed_pins = missed_pins + MISSED_4; }
+    if (five.is(':checked')) { missed_pins = missed_pins + MISSED_5; }
+    if (six.is(':checked')) { missed_pins = missed_pins + MISSED_6; }
+    if (seven.is(':checked')) { missed_pins = missed_pins + MISSED_7; }
+    if (eight.is(':checked')) { missed_pins = missed_pins + MISSED_8; }
+    if (nine.is(':checked')) { missed_pins = missed_pins + MISSED_9; }
+    if (ten.is(':checked')) { missed_pins = missed_pins + MISSED_10; }
+
+
+//    alert($("#" + GameID + "-Missed_10").is(':disabled'));
+//    alert($("#" + GameID + "-Missed_10").is(':disabled') || $("#" + GameID + "-Missed_10").is(':checked'));
+    //Disabled OR Checked = Subtract from the score
+
+
+
+    //if (one) { missed_pins = missed_pins + MISSED_1; throw_score = throw_score - 1; }
+    //if (two) { missed_pins = missed_pins + MISSED_2; throw_score = throw_score - 1; }
+    //if (three) { missed_pins = missed_pins + MISSED_3; throw_score = throw_score - 1; }
+    //if (four) { missed_pins = missed_pins + MISSED_4; throw_score = throw_score - 1; }
+    //if (five) { missed_pins = missed_pins + MISSED_5; throw_score = throw_score - 1; }
+    //if (six) { missed_pins = missed_pins + MISSED_6; throw_score = throw_score - 1; }
+    //if (seven) { missed_pins = missed_pins + MISSED_7; throw_score = throw_score - 1; }
+    //if (eight) { missed_pins = missed_pins + MISSED_8; throw_score = throw_score - 1; }
+    //if (nine) { missed_pins = missed_pins + MISSED_9; throw_score = throw_score - 1; }
+    //if (ten) { missed_pins = missed_pins + MISSED_10; throw_score = throw_score - 1; }
 
     return { missed: missed_pins, score: throw_score };
 }
@@ -474,9 +503,9 @@ function ClearHighlight(GameID, FrameNum)
     $(prefixID + "2_tdFrame").css("background-color", "White");
     $(prefixID + "tdFrameScore").css("background-color", "White");
 
-    if (FrameNum === 10)
+    if (FrameNum === 10 || FrameNum === 9)
     {
-        $(prefixID + "3_tdFrame").css("background-color", "White");
+        $("#" + GameID + "_10_3_tdFrame").css("background-color", "White");
     }
 }
 
@@ -550,6 +579,23 @@ $(document).ready(function ()
     }
 });
 
+function MissedAllClick(GameID)
+{
+    MissedAllClick.toggle = !MissedAllClick.toggle;
+    if (MissedAllClick.toggle)
+    {
+        SetMissedPinsChecked(GameID, MISSED_ALL);
+    }
+    else
+    {
+        SetMissedPinsChecked(GameID, MISSED_0);
+    }
+}
+
+function MissedNoneClick(GameID)
+{
+    SetMissedPinsChecked(GameID, MISSED_0);
+}
 
 //---------------------------------------
 //----- AJAX CALLS ----------------------
@@ -559,69 +605,80 @@ function NextClickSendGame(GameID)
 {
     UpdateCurrentThrowVal(GameID);
     var JSONGame = GetJSONFromPage(GameID);
-    var GameIDs = GetGameIDs();
-    var getReportColumnsParams = {
-        "JSONGame": JSONGame,
-        "GameIDs": GameIDs
-    };
-    $.ajax({
-        type: "POST",
-        traditional: true,
-        async: false,
-        cache: false,
-        url: '/Game/NextThrowClick',//'@Url.Action("NextThrowClick", "Game")',
-        context: document.body,
-        data: getReportColumnsParams,
-        success: function (result)
-        {
-            //reload all of the game data on the page
-            var returnedGame = JSON.parse(result.jsonGameReturned);
-            RefreshGameHid(returnedGame);
+    var g = JSON.parse(JSONGame);
+    g = ThrowCurrent(g);
+    RefreshGameHid(g);
+    HighlightSelectedFrame(g.ID, g.CurrentFrame, g.CurrentThrow);
+    //UpdateCurrentThrowVal(GameID);
+    //var JSONGame = GetJSONFromPage(GameID);
+    //var GameIDs = GetGameIDs();
+    //var getReportColumnsParams = {
+    //    "JSONGame": JSONGame,
+    //    "GameIDs": GameIDs
+    //};
+    //$.ajax({
+    //    type: "POST",
+    //    traditional: true,
+    //    async: false,
+    //    cache: false,
+    //    url: '/Game/NextThrowClick',//'@Url.Action("NextThrowClick", "Game")',
+    //    context: document.body,
+    //    data: getReportColumnsParams,
+    //    success: function (result)
+    //    {
+    //        //reload all of the game data on the page
+    //        var returnedGame = JSON.parse(result.jsonGameReturned);
+    //        RefreshGameHid(returnedGame);
 
-            HighlightSelectedFrame(returnedGame.ID, returnedGame.CurrentFrame, returnedGame.CurrentThrow);
+    //        HighlightSelectedFrame(returnedGame.ID, returnedGame.CurrentFrame, returnedGame.CurrentThrow);
 
-        },
-        error: function (xhr)
-        {
-            //debugger;
-            console.log(xhr.responseText);
-            alert(xhr.responseText);
+    //    },
+    //    error: function (xhr)
+    //    {
+    //        //debugger;
+    //        console.log(xhr.responseText);
+    //        alert(xhr.responseText);
 
-        }
-    });
+    //    }
+    //});
 }
 
 function PreviousClickSendGame(GameID)
 {
     var JSONGame = GetJSONFromPage(GameID);
-    var GameIDs = GetGameIDs();
-    var getReportColumnsParams = {
-        "JSONGame": JSONGame,
-        "GameIDs": GameIDs
-    };
-    $.ajax({
-        type: "POST",
-        traditional: true,
-        async: false,
-        cache: false,
-        url: '/Game/PreviousThrowClick',//'@Url.Action("PreviousThrow", "Game")',
-        context: document.body,
-        data: getReportColumnsParams,
-        success: function (result)
-        {
-            var returnedGame = JSON.parse(result.jsonGameReturned);
-            RefreshGameHid(returnedGame);
+    var g = JSON.parse(JSONGame);
+    g = CalculatePrevious(g);
+    RefreshGameHid(g);
+    HighlightSelectedFrame(g.ID, g.CurrentFrame, g.CurrentThrow);
+    //var JSONGame = GetJSONFromPage(GameID);
+    //var GameIDs = GetGameIDs();
+    //var getReportColumnsParams = {
+    //    "JSONGame": JSONGame,
+    //    "GameIDs": GameIDs
+    //};
+    //$.ajax({
+    //    type: "POST",
+    //    traditional: true,
+    //    async: false,
+    //    cache: false,
+    //    url: '/Game/PreviousThrowClick',//'@Url.Action("PreviousThrow", "Game")',
+    //    context: document.body,
+    //    data: getReportColumnsParams,
+    //    success: function (result)
+    //    {
+    //        var returnedGame = JSON.parse(result.jsonGameReturned);
+    //        RefreshGameHid(returnedGame);
 
-            HighlightSelectedFrame(returnedGame.ID, returnedGame.CurrentFrame, returnedGame.CurrentThrow);
-        },
-        error: function (xhr)
-        {
-            //debugger;
-            console.log(xhr.responseText);
-            alert(xhr.responseText);
+    //        HighlightSelectedFrame(returnedGame.ID, returnedGame.CurrentFrame, returnedGame.CurrentThrow);
+    //    },
+    //    error: function (xhr)
+    //    {
+    //        //debugger;
+    //        console.log(xhr.responseText);
+    //        alert(xhr.responseText);
 
-        }
-    });
+    //    }
+    //});
 }
 
 function SaveGameClick(GameID)
@@ -716,13 +773,206 @@ function GetThrowNum(CurrentThrow)
 
 
 
+//--------------------
+//Scoring
+//--------------------
+
+function ScoreGame(g)
+{
+    var score = 0;
+
+    for (var i = 0; i < 10; i++)
+    {
+        g.Frames[i].FrameScore = parseInt(g.Frames[i].FrameScore);
+
+        if (g.Frames[i].ThrowOneScore == 10)
+        {
+            g.Frames[i].FrameScore = StrikeBonus(g.Frames, i);
+        }
+        else if (g.Frames[i].ThrowOneScore + g.Frames[i].ThrowTwoScore == 10)
+        {
+            g.Frames[i].FrameScore = SpareBonus(g.Frames, i);
+        }
+        else
+        {
+            g.Frames[i].FrameScore = parseInt(g.Frames[i].ThrowOneScore) + parseInt(g.Frames[i].ThrowTwoScore);
+        }
+
+        g.Frames[i].ThrowOneScore = parseInt(g.Frames[i].ThrowOneScore);
+        g.Frames[i].ThrowTwoScore = parseInt(g.Frames[i].ThrowTwoScore);
+
+        if ((g.Frames[i].FrameNum == 10) && (g.Frames[i].ThrowOneScore + g.Frames[i].ThrowTwoScore < 10))
+        {
+            g.Frames[i].ThrowThreeScore = 0;
+        }
+
+        if (g.Frames[i].ThrowOneScore == 10 && g.Frames[i].FrameNum != 10)
+        {
+            g.Frames[i].ThrowTwoScore = 0;
+        }
+
+        score += g.Frames[i].FrameScore;
+        g.Frames[i].FrameTotal = score;
+    }
+
+    g.Score = score;
+    return (g);
+}
+
+function StrikeBonus(frameslist, frameindex)
+{
+    if (frameindex == 8)
+    {
+        frameslist[9].ThrowOneScore = parseInt(frameslist[9].ThrowOneScore);
+        frameslist[9].ThrowTwoScore = parseInt(frameslist[9].ThrowTwoScore);
+
+        return (10 + frameslist[9].ThrowOneScore + frameslist[9].ThrowTwoScore);
+    }
+    else if (frameindex == 9)
+    {
+        frameslist[frameindex].ThrowOneScore = parseInt(frameslist[frameindex].ThrowOneScore);
+        frameslist[frameindex].ThrowTwoScore = parseInt(frameslist[frameindex].ThrowTwoScore);
+        frameslist[frameindex].ThrowThreeScore = parseInt(frameslist[frameindex].ThrowThreeScore);
+
+        return (frameslist[frameindex].ThrowOneScore + frameslist[frameindex].ThrowTwoScore + frameslist[frameindex].ThrowThreeScore);
+    }
+    else
+    {
+        frameslist[frameindex + 1].ThrowOneScore = parseInt(frameslist[frameindex + 1].ThrowOneScore);
+        
+        if (frameslist[frameindex + 1].ThrowOneScore == 10)
+        {
+            frameslist[frameindex + 2].ThrowOneScore = parseInt(frameslist[frameindex + 2].ThrowOneScore);
+
+            return (10 + frameslist[frameindex + 1].ThrowOneScore + frameslist[frameindex + 2].ThrowOneScore);
+        }
+        else
+        {
+            frameslist[frameindex + 1].ThrowTwoScore = parseInt(frameslist[frameindex + 1].ThrowTwoScore);
+
+            return (10 + frameslist[frameindex + 1].ThrowOneScore + frameslist[frameindex + 1].ThrowTwoScore);
+        }
+    }
+}
+
+function SpareBonus(frameslist, frameindex)
+{
+    if (frameslist[frameindex].FrameNum == 10)
+    {
+        frameslist[frameindex].ThrowThreeScore = parseInt(frameslist[frameindex].ThrowThreeScore);
+        return (10 + frameslist[frameindex].ThrowThreeScore);
+    }
+    else
+    {
+        frameslist[frameindex].ThrowOneScore = parseInt(frameslist[frameindex].ThrowOneScore);
+        return (10 + frameslist[frameindex].ThrowOneScore);
+    }
+
+}
 
 
+//------------------------------------
 
+function ThrowCurrent(g)
+{
+    var ThrowOneScore = g.Frames[g.CurrentFrame - 1].ThrowOneScore;
 
+    g = CalculateNext(g, ThrowOneScore);
 
+    g = ScoreGame(g);
 
+    if (g.ScoreUpToFrame < g.CurrentFrame)
+    {
+        g.ScoreUpToFrame = g.CurrentFrame;
+    }
+    return (g);
+}
 
-//----------------------
-//Other pages
-//----------------------
+function CalculateNext(g, ThrowOneScore)
+{
+    ThrowOneScore = parseInt(ThrowOneScore);
+
+    var ThrowNum = GetThrowNum(parseInt(g.CurrentThrow));
+
+    if (ThrowNum == 1)
+    {
+        if (g.CurrentFrame != 10 && ThrowOneScore == 10)
+        {
+            g.CurrentFrame++;
+        }
+    }
+    else if (ThrowNum == 2)
+    {
+        if (g.CurrentFrame != 10)
+        {
+            g.CurrentFrame++;
+        }
+    }
+    g = CalculateCurrentThrow(g, ThrowOneScore, true);
+    return (g);
+}
+
+function CalculatePrevious(g)
+{
+    g.CurrentFrame = parseInt(g.CurrentFrame);
+
+    var ThrowNum = GetThrowNum(parseInt(g.CurrentThrow));
+    if (ThrowNum == 1 && g.CurrentFrame != 1)
+    {
+        g.CurrentFrame--;
+    }
+
+    g = CalculateCurrentThrow(g, 0, false);
+    return (g);
+}
+
+function CalculateCurrentThrow(g, ThrowOneScore, forward)
+{
+    g.CurrentThrow = parseInt(g.CurrentThrow);
+    g.CurrentFrame = parseInt(g.CurrentFrame);
+    
+    var ThrowNum = GetThrowNum(parseInt(g.CurrentThrow));
+
+    if (g.CurrentFrame < 10)
+    {
+        if (ThrowNum == 1 && ThrowOneScore != 10)
+        {
+            g.CurrentThrow = (g.CurrentFrame * 2);
+        }
+        else
+        {
+            g.CurrentThrow = (g.CurrentFrame * 2) - 1;
+        }
+    }
+    else
+    {
+        if (forward)
+        {
+            if (g.CurrentThrow == 19)
+            {
+                g.CurrentThrow++;
+            }
+            else if (g.CurrentThrow == 20)
+            {
+                if (ThrowOneScore + parseInt(g.Frames[g.CurrentFrame - 1].ThrowTwoScore) >= 10)
+                {
+                    g.CurrentThrow++;
+                }
+            }
+            else if (g.CurrentThrow == 21)
+            { }
+            else
+            {
+                g.CurrentThrow = 19;
+            }
+        }
+        else
+        {
+            if (g.CurrentThrow != 19)
+            {
+                g.CurrentThrow--;
+            }
+        }
+    }
+    return (g);
+}

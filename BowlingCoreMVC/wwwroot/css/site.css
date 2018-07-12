@@ -94,10 +94,10 @@ input[type='checkbox'].pins-checkbox + label:before {
 }
 */
 
-input[type='checkbox']:checked.pins-checkbox + label:before { /*checked icon*/
-    /*content: "\e165";*/
+/*input[type='checkbox']:checked.pins-checkbox + label:before { /*checked icon*/
+    /*content: "\e165";/
     content: "\25cf";
-}
+}*/
 
 input[type='checkbox']:disabled.pins-checkbox + label:before {
     content: "\2298"; /*"\e090";*/
@@ -119,74 +119,80 @@ input[type='checkbox']:disabled.pins-checkbox + label:before {
 
 */
 
-input[type='checkbox'][id$="-Missed_1"] + label:before {
+/*input[type='checkbox'][id$="-Missed_1"] + label:before {
+    content: "\2460";
+}*/
+
+.pins-checkbox-1 + label:before {
     content: "\2460";
 }
-input[type='checkbox'][id$="-Missed_2"] + label:before {
+
+
+.pins-checkbox-2 + label:before {
     content: "\2461";
 }
-input[type='checkbox'][id$="-Missed_3"] + label:before {
+.pins-checkbox-3 + label:before {
     content: "\2462";
 }
-input[type='checkbox'][id$="-Missed_4"] + label:before {
+.pins-checkbox-4 + label:before {
     content: "\2463";
 }
-input[type='checkbox'][id$="-Missed_5"] + label:before {
+.pins-checkbox-5 + label:before {
     content: "\2464";
 }
-input[type='checkbox'][id$="-Missed_6"] + label:before {
+.pins-checkbox-6 + label:before {
     content: "\2465";
 }
-input[type='checkbox'][id$="-Missed_7"] + label:before {
+.pins-checkbox-7 + label:before {
     content: "\2466";
 }
-input[type='checkbox'][id$="-Missed_8"] + label:before {
+.pins-checkbox-8 + label:before {
     content: "\2467";
 }
-input[type='checkbox'][id$="-Missed_9"] + label:before {
+.pins-checkbox-9 + label:before {
     content: "\2468";
 }
-input[type='checkbox'][id$="-Missed_10"] + label:before {
+.pins-checkbox-10 + label:before {
     content: "\2469";
 }
 
 
-input[type='checkbox'][id$="-Missed_1"]:checked + label:before {
+.pins-checkbox-1:checked + label:before {
     content: "\278A";
 }
 
-input[type='checkbox'][id$="-Missed_2"]:checked + label:before {
+.pins-checkbox-2:checked + label:before {
     content: "\278B";
 }
 
-input[type='checkbox'][id$="-Missed_3"]:checked + label:before {
+.pins-checkbox-3:checked + label:before {
     content: "\278C";
 }
 
-input[type='checkbox'][id$="-Missed_4"]:checked + label:before {
+.pins-checkbox-4:checked + label:before {
     content: "\278D";
 }
 
-input[type='checkbox'][id$="-Missed_5"]:checked + label:before {
+.pins-checkbox-5:checked + label:before {
     content: "\278E";
 }
 
-input[type='checkbox'][id$="-Missed_6"]:checked + label:before {
+.pins-checkbox-6:checked + label:before {
     content: "\278F";
 }
 
-input[type='checkbox'][id$="-Missed_7"]:checked + label:before {
+.pins-checkbox-7:checked + label:before {
     content: "\2790";
 }
 
-input[type='checkbox'][id$="-Missed_8"]:checked + label:before {
+.pins-checkbox-8:checked + label:before {
     content: "\2791";
 }
 
-input[type='checkbox'][id$="-Missed_9"]:checked + label:before {
+.pins-checkbox-9:checked + label:before {
     content: "\2792";
 }
 
-input[type='checkbox'][id$="-Missed_10"]:checked + label:before {
+.pins-checkbox-10:checked + label:before {
     content: "\2793";
 }
