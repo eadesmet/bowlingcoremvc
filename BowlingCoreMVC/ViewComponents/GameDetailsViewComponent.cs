@@ -23,6 +23,7 @@ namespace BowlingCoreMVC.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync(int GameID)
         {
             var game = await _db.Games.Include(o => o.Frames).Where(g => g.ID == GameID).SingleOrDefaultAsync();
+            //NOTE: Why am I creating a game if one doesn't exist? I should just redirect
             if (game == null)
             {
                 game = Game.Create();

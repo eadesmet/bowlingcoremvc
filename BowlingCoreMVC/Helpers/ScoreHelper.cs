@@ -240,4 +240,21 @@ namespace BowlingCoreMVC.Helpers
             }
         }
     }
+
+    public static class Pins
+    {
+        public const short MISSED_10 = 512;   // 0000 0010 0000 0000
+        public const short MISSED_9 = 256;    // 0000 0001 0000 0000
+        public const short MISSED_8 = 128;    // 0000 0000 1000 0000
+        public const short MISSED_7 = 64;     // 0000 0000 0100 0000
+        public const short MISSED_6 = 32;     // 0000 0000 0010 0000
+        public const short MISSED_5 = 16;     // 0000 0000 0001 0000
+        public const short MISSED_4 = 8;      // 0000 0000 0000 1000
+        public const short MISSED_3 = 4;      // 0000 0000 0000 0100
+        public const short MISSED_2 = 2;      // 0000 0000 0000 0010
+        public const short MISSED_1 = 1;      // 0000 0000 0000 0001
+        public const short MISSED_0 = 0;      // 0000 0000 0000 0000
+        public const short MISSED_ALL = 1023; // 0000 0011 1111 1111
+
+    }
 }
