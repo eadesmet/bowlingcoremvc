@@ -12,6 +12,7 @@ namespace BowlingCoreMVC.ScoringTagHelpers
     public class FrameScoreTagHelper : TagHelper
     {
         public Frame frame { get; set; }
+        public Game game { get; set; }
         
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -40,7 +41,11 @@ namespace BowlingCoreMVC.ScoringTagHelpers
             StringBuilder template = new StringBuilder();
 
             //template.AppendJoin("", "<label id='", lblTotalScoreID, "'>", frame.FrameTotal, "</label>");
-            template.AppendJoin("", "<label id='", lblTotalScoreID, "'>", "</label>");
+            if (game != null && game.ScoreUpToFrame >= frame.FrameNum) 
+                template.AppendJoin("", "<label id='", lblTotalScoreID, "'>", frame.FrameTotal, "</label>");
+            else
+                template.AppendJoin("", "<label id='", lblTotalScoreID, "'>", "</label>");
+
             template.AppendJoin("", "<input type='hidden' id='", hidScoreID, "' value='", frame.FrameScore, "'/>");
             template.AppendJoin("", "<input type='hidden' id='", hidTotalScoreID, "' value='", frame.FrameTotal, "'/>");
             template.AppendJoin("", "<input type='hidden' id='", hidFrameID, "' value='", frame.ID, "'/>");
