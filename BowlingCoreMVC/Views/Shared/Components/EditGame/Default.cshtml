@@ -89,7 +89,7 @@
                         <button class="btn btn-default btn-lg" onclick="PreviousClickSendGame(@Model.ID)"><span class="glyphicon glyphicon-arrow-left" /></button>
                     </div>
                     <div class="col-xs-2">
-                        <button class="btn btn-default btn-lg" onclick="MissedAllClick(@Model.ID)"><span class="glyphicon glyphicon-adjust" /></button>
+                        <button class="btn btn-default btn-lg" onclick="MissedAllClick(@Model.ID)" id="@Model.ID-btnMissedAll" value="false"><span class="glyphicon glyphicon-adjust" /></button>
                     </div>
                     <div class="col-xs-2">
                         <button class="btn btn-default btn-lg" onclick="NextClickSendGame(@Model.ID)"><span class="glyphicon glyphicon-arrow-right" /></button>
