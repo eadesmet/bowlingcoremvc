@@ -579,6 +579,7 @@ $(document).ready(function ()
     }
 });
 
+/*
 function MissedAllClick(GameID)
 {
     //MissedAllClick.toggle = !MissedAllClick.toggle;
@@ -594,7 +595,7 @@ function MissedAllClick(GameID)
         $('#' + GameID + '-btnMissedAll').val(true);
     }
 }
-
+*/
 function MissedNoneClick(GameID)
 {
     SetMissedPinsChecked(GameID, MISSED_0);
