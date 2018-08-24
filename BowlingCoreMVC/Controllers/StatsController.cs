@@ -50,6 +50,10 @@ namespace BowlingCoreMVC.Controllers
                 {
                     var user = await _userManager.FindByIdAsync(g.UserID);
                     g.UserName = user.UserName;
+                    if (g.UserName.ToUpper() == "TEST")
+                    {
+                        WeeklyGames.Remove(g);
+                    }
                 }
             }
 
@@ -60,6 +64,10 @@ namespace BowlingCoreMVC.Controllers
                 {
                     var user = await _userManager.FindByIdAsync(g.UserID);
                     g.UserName = user.UserName;
+                    if (g.UserName.ToUpper() == "TEST")
+                    {
+                        AllTimeGames.Remove(g);
+                    }
                 }
             }
 
@@ -70,6 +78,10 @@ namespace BowlingCoreMVC.Controllers
                 {
                     var user = await _userManager.FindByIdAsync(s.UserID);
                     s.UserName = user.UserName;
+                    if (s.UserName.ToUpper() == "TEST")
+                    {
+                        AllTimeSeries.Remove(s);
+                    }
                 }
             }
 
