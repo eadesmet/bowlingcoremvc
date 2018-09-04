@@ -601,3 +601,18 @@ because the strike bonus, spare bonus code would be repeated
 
 
 }
+
+
+
+9-04
+{
+	TODO: Make the Games list (games and series page) show series games as well
+		also make it the only games/series page. also add paging
+		slight issue with it too, the league doesn't list on the series on one of these pages
+	TODO: Series summary? Game summary x3?
+	TODO: Statistics per league / per time period?
+	
+	idea - maybe have the game save automatically after being idle for x seconds?
+		(on the editgame/series page)
+	
+}
