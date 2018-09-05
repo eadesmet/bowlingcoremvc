@@ -616,3 +616,30 @@ because the strike bonus, spare bonus code would be repeated
 		(on the editgame/series page)
 	
 }
+
+9-05
+{
+	Ideas on fixing javascript bugs
+		we should be setting all the game data into the session
+		if anything changes or the page is refreshed, it's reloaded from the session
+		need to ensure the session is kept up to date as possible
+		could also setup an auto-save along these lines
+		https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
+		
+		mayybe we would want to add event listenters to everything..
+		they could simply keep all the data in sync between the session and the hid values
+		also when/if the hid values are updated, refresh and rescore the whole game
+		
+	ideas to bulletproof scoring
+		assert that all scores are 0-10 (no negatives or greater than 10)
+			if there is a score that isn't 0-10, try to re-figure out what it should have been
+				this could be fun
+		minimize the amount of logic flow going everywhere
+		refresh/rescore everything anytime any score changes
+		maybe do a second pass of scoring
+			this could allow better handling of 'hiding' unconfirmed scores (scoreuptoframe)
+			first pass could validate everything and score the game
+			second pass could confirm the scoring and set values needed
+			something like that
+		
+}
