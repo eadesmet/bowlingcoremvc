@@ -643,3 +643,15 @@ because the strike bonus, spare bonus code would be repeated
 			something like that
 		
 }
+
+9-06
+{
+	Change the game table to a bootstrap flexbox
+		might be easier to work with and look better on mobile
+		check out bootstrap version, it might only be 4.0+
+		also look at borders for these, and probably bg color too
+	
+	
+	
+		
+}
