@@ -36,8 +36,8 @@ namespace BowlingCoreMVC.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null) { return RedirectToAction("Login", "Account"); }
 
-            //List<Game> GamesList = await _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate).ToListAsync();
-            List<Game> GamesList = DataHelper.GetNonSeriesGamesByUserID(user.Id, _db);
+            List<Game> GamesList = await _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate).ToListAsync();
+            //List<Game> GamesList = DataHelper.GetNonSeriesGamesByUserID(user.Id, _db);
 
             ViewData["UserSeries"] = DataHelper.GetAllSeriesByUserID(user.Id, _db);
 
