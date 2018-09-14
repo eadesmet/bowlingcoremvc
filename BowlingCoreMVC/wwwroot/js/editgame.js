@@ -501,13 +501,13 @@ function ClearHighlight(GameID, FrameNum)
 {
     var prefixID = "#" + GameID + "_" + FrameNum + "_";
 
-    $(prefixID + "1_tdFrame").css("background-color", "White");
-    $(prefixID + "2_tdFrame").css("background-color", "White");
-    $(prefixID + "tdFrameScore").css("background-color", "White");
+    $(prefixID + "1_tdFrame").css("background-color", "");
+    $(prefixID + "2_tdFrame").css("background-color", "");
+    $(prefixID + "tdFrameScore").css("background-color", "");
 
     if (FrameNum === 10 || FrameNum === 9)
     {
-        $("#" + GameID + "_10_3_tdFrame").css("background-color", "White");
+        $("#" + GameID + "_10_3_tdFrame").css("background-color", "");
     }
 }
 

@@ -59,10 +59,10 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav mr-auto">
                 @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>*@
-                <li class="nav-item"><a asp-area="" asp-controller="Stats" asp-action="Index">HiScores</a></li>
-                <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                <li class="nav-item"><a asp-area="" asp-controller="Stats" asp-action="Index" class="nav-link">HiScores</a></li>
+                <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="About" class="nav-link">About</a></li>
                 @*<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Scores<span class="caret"></span></a>
@@ -74,7 +74,7 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Leagues<span class="caret"></span></a>
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Leagues</a>
                     <div class="dropdown-menu">
                         <a asp-area="" asp-controller="Leagues" asp-action="Index" class="dropdown-item">Leagues</a>
                         <a asp-area="" asp-controller="Locations" asp-action="Index" class="dropdown-item">Locations</a>
