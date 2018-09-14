@@ -93,10 +93,10 @@ function UpdateCurrentThrowVal(GameID)
     if (CurrentFrame === 10 && ThrowNum === 1)
     {
         //Reset the 10th frame when setting the first ball
-        //$(prefixID + 2 + "_hidFrame").val(0);
-        //$(prefixID + 2 + "_hidPins").val(0);
-        //$(prefixID + 3 + "_hidFrame").val(0);
-        //$(prefixID + 3 + "_hidPins").val(0);
+        $(prefixID + 2 + "_hidFrame").val(0);
+        $(prefixID + 2 + "_hidPins").val(0);
+        $(prefixID + 3 + "_hidFrame").val(0);
+        $(prefixID + 3 + "_hidPins").val(0);
     }
 
     //Overwrite second throw score to be calculated from throw one score
@@ -125,14 +125,16 @@ function UpdateCurrentThrowVal(GameID)
         var TenthSecondThrowData = GetThrowHidVals(GameID, CurrentFrame, 2);
         //if (TenthSecondThrowData.score < 10)
 
-        if (FirstThrowData.score == 10 && TenthSecondThrowData.score < 10)
-        {
-            $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
-        }
-        else
-        {
-            $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
-        }
+        //if (FirstThrowData.score == 10 && TenthSecondThrowData.score < 10)
+        //{
+        //    $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score - TenthSecondThrowData.score);
+        //}
+        //else
+        //{
+        //    $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
+        //}
+
+        $(prefixID + ThrowNum + "_hidFrame").val(CurrentThrowData.score);
 
         //10th frame scenerios
         //first ball strike, second ball fresh
@@ -789,11 +791,11 @@ function ScoreGame(g)
     {
         g.Frames[i].FrameScore = parseInt(g.Frames[i].FrameScore);
 
-        if (g.Frames[i].ThrowOneScore == 10)
+        if (parseInt(g.Frames[i].ThrowOneScore) == 10)
         {
             g.Frames[i].FrameScore = StrikeBonus(g.Frames, i);
         }
-        else if (g.Frames[i].ThrowOneScore + g.Frames[i].ThrowTwoScore == 10)
+        else if (parseInt(g.Frames[i].ThrowOneScore) + parseInt(g.Frames[i].ThrowTwoScore) == 10)
         {
             g.Frames[i].FrameScore = SpareBonus(g.Frames, i);
         }
