@@ -35,7 +35,49 @@
 }
 
 
+/* Example Highlight */
+.bd-highlight {
+    background-color: rgba(50, 50, 50, .15);
+    border: 1px solid rgba(50, 50, 50, .15);
+    align-items: center;
+    justify-content: center;
+    
+    
+}
 
+.scoreboard {
+    border: 2px solid rgba(30, 30, 30, .50);
+}
+
+.scoreboard-frame {
+    border: 2px solid rgba(30, 30, 30, .50);
+    background-color: rgba(10, 10, 10, .10);
+}
+
+.scoreboard-framenum {
+    background-color: rgba(20, 90, 50, .80);
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.scoreboard-box {
+    border-left: 2px solid rgba(0, 50, 30, .75);
+    border-bottom: 2px solid rgba(0, 50, 30, .75);
+}
+
+.scoreboard-box-10 {
+    border-bottom: 2px solid rgba(0, 50, 30, .75);
+    
+    border-right: 2px solid rgba(0, 50, 30, .75);
+    border-left: 2px solid rgba(0, 50, 30, .75);
+}
+
+.scoreboard-framescore {
+    padding-top: 10px;
+    align-items: center;
+    justify-content: center;
+}
 
 /* custom */
 

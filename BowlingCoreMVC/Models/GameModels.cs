@@ -66,11 +66,11 @@ namespace BowlingCoreMVC.Models
         public int Score { get; set; }
 
         [Display(Name="Created")]
-        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yy (ddd) hh:mm tt}")]
         public DateTime CreatedDate { get; set; }
 
         [Display(Name = "Modified")]
-        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yy (ddd) hh:mm tt}")]
         public DateTime ModifiedDate { get; set; }
 
         public int CurrentFrame { get; set; }
@@ -137,11 +137,11 @@ namespace BowlingCoreMVC.Models
         public virtual ICollection<Game> Games { get; set; }
 
         [Display(Name = "Created")]
-        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yy (ddd) hh:mm tt}")]
         public DateTime CreatedDate { get; set; }
 
         [Display(Name = "Modified")]
-        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yy (ddd) hh:mm tt}")]
         public DateTime ModifiedDate { get; set; }
 
 
@@ -191,11 +191,11 @@ namespace BowlingCoreMVC.Models
         public string CreatedByID { get; set; }
 
         [Display(Name = "Created")]
-        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yy (ddd) hh:mm tt}")]
         public DateTime CreatedDate { get; set; }
 
         [Display(Name = "Modified")]
-        [DisplayFormat(DataFormatString = "{0:MMMM dd (ddd), yyyy @ hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yy (ddd) hh:mm tt}")]
         public DateTime ModifiedDate { get; set; }
 
         public virtual Location Location { get; set; }

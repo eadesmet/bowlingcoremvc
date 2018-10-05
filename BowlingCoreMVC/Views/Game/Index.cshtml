@@ -4,10 +4,10 @@
     ViewData["Title"] = "My Scores";
 }
 
-<h2>@ViewData["Title"]</h2>
+@*<h2>@ViewData["Title"]</h2>*@
 
 <p>
-    <a asp-action="Create" asp-controller="Series" class="btn btn-primary">New Series</a>
+    <a asp-action="Create" asp-controller="Series" class="btn btn-primary btn-block">New Series</a>
 </p>
 
 
@@ -80,7 +80,7 @@
 <br />
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">New Game</a>
+    <a asp-action="Edit" class="btn btn-primary btn-block">New Game</a>
 </p>
 <h4>Games</h4>
 <table class="table">
@@ -95,9 +95,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.CreatedDate)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.ModifiedDate)
-            </th>
+            </th>*@
             @*<th>
                     @Html.DisplayNameFor(model => model.CurrentFrame)
                 </th>
@@ -132,9 +132,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedDate)
                 </td>
-                <td>
+                @*<td>
                     @Html.DisplayFor(modelItem => item.ModifiedDate)
-                </td>
+                </td>*@
 
                 @*<td>
                         @Html.DisplayFor(modelItem => item.CurrentFrame)

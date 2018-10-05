@@ -12,18 +12,19 @@
 
 <input type="hidden" class="hidGameID" value="@Model.ID" />
 
-<div class="alert alert-success alert-dismissible" role="alert" id="SavedAlert" style="display: none; position: fixed; width:80%;">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">×</span>
-    </button>
-    Game Saved!
-</div>
 
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="min-width:480px;">
-    <div class="panel panel-primary">
+
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true" style="min-width:480px;">
+    <div class="card">
+        <div class="alert alert-success alert-dismissible" role="alert" id="SavedAlert" style="display: none; position: fixed; width:80%;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            Game Saved!
+        </div>
         @*<a role="button" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">*@
-        <div class="panel-heading" role="button" id="GameHeading" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">
-            <h4 class="panel-title">
+        <div class="card-heading bg-primary" role="button" id="GameHeading" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">
+            <h4 class="card-title">
                 @{
                     if (Model.SeriesID != 0 && Model.SeriesID != null)
                     {
@@ -34,65 +35,62 @@
                         @Model.UserName
                     }
                 }
-                
+
             </h4>
         </div>
         @*</a>*@
-        <div id="scoreboard" class="panel-body">
-            <table class="table table-bordered table-condensed GameTable">
-                <thead>
-                    <tr>
-                        @*OR just 1-10..*@
-                        @foreach (var f in Model.Frames)
-                        {
-                            if (f.FrameNum != 10)
+
+
+
+        <div id="scoreboard" class="card-body">
+
+            <div class="d-inline-flex flex-row scoreboard">
+                @foreach (var f in Model.Frames)
+                {
+                    <div class="p-1 flex-column scoreboard-frame">
+                        <div class="d-flex flex-row scoreboard-framenum">
+                            <div class="p-1">@f.FrameNum</div>
+                        </div>
+
+
+
+                        <div class="d-flex flex-row">
+                            <div class="p-1"><frame-throw frame="@f" throw-num="1"></frame-throw></div>
+
+                            <div class="p-1 scoreboard-box"><frame-throw frame="@f" throw-num="2"></frame-throw></div>
+
+
+
+                            @if (f.FrameNum == 10)
                             {
-                                <th colspan="2">@f.FrameNum</th>
-                            }
-                            else
-                            {
-                                <th colspan="3">@f.FrameNum</th>
+                                <div class="p-1 scoreboard-box-10"><frame-throw frame="@f" throw-num="3"></frame-throw></div>
                             }
 
 
-                        }
-                    </tr>
-                </thead>
-                <tr>
-                    @foreach (var f in Model.Frames)
-                    {
+                        </div>
 
-                        <frame-throw frame="@f" throw-num="1"></frame-throw>
-                        <frame-throw frame="@f" throw-num="2"></frame-throw>
 
-                        if (f.FrameNum == 10)
-                        {
-                            <frame-throw frame="@f" throw-num="3"></frame-throw>
-                        }
 
-                    }
-                </tr>
-                <tr>
-                    @foreach (var f in Model.Frames)
-                    {
-                        <frame-score frame="@f"></frame-score>
+                        <div class="d-flex flex-row scoreboard-framescore">
+                            <frame-score frame="@f"></frame-score>
+                        </div>
+                    </div>
 
-                    }
-                </tr>
-            </table>
+                }
+            </div>
 
         </div>
-        <div id="@CollapseGameID" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="GameHeading">
-            <div class="panel-body">
+        <div id="@CollapseGameID" class="card" aria-labelledby="GameHeading">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-xs-2">
-                        <button class="btn btn-default btn-lg" onclick="PreviousClickSendGame(@Model.ID)"><span class="glyphicon glyphicon-arrow-left" /></button>
+                        <button class="btn btn-default btn-lg" onclick="PreviousClickSendGame(@Model.ID)">@*<span class="glyphicon glyphicon-arrow-left" />*@&lt;--</button>
                     </div>
                     <div class="col-xs-2">
-                        <button class="btn btn-default btn-lg" onclick="MissedAllClick(@Model.ID)" id="@Model.ID-btnMissedAll" value="false"><span class="glyphicon glyphicon-adjust" /></button>
+                        <button class="btn btn-default btn-lg" onclick="MissedAllClick(@Model.ID)" id="@Model.ID-btnMissedAll" value="false">@*<span class="glyphicon glyphicon-adjust" />*@O</button>
                     </div>
                     <div class="col-xs-2">
-                        <button class="btn btn-default btn-lg" onclick="NextClickSendGame(@Model.ID)"><span class="glyphicon glyphicon-arrow-right" /></button>
+                        <button class="btn btn-default btn-lg" onclick="NextClickSendGame(@Model.ID)">@*<span class="glyphicon glyphicon-arrow-right" />*@--&gt;</button>
                     </div>
                     <div class="col-xs-2"></div>
                     <div class="col-xs-2">
@@ -151,7 +149,7 @@
                 </div>
             </div>
         </div>
-        <div class="panel-footer">
+        <div class="card-footer">
             <input type="button" class="btn btn-success btn-block" value="Save" onclick="SaveGameClick(@Model.ID)" />
         </div>
     </div>
