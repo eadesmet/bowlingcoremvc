@@ -93,10 +93,19 @@ function UpdateCurrentThrowVal(GameID)
     if (CurrentFrame === 10 && ThrowNum === 1)
     {
         //Reset the 10th frame when setting the first ball
-        $(prefixID + 2 + "_hidFrame").val(0);
-        $(prefixID + 2 + "_hidPins").val(0);
-        $(prefixID + 3 + "_hidFrame").val(0);
-        $(prefixID + 3 + "_hidPins").val(0);
+        //if ($(prefixID + 2 + "_hidFrame").val() == 0)
+        if ($(prefixID + 1 + "_hidFrame").val() != CurrentThrowData.score)
+        {
+            // Don't clear scores that exist if the throw is the same.
+            $(prefixID + 2 + "_hidFrame").val(0);
+            $(prefixID + 2 + "_hidPins").val(0);
+            $(prefixID + 3 + "_hidFrame").val(0);
+            $(prefixID + 3 + "_hidPins").val(0);
+
+            // This isn't working? going from 9/X to 8 leaves the 1 in the label
+            //$(prefixID + 2 + "_lblFrame").empty().append("-");
+        }
+        
     }
 
     //Overwrite second throw score to be calculated from throw one score
@@ -434,8 +443,16 @@ function FormatFrameThrowLabels(GameID, FrameNum)
         }
         else if (SecondThrowScore + ThirdThrowScore === 10)
         {
-            //$("#" + GameID + "_" + FrameNum + "_2_lblFrame").append(SecondThrowScore);
-            $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append("/");
+            if (FirstThrowScore < 10)
+            {
+                // This is so that if secondthrow == 1 and thirdthrow == 9, third won't be formatted as '/'
+                $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append(ThirdThrowScore);
+            }
+            else
+            {
+                $("#" + GameID + "_" + FrameNum + "_3_lblFrame").empty().append("/");
+            }
+            
         }
         else
         {
@@ -517,15 +534,16 @@ function HighlightSelectedFrame(GameID, FrameNum, CurrentThrow)
     //NOTE: Might not need CurrentThrow, we can get it ourselves here
     var prefixID = "#" + GameID + "_" + FrameNum + "_";
 
-    $(prefixID + "1_tdFrame").css("background-color", "Aquamarine");
-    $(prefixID + "2_tdFrame").css("background-color", "Aquamarine");
-    $(prefixID + "tdFrameScore").css("background-color", "Aquamarine");
+    $(prefixID + "1_tdFrame").css("background-color", "rgba(20, 90, 50, .20)");
+    //$(prefixID + "1_tdFrame").addClass("border border-primary bg-info rounded");
+    $(prefixID + "2_tdFrame").css("background-color", "rgba(20, 90, 50, .20)");
+    $(prefixID + "tdFrameScore").css("background-color", "rgba(20, 90, 50, .20)");
     if (FrameNum === 10)
     {
-        $(prefixID + "3_tdFrame").css("background-color", "Aquamarine");
+        $(prefixID + "3_tdFrame").css("background-color", "rgba(20, 90, 50, .20)");
         if (CurrentThrow === 21)
         {
-            $(prefixID + "3_tdFrame").css("background-color", "Plum");
+            $(prefixID + "3_tdFrame").css("background-color", "rgba(100, 240, 160, .80)");
         }
         else
         {
@@ -533,34 +551,38 @@ function HighlightSelectedFrame(GameID, FrameNum, CurrentThrow)
             if (fThrow === 0) { fThrow = 2; }
             if (fThrow === 1)
             {
-                $(prefixID + "1_tdFrame").css("background-color", "Plum");
+                $(prefixID + "1_tdFrame").css("background-color", "rgba(100, 240, 160, .80)");
             }
             else if (fThrow === 2)
             {
-                $(prefixID + "2_tdFrame").css("background-color", "Plum");
+                $(prefixID + "2_tdFrame").css("background-color", "rgba(100, 240, 160, .80)");
             }
         }
     }
     else
     {
+        // TODO: Issue here with clicking back on the first throw. It should stay the same
         var fThrow = CurrentThrow % 2;
         if (fThrow === 0) { fThrow = 2; }
         if (fThrow === 1)
         {
-            $(prefixID + "1_tdFrame").css("background-color", "Plum");
+            $(prefixID + "1_tdFrame").css("background-color", "rgba(100, 240, 160, .80)");
         }
         else if (fThrow === 2)
         {
-            $(prefixID + "2_tdFrame").css("background-color", "Plum");
+            $(prefixID + "2_tdFrame").css("background-color", "rgba(100, 240, 160, .80)");
         }
     }
 }
 
 
-// TODO: Does this get called on EVERY page?
+// Global Variables
+var unsaved;
+
 //Document Load
 $(document).ready(function ()
 {
+    unsaved = false;
     var GameIDs = GetGameIDs();
     for (var i = 0; i < GameIDs.length; i++)
     {
@@ -580,6 +602,16 @@ $(document).ready(function ()
         HighlightSelectedFrame(GameIDs[i], CurrentFrame, CurrentThrow);
     }
 });
+
+function UnloadPage()
+{
+    if (unsaved)
+    {
+        return "You have unsaved changes. Do you wish to continue without saving?";
+    }
+}
+
+window.onbeforeunload = UnloadPage;
 
 /*
 function MissedAllClick(GameID)
@@ -615,6 +647,8 @@ function NextClickSendGame(GameID)
     g = ThrowCurrent(g);
     RefreshGameHid(g);
     HighlightSelectedFrame(g.ID, g.CurrentFrame, g.CurrentThrow);
+
+    unsaved = true;
     //UpdateCurrentThrowVal(GameID);
     //var JSONGame = GetJSONFromPage(GameID);
     //var GameIDs = GetGameIDs();
@@ -697,7 +731,7 @@ function SaveGameClick(GameID)
     $.ajax({
         type: "POST",
         traditional: true,
-        async: false,
+        async: true,
         cache: false,
         url: '/Game/SaveGameClick',//'@Url.Action("PreviousThrow", "Game")',
         context: document.body,
@@ -705,21 +739,25 @@ function SaveGameClick(GameID)
         success: function (result)
         {
             var returnedGame = JSON.parse(result.jsonGameReturned);
-            if (result.redirect)
-            {
-                //Redirect to the Edit page after a new game has been created
-                window.location = "/Game/Edit/" + returnedGame.ID;
-                return;
-            }
+            //if (result.redirect)
+            //{
+            //    //Redirect to the Edit page after a new game has been created
+            //    window.location = "/Game/Edit/" + returnedGame.ID;
+            //    return;
+            //}
 
             RefreshGameHid(returnedGame);
 
             HighlightSelectedFrame(returnedGame.ID, returnedGame.CurrentFrame, returnedGame.CurrentThrow);
 
-            $("#SavedAlert").fadeTo(4000, 500).slideDown(500, function ()
+            unsaved = false;
+
+            $("#SavedAlert").fadeTo(2000, 500).slideDown(500, function ()
             {
                 $("#SavedAlert").slideUp(500);
             });
+            
+
         },
         error: function (xhr)
         {
@@ -870,8 +908,8 @@ function SpareBonus(frameslist, frameindex)
     }
     else
     {
-        frameslist[frameindex].ThrowOneScore = parseInt(frameslist[frameindex].ThrowOneScore);
-        return (10 + frameslist[frameindex].ThrowOneScore);
+        frameslist[frameindex + 1].ThrowOneScore = parseInt(frameslist[frameindex + 1].ThrowOneScore);
+        return (10 + frameslist[frameindex + 1].ThrowOneScore);
     }
 
 }

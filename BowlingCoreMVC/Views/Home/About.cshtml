@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "About";
 }
-<h2>@ViewData["Title"]</h2>
+@*<h2>@ViewData["Title"]</h2>*@
 <h3>@ViewData["Message"]</h3>
 
 <h4>Here at BowlingHub you can track all of your bowling scores! Whether you are in multiple leagues, or you just want to track your practice, you can do it all here.</h4>
@@ -52,8 +52,8 @@
     <hr />
     <div class="row">
         <div class="col-sm-2">
-            <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left" /></button>
-            <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right" /></button>
+            <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left" />&lt;--</button>
+            <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right" />--&gt;</button>
         </div>
         <div class="col-sm-10">
             <p>These arrow buttons allow you to move forward and backward through the game. Pressing the Right Arrow will "Throw" the current ball (indicated by purple on the scoreboard). "Filled in" pins will be counted as missed and move the game forward. The Left Arrow is mainly for correcting mistakes and viewing previous missed pins.</p>

@@ -12,15 +12,16 @@
 
 <input type="hidden" class="hidGameID" value="@Model.ID" />
 
-<div class="alert alert-success alert-dismissible" role="alert" id="SavedAlert" style="display: none; position: fixed; width:80%;">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">×</span>
-    </button>
-    Game Saved!
-</div>
+
 
 <div class="card-group" id="accordion" role="tablist" aria-multiselectable="true" style="min-width:480px;">
     <div class="card">
+        <div class="alert alert-success alert-dismissible" role="alert" id="SavedAlert" style="display: none; position: fixed; width:80%;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            Game Saved!
+        </div>
         @*<a role="button" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">*@
         <div class="card-heading bg-primary" role="button" id="GameHeading" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">
             <h4 class="card-title">
@@ -38,53 +39,40 @@
             </h4>
         </div>
         @*</a>*@
+
+
+
         <div id="scoreboard" class="card-body">
-            @*<div class="d-flex flex-row bd-highlight">
-                    <div class="p-1 flex-column">
-                        <div class="d-flex flex-row bd-highlight">
-                            <div class="p-1 bd-highlight flex-fill">1</div>
-                        </div>
-                        <div class="d-flex flex-row bd-highlight">
-                            <div class="p-1 bd-highlight">X</div>
-                            <div class="p-1 bd-highlight">X</div>
-                        </div>
-                        <div class="d-flex flex-row bd-highlight">
-                            <div class="p-1 bd-highlight flex-fill">XXX</div>
-                        </div>
 
-                    </div>
-                    <div class="p-1 bd-highlight">Flex item 1</div>
-                    <div class="p-1 bd-highlight">Flex item 2</div>
-                    <div class="p-1 bd-highlight">Flex item 3</div>
-                    <div class="p-1 bd-highlight">Flex item 4</div>
-                    <div class="p-1 bd-highlight">Flex item 5</div>
-                    <div class="p-1 bd-highlight">Flex item 6</div>
-                    <div class="p-1 bd-highlight">Flex item 7</div>
-                    <div class="p-1 bd-highlight">Flex item 8</div>
-                    <div class="p-1 bd-highlight">Flex item 9</div>
-                    <div class="p-1 bd-highlight">Flex item 10</div>
-                </div>*@
-
-            <div class="d-flex flex-row">
+            <div class="d-inline-flex flex-row scoreboard">
                 @foreach (var f in Model.Frames)
                 {
-                    <div class="p-1 flex-column bd-highlight">
-                        <div class="d-flex flex-row bd-highlight">
+                    <div class="p-1 flex-column scoreboard-frame">
+                        <div class="d-flex flex-row scoreboard-framenum">
                             <div class="p-1">@f.FrameNum</div>
                         </div>
 
-                        <div class="d-flex flex-row bd-highlight">
-                            <div class=""><frame-throw frame="@f" throw-num="1"></frame-throw></div>
-                            <div class=""><frame-throw frame="@f" throw-num="2"></frame-throw></div>
+
+
+                        <div class="d-flex flex-row">
+                            <div class="p-1"><frame-throw frame="@f" throw-num="1"></frame-throw></div>
+
+                            <div class="p-1 scoreboard-box"><frame-throw frame="@f" throw-num="2"></frame-throw></div>
+
+
 
                             @if (f.FrameNum == 10)
                             {
-                                <frame-throw frame="@f" throw-num="3"></frame-throw>
+                                <div class="p-1 scoreboard-box-10"><frame-throw frame="@f" throw-num="3"></frame-throw></div>
                             }
+
+
                         </div>
 
-                        <div class="d-flex flex-row bd-highlight">
-                            <div class="p-1 flex-fill"><frame-score frame="@f"></frame-score></div>
+
+
+                        <div class="d-flex flex-row scoreboard-framescore">
+                            <frame-score frame="@f"></frame-score>
                         </div>
                     </div>
 

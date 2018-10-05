@@ -1,7 +1,7 @@
 ﻿
 
 @{
-    ViewData["Title"] = "User Summary for " + ViewData["UserName"];
+    ViewData["Title"] = "Summary for " + ViewData["UserName"];
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -13,14 +13,18 @@
     </div>
 </div>
 
+<hr />
+
 <div class="row">
     <div class="col-lg-6">
-        <h4>Overall Strike %: @String.Format("{0:P2}", ViewData["OverallStrikePerc"])</h4>
+        <h4>Overall Strike Percent: @String.Format("{0:P2}", ViewData["OverallStrikePerc"])</h4>
     </div>
     <div class="col-lg-6">
-        <h4>Overall Spare %: @String.Format("{0:P2}", ViewData["OverallSparePerc"])</h4>
+        <h4>Overall Spare Percent: @String.Format("{0:P2}", ViewData["OverallSparePerc"])</h4>
     </div>
 </div>
+
+<hr/>
 
 <div class="row">
     <div class="col-lg-6">

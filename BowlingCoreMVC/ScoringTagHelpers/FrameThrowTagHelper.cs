@@ -41,7 +41,7 @@ namespace BowlingCoreMVC.ScoringTagHelpers
 
             output.TagName = "div";
             output.Attributes.Add("id", tdID);
-            output.Attributes.Add("class", "p-2");
+            output.Attributes.Add("class", "p-1");
 
             StringBuilder template = new StringBuilder();
             template.AppendJoin("", "<input type='hidden' id='", hidFrameNumID, "' value='", frame.FrameNum, "'/>");

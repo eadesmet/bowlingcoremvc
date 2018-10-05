@@ -655,3 +655,26 @@ because the strike bonus, spare bonus code would be repeated
 	
 		
 }
+
+
+10-5
+{
+    Making changes to allow an unsaved notification when leaving the page
+        the issue is though, when creating a new game it tries to leave the page
+        consider changing this to show the edit page
+        maybe just create the game when clicking new game anyway.. it shouldn't be a big deal
+    Should also probably combine the Leagues and Locations pages
+
+    Ok ok ok.. I need an example here of what i'm trying to draw
+
+    ---------------------
+    |                   |
+    |         1         |
+    |-------------------|
+    |            |  /   |
+    |     99     |_/____|
+    |     99            |
+    |                   |
+    |      123          |
+    --------------------
+}

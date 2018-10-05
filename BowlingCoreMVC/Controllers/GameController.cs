@@ -45,18 +45,27 @@ namespace BowlingCoreMVC.Controllers
         }
 
         // GET Create (Create a new game, redirect to Edit page)
-        [HttpGet]
-        public ActionResult Create()
-        {
-            Game g = Game.Create();
-            return View("Edit", g);
-        }
+        //[HttpGet]
+        //public ActionResult Create()
+        //{
+        //    Game g = Game.Create();
+        //    return View("Edit", g);
+        //}
 
         // GET Edit page (Edit a single game by ID)
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var game = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
+            Game game;
+            if (id == 0)
+            {
+                game = Game.Create();
+            }
+            else
+            {
+                game = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
+            }
+            
             game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
 
             var user = await GetCurrentUserAsync();
@@ -154,7 +163,7 @@ namespace BowlingCoreMVC.Controllers
                 DataHelper.UpdateSeries(Convert.ToInt32(g.SeriesID), _db);
             }
             
-            return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g), redirect = IsNewGame });
+            return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g)/*, redirect = IsNewGame*/ });
         }
         #endregion
 

@@ -44,7 +44,20 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
 
         <div class="navbar-brand">
-            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["AppName"]</a>
+            @using Microsoft.AspNetCore.Identity
+            @using BowlingCoreMVC.Models
+
+            @inject SignInManager<ApplicationUser> SignInManager
+            @inject UserManager<ApplicationUser> UserManager
+
+            @if (!SignInManager.IsSignedIn(User))
+            {
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["AppName"]</a>
+            }
+            else
+            {
+                <a asp-area="" asp-controller="Stats" asp-action="Index" class="navbar-brand">@ViewData["AppName"]</a>
+            }
         </div>
 
         @*<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarNavDropdown">
@@ -61,17 +74,19 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav mr-auto">
                 @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>*@
-                <li class="nav-item"><a asp-area="" asp-controller="Stats" asp-action="Index" class="nav-link">HiScores</a></li>
-                <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="About" class="nav-link">About</a></li>
+                @*<li class="nav-item"><a asp-area="" asp-controller="Stats" asp-action="Index" class="nav-link">HiScores</a></li>*@
+
                 @*<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Scores<span class="caret"></span></a>
-                    <div class="dropdown-menu">
-                        <a asp-area="" asp-controller="Game" asp-action="Index" class="dropdown-item">My Games</a>
-                        <a asp-area="" asp-controller="Series" asp-action="Index" class="dropdown-item">My Series</a>
-                        <a asp-area="" asp-controller="Stats" asp-action="MyStats" class="dropdown-item">My Statistics</a>
-                    </div>
-                </li>
+                <li class="nav-item"><a asp-area="" asp-controller="Game" asp-action="Index" class="nav-link">Games</a></li>
+                <li class="nav-item"><a asp-area="" asp-controller="Stats" asp-action="MyStats" class="nav-link">Statistics</a></li>
+                @*<li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Scores<span class="caret"></span></a>
+            <div class="dropdown-menu">
+                <a asp-area="" asp-controller="Game" asp-action="Index" class="dropdown-item">My Games</a>
+                <a asp-area="" asp-controller="Series" asp-action="Index" class="dropdown-item">My Series</a>
+                <a asp-area="" asp-controller="Stats" asp-action="MyStats" class="dropdown-item">My Statistics</a>
+            </div>
+        </li>*@
 
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Leagues</a>
@@ -81,6 +96,7 @@
                     </div>
                 </li>
             </ul>
+            
             @await Html.PartialAsync("_LoginPartial")
         </div>
 
