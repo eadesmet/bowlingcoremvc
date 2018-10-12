@@ -47,23 +47,23 @@
             <div class="d-inline-flex flex-row scoreboard">
                 @foreach (var f in Model.Frames)
                 {
-                    <div class="p-1 flex-column scoreboard-frame">
+                    <div class="flex-column scoreboard-frame">
                         <div class="d-flex flex-row scoreboard-framenum">
-                            <div class="p-1">@f.FrameNum</div>
+                            <div class="">@f.FrameNum</div>
                         </div>
 
 
 
                         <div class="d-flex flex-row">
-                            <div class="p-1"><frame-throw frame="@f" throw-num="1"></frame-throw></div>
+                            <div class=""><frame-throw frame="@f" throw-num="1"></frame-throw></div>
 
-                            <div class="p-1 scoreboard-box"><frame-throw frame="@f" throw-num="2"></frame-throw></div>
+                            <div class="scoreboard-box"><frame-throw frame="@f" throw-num="2"></frame-throw></div>
 
 
 
                             @if (f.FrameNum == 10)
                             {
-                                <div class="p-1 scoreboard-box-10"><frame-throw frame="@f" throw-num="3"></frame-throw></div>
+                                <div class="scoreboard-box-10"><frame-throw frame="@f" throw-num="3"></frame-throw></div>
                             }
 
 
