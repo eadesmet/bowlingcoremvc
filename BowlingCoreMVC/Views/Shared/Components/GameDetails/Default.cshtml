@@ -3,8 +3,6 @@
     ViewData["Title"] = "Default";
 }
 
-<h2>Game Details</h2>
-
 <div class="row">
     <div id="scoreboard">
         <table class="table table-bordered table-condensed GameTable">
@@ -26,10 +24,10 @@
                     }
                 </tr>
             </thead>
+@*
             <tr>
                 @foreach (var f in Model.Frames)
                 {
-
                     <frame-throw frame="@f" throw-num="1"></frame-throw>
                     <frame-throw frame="@f" throw-num="2"></frame-throw>
 
@@ -40,6 +38,7 @@
 
                 }
             </tr>
+*@
             <tr>
                 @foreach (var f in Model.Frames)
                 {
@@ -72,6 +71,27 @@
                         </td>
                     }
                 </tr>
+				<tr>
+					<td>Total</td>
+					<td>Throw One</td>
+					<td>Throw Two</td>
+                    @if (f.FrameNum == 10)
+                    {
+                        <td>
+                            Throw Three
+                        </td>
+                    }
+				<tr>
+					<td>@f.FrameTotal</td>
+					<td>@f.ThrowOneScore</td>
+					<td>@f.ThrowTwoScore</td>
+                    @if (f.FrameNum == 10)
+                    {
+                        <td>
+                            @f.ThrowThreeScore
+                        </td>
+                    }
+				</tr>
             </table>
         </div>
 
@@ -86,10 +106,15 @@
      border: 1px solid;
     }
         .frame-details-table td {
-            padding: 10px; 
+            padding: 10px;
+			text-align: center;
+			vertical-align: middle;
         }
 </style>
 <script type="text/javascript">
+
+// NOTE(Eric)(11/16): What is this?!!? Just delete it!
+
                                     //TODO: Move this to server side???
                                     //maybe a new field in the game model with a custom GET
                                     //$("#1_1").html(GetCondensedPins())

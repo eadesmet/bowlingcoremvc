@@ -678,3 +678,60 @@ because the strike bonus, spare bonus code would be repeated
     |      123          |
     --------------------
 }
+
+
+
+11-16
+{
+	Alright, some more things I'd like to add
+
+	TODO(Eric): More statistics
+		-
+
+	TODO(Eric): Add Split functionality
+		somwhere in the formatlabels, check if it's in a list of possible splits
+		then display a version of the pin icon (8 with circle around it)
+
+	TODO(Eric): Add a League Summary page
+		have a League summary with all users a part of that league
+		Also want to have a per-user league summary
+			this could be in the user summary itself
+
+	Future updates:
+		Average Over Time
+			Add a new table
+				Date - Date of average
+				Average
+				UserID
+			Have something execute to stamp another average there
+				if (latest date > 1 week) stamp new average
+				wouldn't need to be a new table actually
+				just calculate average per the dates
+		High Game Over Time
+			Graph with highest game per week?
+			I'd actually like to see games plotted out over time.
+			This would actually tie in closely to Average Over Time
+
+		Edit Multiple peoples Games at a time, in a series like format
+			have an edit series page, but each game be game 1 of a different user
+			would have to figure out permissions. who can do this?
+				maybe time to actually set up Teams
+
+
+
+
+	TODO(Eric): I'd like the previous button to skip the second throw when it's a strike
+		if (all pins disabled) execute button again?
+		DONE
+
+		If I delete a game, and it's in a series, what happens?
+			it actually just removes it from the series too
+			the link is gone, so the series just has 1 less game
+
+	TODO(Eric): Pagination for the Game page! getting a little long
+
+	TODO(Eric): Redo deletion, so it doesn't actually delete anything
+		Add a 'Previous UserID' to the game, set that, and set UserID to 0
+
+
+}

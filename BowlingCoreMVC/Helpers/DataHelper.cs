@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,8 +13,8 @@ namespace BowlingCoreMVC.Helpers
     public static class DataHelper
     {
         public static readonly ApplicationDbContext db;
-
-        #region Games
+        
+#region Games
         public static Game SaveGame(Game PageGame, ApplicationDbContext db)
         {
             Game DBGame;
@@ -23,18 +23,18 @@ namespace BowlingCoreMVC.Helpers
                 //Update existing game
                 DBGame = db.Games.Include(o => o.Frames).Where(o => o.ID == PageGame.ID).SingleOrDefault();
                 //DBGame.Frames = DBGame.Frames.OrderBy(f => f.FrameNum).ToList();
-
+                
                 //update DBgame with updated fields from PageGame
                 DBGame.CurrentFrame = PageGame.CurrentFrame;
                 DBGame.CurrentThrow = PageGame.CurrentThrow;
                 DBGame.Frames = PageGame.Frames;
                 DBGame.Score = PageGame.Score;
                 DBGame.ScoreUpToFrame = PageGame.ScoreUpToFrame;
-
+                
                 DBGame.ModifiedDate = DateTime.Now;
-
+                
                 db.SaveChanges();
-
+                
             }
             else
             {
@@ -44,63 +44,63 @@ namespace BowlingCoreMVC.Helpers
                 DBGame.ModifiedDate = DateTime.Now;
                 DBGame.UserID = PageGame.UserID;
                 //Other fields??
-
+                
                 //NOTE: Maybe db.Games.Add(DBGame); here
                 db.Attach(DBGame);
                 db.Entry(DBGame).State = EntityState.Added;
                 db.SaveChanges();
-
+                
                 
                 foreach (var f in DBGame.Frames)
                 {
                     f.GameID = DBGame.ID;
                 }
-
+                
                 //TODO: Confirm State is picked up automatically on Frame update
                 //db.Entry(DBGame).State = EntityState.Modified;
                 db.SaveChanges();
             }
             
             
-
+            
             return (DBGame);
         }
-        #endregion
-        #region Series/leagues
+#endregion
+#region Series/leagues
         public static Series CreateSeries(Series s, ApplicationDbContext db, string UserID)
         {
             s.UserID = UserID;
             db.Attach(s);
             db.Entry(s).State = EntityState.Added;
             db.SaveChanges();
-
+            
             foreach (var g in s.Games)
             {
                 g.SeriesID = s.ID;
                 g.UserID = UserID;
             }
-
+            
             db.SaveChanges();
-
+            
             return (s);
         }
-
+        
         public static void UpdateSeries(int SeriesID, ApplicationDbContext db)
         {
             var series = db.Series.Where(o => o.ID == SeriesID).Include(o => o.Games).SingleOrDefault();
             series.SeriesScore = 0;
             series.ModifiedDate = DateTime.Now;
-
+            
             foreach (var g in series.Games)
             {
                 series.SeriesScore += g.Score;
             }
-
+            
             db.SaveChanges();
         }
-        #endregion
-
-
+#endregion
+        
+        
         public static List<SelectListItem> GetCurrentLeagues(ApplicationDbContext _db)
         {
             var result = new List<SelectListItem>();
@@ -109,10 +109,10 @@ namespace BowlingCoreMVC.Helpers
             {
                 result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });
             }
-
+            
             return (result);
         }
-
+        
         public static List<SelectListItem> GetAllLocations(ApplicationDbContext _db)
         {
             var result = new List<SelectListItem>();
@@ -121,10 +121,10 @@ namespace BowlingCoreMVC.Helpers
             {
                 result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });
             }
-
+            
             return (result);
         }
-
+        
         public static List<League> UserLeagues(string UserID, ApplicationDbContext _db)
         {
             //user is in a league if they have a series in that league
@@ -141,10 +141,10 @@ namespace BowlingCoreMVC.Helpers
                     }
                 }
             }
-
+            
             return (result);
         }
-
+        
         public static double UsersLeagueAverage(string UserID, int LeagueID, ApplicationDbContext _db)
         {
             double result = 0.0;
@@ -159,25 +159,36 @@ namespace BowlingCoreMVC.Helpers
                     count++;
                 }
             }
-
+            
             result = total / count;
-
+            
             return (result);
         }
-
+        
         public static List<Game> GetAllGamesByUserID(string UserID, ApplicationDbContext _db)
         {
             return (_db.Games.Include(o => o.Frames).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).ToList());
         }
-
+        
         public static List<Game> GetNonSeriesGamesByUserID(string UserID, ApplicationDbContext _db)
         {
             return (_db.Games.Include(o => o.Frames).Where(o => o.UserID == UserID).Where(o => o.SeriesID == 0 || o.SeriesID == null).OrderByDescending(o => o.CreatedDate).ToList());
         }
-
+        
         public static List<Series> GetAllSeriesByUserID(string UserID, ApplicationDbContext _db)
         {
-            return (_db.Series.Include(o => o.Games).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).ToList());
+            List<Series> Result = (_db.Series.Include(o => o.Games).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).ToList());
+            foreach(var s in Result)
+            {
+                s.LeagueName = GetLeagueNameByID(s.LeagueID ?? 0, _db);
+            }
+            return (Result);
+        }
+        
+        public static string GetLeagueNameByID(int LeagueID, ApplicationDbContext _db)
+        {
+            League Result = _db.Leagues.Where(o => o.ID == LeagueID).SingleOrDefault();
+            return (Result != null) ? Result.Name : "";
         }
     }
 }

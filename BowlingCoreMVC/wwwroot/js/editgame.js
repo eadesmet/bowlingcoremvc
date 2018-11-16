@@ -963,10 +963,10 @@ function CalculatePrevious(g)
     var ThrowNum = GetThrowNum(parseInt(g.CurrentThrow));
     if (ThrowNum == 1 && g.CurrentFrame != 1)
     {
-        g.CurrentFrame--;
+        g.CurrentFrame = g.CurrentFrame - 1;
     }
 
-    g = CalculateCurrentThrow(g, 0, false);
+    g = CalculateCurrentThrow(g, g.Frames[g.CurrentFrame - 1].ThrowOneScore, false);
     return (g);
 }
 

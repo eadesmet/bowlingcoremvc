@@ -158,3 +158,59 @@
         </table>
     </div>
 </div>
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h4>League Averages</h4>
+        <table class="table table-condensed table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        League
+                    </th>
+                    <th>
+                        Average
+                    </th>
+                </tr>
+            </thead>
+            @if (((List<League>)ViewData["UsersLeagues"]).Count > 0)
+            {
+                <tbody>
+					@for (var i = 0; i < ((List<League>)ViewData["UsersLeagues"]).Count; i++)
+					{
+						<tr>
+							<td>@Html.DisplayFor(modelItem => ((List<League>)ViewData["UsersLeagues"])[i].Name)
+							</td>
+							<td>@Html.DisplayFor(modelItem => ((List<double>)ViewData["UsersLeaguesAverages"])[i])
+							</td>
+						</tr>
+					}
+@*
+                    @foreach (var ul in ((List<League>)ViewData["UsersLeagues"]))
+                    {
+                        
+                            <td>
+                                @Html.DisplayFor(modelItem => ul.Name)
+                            </td>
+                        </tr>
+                    }
+					@foreach (var ula in ((List<double>)ViewData["UsersLeaguesAverages"]))
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => ula)
+                            </td>
+                        </tr>
+                    }
+*@
+                </tbody>
+            }
+        </table>
+    </div>
+</div>

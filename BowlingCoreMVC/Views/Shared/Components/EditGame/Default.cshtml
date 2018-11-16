@@ -15,7 +15,7 @@
 
 
 <div class="card-group" id="accordion" role="tablist" aria-multiselectable="true" style="min-width:480px;">
-    <div class="card">
+    <div class="card" style="width: 100%">
         <div class="alert alert-success alert-dismissible" role="alert" id="SavedAlert" style="display: none; position: fixed; width:80%;">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">×</span>
@@ -23,8 +23,8 @@
             Game Saved!
         </div>
         @*<a role="button" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">*@
-        <div class="card-heading bg-primary" role="button" id="GameHeading" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">
-            <h4 class="card-title">
+        <div class="card-heading bg-dark" role="button" id="GameHeading" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">
+            <h4 class="text-white card-header">
                 @{
                     if (Model.SeriesID != 0 && Model.SeriesID != null)
                     {
@@ -48,22 +48,22 @@
                 @foreach (var f in Model.Frames)
                 {
                     <div class="flex-column scoreboard-frame">
-                        <div class="d-flex flex-row scoreboard-framenum">
+                        <div class="d-flex flex-row scoreboard-framenum bg-dark">
                             <div class="">@f.FrameNum</div>
                         </div>
 
 
 
-                        <div class="d-flex flex-row">
-                            <div class=""><frame-throw frame="@f" throw-num="1"></frame-throw></div>
+                        <div class="d-flex flex-row scoreboard-row">
+                            <div class="flex-fill"><frame-throw frame="@f" throw-num="1"></frame-throw></div>
 
-                            <div class="scoreboard-box"><frame-throw frame="@f" throw-num="2"></frame-throw></div>
+                            <div class="flex-fill"><frame-throw frame="@f" throw-num="2"></frame-throw></div>
 
 
 
                             @if (f.FrameNum == 10)
                             {
-                                <div class="scoreboard-box-10"><frame-throw frame="@f" throw-num="3"></frame-throw></div>
+                                <div class="flex-fill"><frame-throw frame="@f" throw-num="3"></frame-throw></div>
                             }
 
 
@@ -155,7 +155,7 @@
     </div>
 </div>
 
-
+<br/>
 
 <style type="text/css">
 </style>
