@@ -1,17 +1,17 @@
-****ASP.NET Core MVC Bowling App****  
+****ASP.NET Core MVC Bowling App****
 https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/?view=aspnetcore-2.0
 
 
 
-**Secrets**  
-Storing secret values in the application the safe way:  
-	right-click project > Manage User Secrets  
+**Secrets**
+Storing secret values in the application the safe way:
+	right-click project > Manage User Secrets
 	This is our configuration info that won't get put into source control
 
 
 
-**Look into using a TagHelper for displaying frames**  
-https://mva.microsoft.com/en-US/training-courses/aspnet-core-intermediate-18154?l=QiFcbpbeE_811787171  
+**Look into using a TagHelper for displaying frames**
+https://mva.microsoft.com/en-US/training-courses/aspnet-core-intermediate-18154?l=QiFcbpbeE_811787171
 https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/authoring?view=aspnetcore-2.1
 
 
@@ -167,11 +167,11 @@ toolbar
 	make login panel a dropdown
 
 	other dropdowns possibly
-	Manage Leagues > 
+	Manage Leagues >
 		locations
 		leagues
 		view leagues?
-	My Stuff > 
+	My Stuff >
 		Games
 		Series
 		Leagues
@@ -185,7 +185,7 @@ toolbar
 
 
 
-so, dependency injection is kinda neat  
+so, dependency injection is kinda neat
 	https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1#registering-services
 
 Instead of passing the datacontext directly to each controller,
@@ -194,7 +194,7 @@ and have that interface implement whatever dataaccess you need
 with the interface getting the context instead.
 (yet another layer of abstraction just to organize things...)
 
-so it's   startup > dbcontext > ILeague > LeaguesController  
+so it's   startup > dbcontext > ILeague > LeaguesController
 insead of startup > dbcontext > LeaguesController
 
 
@@ -241,7 +241,7 @@ hidden value is getting set when refresh game is getting called on current frame
 
 
 
-5-14  
+5-14
 {
 
 	deleting a series, maybe have it warn the user if it still has games?
@@ -255,7 +255,7 @@ hidden value is getting set when refresh game is getting called on current frame
 
 }
 
-5-15  
+5-15
 {
 
 	this tutorial is the one that ended up working
@@ -266,7 +266,7 @@ hidden value is getting set when refresh game is getting called on current frame
 
 
 
-Production Update checklist  
+Production Update checklist
 {
 
 	Any database changes, run: dotnet migrations add [name]
@@ -276,7 +276,7 @@ Production Update checklist
 	push to source control default branch
 }
 
-5-21  
+5-21
 {
 
 	happy birthday
@@ -294,17 +294,17 @@ Production Update checklist
 
 	We should probably just go with the team idea
 	Team Captain will have permission to create/edit the teams games
-	
+
 
     {
-        TEAM:
-        TeamID
-        LeagueID
-        TeamName
-        
-        TEAM TO USER:
-        TeamID
-        UserID
+	TEAM:
+	TeamID
+	LeagueID
+	TeamName
+
+	TEAM TO USER:
+	TeamID
+	UserID
 
 
     }
@@ -314,7 +314,7 @@ Production Update checklist
     where g.UserID == tu.UserID
     and t.TeamID == tu.TeamID
     and g.UserId == [myuser]
-    
+
 
 
 
@@ -332,26 +332,26 @@ Production Update checklist
 
     after some thought, here is a design that might work
     {
-    	TEAM:
-    	ID
-    	LeagueID
+	TEAM:
+	ID
+	LeagueID
 
-    	Series:
-    	-Remove LeagueID
-    	-Add TeamID
+	Series:
+	-Remove LeagueID
+	-Add TeamID
 
-    	TeamToUser: (list of users on a team)
-    	ID
-    	UserID
-    	TeamID
+	TeamToUser: (list of users on a team)
+	ID
+	UserID
+	TeamID
     }
 
 
 
     After these changes, I would want to be able to filter the Series list by team / league
-    	and view the games! (summary at least)
+	and view the games! (summary at least)
 
-    
+
 
 left the day at:
 messing with migrations, will need to get this working for any prod updates
@@ -402,7 +402,7 @@ trying to initialize the db with valid data and a new user
     ANYWAY
     let's move on. Teams.
     Creation of a Team should include tagging users to that TEam
-    
+
     Maybe I should create a 'fake' user that someone can add (if those Users don't exist)
     Then someone (ie. a team captain, or user of the site) can log the whole teams scores
 
@@ -411,9 +411,9 @@ trying to initialize the db with valid data and a new user
 
     FakeUser
     {
-    	ID
-    	ParentUserID
-    	UserName
+	ID
+	ParentUserID
+	UserName
 
     }
 
@@ -424,7 +424,7 @@ trying to initialize the db with valid data and a new user
     when a parentuser creates a new game/series, will they have to establish whos game it is?
     or should fakeusers be only used as a part of a team?
     then when there is a league night, the team captain creates the session
-    	which creates a series for all users a part of the team
+	which creates a series for all users a part of the team
 
     is this feature really worth it? who would actually be using this?
     right?
@@ -434,7 +434,7 @@ trying to initialize the db with valid data and a new user
     for teams, it makes sense that they are users too.
 
     ended up addinga usersummary page
-    
+
 }
 
 5-25
@@ -449,7 +449,7 @@ trying to initialize the db with valid data and a new user
 		on next click, only update the frames throws
 		when the game is saved, update the framescores
 
-	
+
 }
 
 
@@ -465,7 +465,7 @@ trying to initialize the db with valid data and a new user
 		i want to move away from the web for a while if possible
 
 
-		
+
 	possible new projects:
 		text editor (for fun, see how it works)
 
@@ -474,7 +474,7 @@ trying to initialize the db with valid data and a new user
 		operating system (book)
 		bandwidth monitor
 		budjeting app
-		
+
 
 }
 
@@ -515,7 +515,7 @@ trying to initialize the db with valid data and a new user
 
 	add a feed of recent games to the homepage?
 		see bootstraps components 'media object'
-	
+
 }
 
 6-12
@@ -565,7 +565,7 @@ trying to initialize the db with valid data and a new user
 	Or just try to fix some of the logic there?
 		not sure where it's happening acutally
 		in ScoreGame, i'm setting throwthree to 0, but changing that didn't fix it?
-		
+
 }
 
 ^
@@ -611,10 +611,10 @@ because the strike bonus, spare bonus code would be repeated
 		slight issue with it too, the league doesn't list on the series on one of these pages
 	TODO: Series summary? Game summary x3?
 	TODO: Statistics per league / per time period?
-	
+
 	idea - maybe have the game save automatically after being idle for x seconds?
 		(on the editgame/series page)
-	
+
 }
 
 9-05
@@ -625,11 +625,11 @@ because the strike bonus, spare bonus code would be repeated
 		need to ensure the session is kept up to date as possible
 		could also setup an auto-save along these lines
 		https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
-		
+
 		mayybe we would want to add event listenters to everything..
 		they could simply keep all the data in sync between the session and the hid values
 		also when/if the hid values are updated, refresh and rescore the whole game
-		
+
 	ideas to bulletproof scoring
 		assert that all scores are 0-10 (no negatives or greater than 10)
 			if there is a score that isn't 0-10, try to re-figure out what it should have been
@@ -641,7 +641,7 @@ because the strike bonus, spare bonus code would be repeated
 			first pass could validate everything and score the game
 			second pass could confirm the scoring and set values needed
 			something like that
-		
+
 }
 
 9-06
@@ -650,19 +650,19 @@ because the strike bonus, spare bonus code would be repeated
 		might be easier to work with and look better on mobile
 		check out bootstrap version, it might only be 4.0+
 		also look at borders for these, and probably bg color too
-	
-	
-	
-		
+
+
+
+
 }
 
 
 10-5
 {
     Making changes to allow an unsaved notification when leaving the page
-        the issue is though, when creating a new game it tries to leave the page
-        consider changing this to show the edit page
-        maybe just create the game when clicking new game anyway.. it shouldn't be a big deal
+	the issue is though, when creating a new game it tries to leave the page
+	consider changing this to show the edit page
+	maybe just create the game when clicking new game anyway.. it shouldn't be a big deal
     Should also probably combine the Leagues and Locations pages
 
     Ok ok ok.. I need an example here of what i'm trying to draw
@@ -734,4 +734,9 @@ because the strike bonus, spare bonus code would be repeated
 		Add a 'Previous UserID' to the game, set that, and set UserID to 0
 
 
+}
+
+
+12-19
+{
 }
