@@ -15,36 +15,36 @@ using BowlingCoreMVC.Models;
 namespace BowlingCoreMVC.Controllers
 {
     [Authorize]
-        public class LeaguesController : Controller
+    public class LeaguesController : Controller
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
-        
+
         public LeaguesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _db = context;
             _userManager = userManager;
         }
-        
+
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-        
+
         // GET: Leagues
         public async Task<IActionResult> Index()
         {
             //var LeaguesList = await _db.Leagues.Include(o => o.Location).ToListAsync();
             var LeaguesList = await _db.Leagues.Where(o => o.EndDate >= DateTime.Today).ToListAsync();
-            
+
             var PreviousLeagues = await _db.Leagues.Where(o => o.EndDate <= DateTime.Today).ToListAsync();
-            
+
             //var ViewModelList = new List<Models.GameViewModels.GameViewModels.LeagueListViewModel>();
-            
+
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
                 ViewData["CurrentUserID"] = user.Id;
             }
             else { return View("Error"); }
-            
+
             foreach (var l in LeaguesList)
             {
                 l.CreatedByUserName = (await _userManager.FindByIdAsync(l.CreatedByID)).UserName ?? "";
@@ -53,8 +53,8 @@ namespace BowlingCoreMVC.Controllers
                     l.Location = _db.Locations.Where(o => o.ID == l.LocationID).SingleOrDefault();
                 }
             }
-            
-            
+
+
             foreach (var l in PreviousLeagues)
             {
                 l.CreatedByUserName = (await _userManager.FindByIdAsync(l.CreatedByID)).UserName ?? "";
@@ -63,12 +63,12 @@ namespace BowlingCoreMVC.Controllers
                     l.Location = _db.Locations.Where(o => o.ID == l.LocationID).SingleOrDefault();
                 }
             }
-            
+
             ViewData["PreviousLeagues"] = PreviousLeagues;
-            
+
             return View(LeaguesList);
         }
-        
+
         // GET: Leagues/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -76,41 +76,100 @@ namespace BowlingCoreMVC.Controllers
             {
                 return NotFound();
             }
-            
+
             var league = await _db.Leagues
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (league == null)
             {
                 return NotFound();
             }
-            
+
+            // TODO: Populate the ViewData with League information for the League summary
+
+            // Since we don't have teams yet, let's narrow this down a bit
+            // Last weeks scores for everyone
+            // Season High Games + series
+            // High averages
+
+            List<Series> LastWeekSeries = new List<Series>();
+
+            // Games per league, then narrow down by user afterwards
+            List<Series> LeagueSeries = _db.Series.Include(o => o.Games).Where(o => o.LeagueID == id).ToList();
+
+            Game HighestLeagueGame = LeagueSeries.SelectMany(o => o.Games).OrderByDescending(o => o.Score).FirstOrDefault(); // Top 1 by default
+            ViewData["HighestLeagueGame"] = HighestLeagueGame;
+
+            Series HighestLeagueSeries = LeagueSeries.OrderByDescending(o => o.SeriesScore).FirstOrDefault();
+            ViewData["HighestLeagueSeries"] = HighestLeagueSeries;
+
+            //var s = LeagueSeries.GroupBy(o => o.UserID);
+
+            var query = from ls in LeagueSeries
+                        group ls by ls.UserID into lsGroup
+                        select new ResultItem
+                        {
+                            UserID = lsGroup.Key,
+                            Average = lsGroup.SelectMany(o => o.Games).Average(o => o.Score),
+                            // Could put the other queries here too.
+                        };
+
+            var LeagueAverages = query.ToList();
+            ViewData["LeagueAverages"] = LeagueAverages;
+
+            //Game TopLeagueGames = _db.Games.OrderByDescending(o => o.Score).Take(1).SingleOrDefault();
+
+            DayOfWeek LeagueDay = league.StartDate.DayOfWeek;
+
+            foreach (Series s in LeagueSeries)
+            {
+                s.UserName = Helpers.DataHelper.GetUserNameFromID(s.UserID, _db);
+
+                // Now + days up to the next league night
+                DateTime NextLeagueNight = Helpers.DataHelper.GetNextLeagueNight(DateTime.Today);
+
+                if ((s.CreatedDate >= NextLeagueNight.AddDays(-7))
+                     && (s.CreatedDate.Date <= NextLeagueNight))
+                {
+                    // Series from last week
+                    // Today: 12/20 (thursday)
+                    // Next : 12/26 (wednesday)
+                    // Scores from: 12/19 - 12/26
+                    LastWeekSeries.Add(s);
+                }
+
+
+
+            }
+
+            ViewData["LastWeekSeries"] = LastWeekSeries;
+
             return View(league);
         }
-        
+
         // GET: Leagues/Create
         public IActionResult Create()
         {
             var Model = League.Create();
             Model.Locations = Helpers.DataHelper.GetAllLocations(_db);
-            
+
             //COULD put this into ViewData, maybe in the future
             //ViewData["Locations"] = ViewModel.Locations;
-            
+
             return View(Model);
         }
-        
+
         // POST: Leagues/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Create(Models.League Model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Models.League Model)
         {
             if (ModelState.IsValid)
             {
                 var user = await GetCurrentUserAsync();
                 Model.CreatedByID = user.Id;
-                
+
                 if (Model.NewLocation && !string.IsNullOrEmpty(Model.NewLocationName))
                 {
                     Location l = new Location();
@@ -121,20 +180,20 @@ namespace BowlingCoreMVC.Controllers
                     _db.Add(l);
                     Model.LocationID = l.ID;
                 }
-                
+
                 Model.CreatedDate = DateTime.Now;
                 Model.ModifiedDate = DateTime.Now;
-                
+
                 _db.Add(Model);
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            
+
             //if modelstate is invalid, get the locations again and redisplay form
             Model.Locations = Helpers.DataHelper.GetAllLocations(_db);
             return View(Model);
         }
-        
+
         // GET: Leagues/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -142,30 +201,30 @@ namespace BowlingCoreMVC.Controllers
             {
                 return NotFound();
             }
-            
+
             var league = await _db.Leagues.SingleOrDefaultAsync(m => m.ID == id);
             if (league == null)
             {
                 return NotFound();
             }
-            
+
             league.Locations = Helpers.DataHelper.GetAllLocations(_db);
-            
+
             return View(league);
         }
-        
+
         // POST: Leagues/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LocationID,CreatedByID,StartDate,EndDate")] League league)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LocationID,CreatedByID,StartDate,EndDate")] League league)
         {
             if (id != league.ID)
             {
                 return NotFound();
             }
-            
+
             if (ModelState.IsValid)
             {
                 league.ModifiedDate = DateTime.Now;
@@ -189,7 +248,7 @@ namespace BowlingCoreMVC.Controllers
             }
             return View(league);
         }
-        
+
         // GET: Leagues/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -197,28 +256,28 @@ namespace BowlingCoreMVC.Controllers
             {
                 return NotFound();
             }
-            
+
             var league = await _db.Leagues
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (league == null)
             {
                 return NotFound();
             }
-            
+
             return View(league);
         }
-        
+
         // POST: Leagues/Delete/5
         [HttpPost, ActionName("Delete")]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> DeleteConfirmed(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var league = await _db.Leagues.SingleOrDefaultAsync(m => m.ID == id);
             _db.Leagues.Remove(league);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        
+
         private bool LeagueExists(int id)
         {
             return _db.Leagues.Any(e => e.ID == id);

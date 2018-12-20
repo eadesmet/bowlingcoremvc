@@ -190,5 +190,19 @@ namespace BowlingCoreMVC.Helpers
             League Result = _db.Leagues.Where(o => o.ID == LeagueID).SingleOrDefault();
             return (Result != null) ? Result.Name : "";
         }
+
+        public static DateTime GetNextLeagueNight(DateTime StartDate)
+        {
+            // Not confirming if it's before the EndDate here.
+            DayOfWeek LeagueNight = StartDate.DayOfWeek;
+            int DaysUntil = ((int)LeagueNight - (int)DateTime.Today.DayOfWeek + 7) % 7;
+
+            return (DateTime.Today.AddDays(DaysUntil));
+        }
+
+        public static string GetUserNameFromID(string UserID, ApplicationDbContext _db)
+        {
+            return (_db.Users.Where(o => o.Id == UserID).SingleOrDefault().UserName);
+        }
     }
 }

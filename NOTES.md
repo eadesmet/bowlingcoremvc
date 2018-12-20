@@ -33,21 +33,21 @@ Load the edit game page
 
 game/frame tag helpers
 
-    <table>
-	    <tr>
-		    <td>[throw one]
-			    <label>throw one formatted text</label>
-			    <hidden>throw one score</hidden>
-		    </td>
-		    <td>throw two</td>
-	    </tr>
-	    <tr>
-		    <td>frame score</td>
-	    </tr>
-	    <tr>
-		    <td>frame pins</td>
-	    </tr>
-    </table>
+	<table>
+		<tr>
+			<td>[throw one]
+				<label>throw one formatted text</label>
+				<hidden>throw one score</hidden>
+			</td>
+			<td>throw two</td>
+		</tr>
+		<tr>
+			<td>frame score</td>
+		</tr>
+		<tr>
+			<td>frame pins</td>
+		</tr>
+	</table>
 
 
 
@@ -217,24 +217,24 @@ hidden value is getting set when refresh game is getting called on current frame
 
 {
 
-    So I don't like using the ViewModels everywhere
-    it seems like bad design that I have 3 different models for 1 db object
+	So I don't like using the ViewModels everywhere
+	it seems like bad design that I have 3 different models for 1 db object
 
-    my idea now is to have EVERYTHING in my main model
-    would this have any issues?...
-
-
-    so it's one to many vs. many to one
-
-    a Game has a list of Frames, the frame has a GameID
-	    Game 1 --> * Frames
-
-    a League has a LocationID, locations have all possible locations
-	    League 1 <-- * Locations
+	my idea now is to have EVERYTHING in my main model
+	would this have any issues?...
 
 
-    I did this ^
-    removed the viewmodels and using [notmapped] fields
+	so it's one to many vs. many to one
+
+	a Game has a list of Frames, the frame has a GameID
+		Game 1 --> * Frames
+
+	a League has a LocationID, locations have all possible locations
+		League 1 <-- * Locations
+
+
+	I did this ^
+	removed the viewmodels and using [notmapped] fields
 }
 
 
@@ -296,7 +296,7 @@ Production Update checklist
 	Team Captain will have permission to create/edit the teams games
 
 
-    {
+	{
 	TEAM:
 	TeamID
 	LeagueID
@@ -307,31 +307,31 @@ Production Update checklist
 	UserID
 
 
-    }
+	}
 
-    I want to be able to get: a specific users games as a part of one team
-    select * from Games g, TeamToUser tu, Team t
-    where g.UserID == tu.UserID
-    and t.TeamID == tu.TeamID
-    and g.UserId == [myuser]
-
-
+	I want to be able to get: a specific users games as a part of one team
+	select * from Games g, TeamToUser tu, Team t
+	where g.UserID == tu.UserID
+	and t.TeamID == tu.TeamID
+	and g.UserId == [myuser]
 
 
-    should I just change Series and Games to have a TeamID instead of a LeagueID?
-    or maybe have both?
-    and g.TeamID == [myteam]
-
-    when creating a series and picking a league, it should automatically pick the team i am a part of from that league
 
 
-    select * from series s, games g
-    where s.SeriesID = g.ID
-    and s.TeamID = [myteam]
+	should I just change Series and Games to have a TeamID instead of a LeagueID?
+	or maybe have both?
+	and g.TeamID == [myteam]
+
+	when creating a series and picking a league, it should automatically pick the team i am a part of from that league
 
 
-    after some thought, here is a design that might work
-    {
+	select * from series s, games g
+	where s.SeriesID = g.ID
+	and s.TeamID = [myteam]
+
+
+	after some thought, here is a design that might work
+	{
 	TEAM:
 	ID
 	LeagueID
@@ -344,11 +344,11 @@ Production Update checklist
 	ID
 	UserID
 	TeamID
-    }
+	}
 
 
 
-    After these changes, I would want to be able to filter the Series list by team / league
+	After these changes, I would want to be able to filter the Series list by team / league
 	and view the games! (summary at least)
 
 
@@ -394,46 +394,46 @@ trying to initialize the db with valid data and a new user
 5-24
 {
 
-    what i did now makes a whole lot more sense and is a lot simpler
-    i simply added the option to create a Location when creating a League
-    It doesn't need to be any more than that
-    everything else is their own entitie and doesn't make sense to combine them so much
+	what i did now makes a whole lot more sense and is a lot simpler
+	i simply added the option to create a Location when creating a League
+	It doesn't need to be any more than that
+	everything else is their own entitie and doesn't make sense to combine them so much
 
-    ANYWAY
-    let's move on. Teams.
-    Creation of a Team should include tagging users to that TEam
+	ANYWAY
+	let's move on. Teams.
+	Creation of a Team should include tagging users to that TEam
 
-    Maybe I should create a 'fake' user that someone can add (if those Users don't exist)
-    Then someone (ie. a team captain, or user of the site) can log the whole teams scores
+	Maybe I should create a 'fake' user that someone can add (if those Users don't exist)
+	Then someone (ie. a team captain, or user of the site) can log the whole teams scores
 
-    alright, so fake users.
-    fakes users will have a parent
+	alright, so fake users.
+	fakes users will have a parent
 
-    FakeUser
-    {
+	FakeUser
+	{
 	ID
 	ParentUserID
 	UserName
 
-    }
+	}
 
-    FakeUsername will not block actual users names
-    new users should be able to 'connect' themselves with fakeusers somehow?
-    fakeusers will have their own games, series, etc.
-    fakeusers should not be able to really do things, only its parent user
-    when a parentuser creates a new game/series, will they have to establish whos game it is?
-    or should fakeusers be only used as a part of a team?
-    then when there is a league night, the team captain creates the session
+	FakeUsername will not block actual users names
+	new users should be able to 'connect' themselves with fakeusers somehow?
+	fakeusers will have their own games, series, etc.
+	fakeusers should not be able to really do things, only its parent user
+	when a parentuser creates a new game/series, will they have to establish whos game it is?
+	or should fakeusers be only used as a part of a team?
+	then when there is a league night, the team captain creates the session
 	which creates a series for all users a part of the team
 
-    is this feature really worth it? who would actually be using this?
-    right?
-    this site is about YOUR OWN SCORES, and competing against other users
-    not necessarily logging EVERYONES scores..
-    for a tournament feature, i would want everyone who is competing to be a user
-    for teams, it makes sense that they are users too.
+	is this feature really worth it? who would actually be using this?
+	right?
+	this site is about YOUR OWN SCORES, and competing against other users
+	not necessarily logging EVERYONES scores..
+	for a tournament feature, i would want everyone who is competing to be a user
+	for teams, it makes sense that they are users too.
 
-    ended up addinga usersummary page
+	ended up addinga usersummary page
 
 }
 
@@ -595,9 +595,9 @@ because the strike bonus, spare bonus code would be repeated
 
 7-12
 {
-    So it's been a little while.. I might have to redo a bunch of scoring logic
-    The last thing I did before was move the scoring code to js
-    there is now a couple 10th frame scoring bugs..
+	So it's been a little while.. I might have to redo a bunch of scoring logic
+	The last thing I did before was move the scoring code to js
+	there is now a couple 10th frame scoring bugs..
 
 
 }
@@ -659,24 +659,24 @@ because the strike bonus, spare bonus code would be repeated
 
 10-5
 {
-    Making changes to allow an unsaved notification when leaving the page
+	Making changes to allow an unsaved notification when leaving the page
 	the issue is though, when creating a new game it tries to leave the page
 	consider changing this to show the edit page
 	maybe just create the game when clicking new game anyway.. it shouldn't be a big deal
-    Should also probably combine the Leagues and Locations pages
+	Should also probably combine the Leagues and Locations pages
 
-    Ok ok ok.. I need an example here of what i'm trying to draw
+	Ok ok ok.. I need an example here of what i'm trying to draw
 
-    ---------------------
-    |                   |
-    |         1         |
-    |-------------------|
-    |            |  /   |
-    |     99     |_/____|
-    |     99            |
-    |                   |
-    |      123          |
-    --------------------
+	---------------------
+	|                   |
+	|         1         |
+	|-------------------|
+	|            |  /   |
+	|     99     |_/____|
+	|     99            |
+	|                   |
+	|      123          |
+	--------------------
 }
 
 
@@ -739,4 +739,17 @@ because the strike bonus, spare bonus code would be repeated
 
 12-19
 {
+	minified my files and reuploaded
+		the previous arrow to skip strikes feature
+
+}
+
+12-20
+{
+    My Data access stuff is really messy; I need to go over it all
+       I'm not mapping a lot of stuff in Game, Series tables etc..
+       so when I query for them, I'm having to do a bunch of extra stuff
+       to get the username, etc.
+       I need to convert these to helper functions that gather all that data for me
+
 }

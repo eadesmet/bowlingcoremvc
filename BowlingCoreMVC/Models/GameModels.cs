@@ -8,6 +8,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BowlingCoreMVC.Models
 {
+    // Testing
+    public class ResultItem
+    {
+        public string UserID;
+        public string UserName;
+        public double Average;
+    }
+
     public class Frame
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

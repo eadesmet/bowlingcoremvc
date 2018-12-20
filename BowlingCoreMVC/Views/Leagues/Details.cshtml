@@ -4,45 +4,160 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
-@* TODO: Create a local LEague sheet here with weekly scores, league high scores, etc.*@
+<h2>@Html.DisplayFor(model => model.Name)</h2>
+@* TODO: Create a local LEague sheet here with weekly scores, league high scores, etc.
+
+    What's on an actual league sheet:
+        Team Standings
+        High Individual Points
+        High Individual Average
+        Season High scores
+            Team Handicap Series
+            Team Handicap Game
+            Team Scratch Series
+            Team Scratch Game
+            Scratch Game
+            Scratch Series
+            Handicap game
+            Handicap series
+        Last week top scores
+            same as above
+        Team Rosters
+            Member, average, last week games + series, total games + pins, points
+
+*@
+
 <div>
-    <h4>League</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedDate)
-        </dd>
-    </dl>
+    <h4>Last Week Scores</h4>
+    <table class="table">
+        <tr>
+            <td>User</td>
+            <td>Game 1</td>
+            <td>Game 2</td>
+            <td>Game 3</td>
+            <td>Total</td>
+        </tr>
+        @foreach (Series s in (List<Series>)ViewData["LastWeekSeries"])
+        {
+            <tr>
+                <td>
+                    <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@s.UserID">@s.UserName</a>
+                </td>
+                @foreach (Game g in (ICollection<Game>)s.Games)
+                {
+                    <td>
+                        @g.Score
+                    </td>
+                }
+                <td>
+                    <a asp-action="Details" asp-controller="Series" asp-route-id="@s.ID">@Html.DisplayFor(modelItem => s.SeriesScore)</a>
+                </td>
+
+            </tr>
+        }
+    </table>
+
+    <h4>High Average</h4>
+    <table class="table">
+        <tr>
+            <td>User</td>
+            <td>Average</td>
+        </tr>
+        @foreach (var a in (List<ResultItem>)ViewData["LeagueAverages"])
+        {
+            <tr>
+                <td>
+                    <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@a.UserID">@a.UserName</a>
+                </td>
+
+                <td>
+                    @a.Average
+                </td>
+
+            </tr>
+        }
+    </table>
+
+    <h4>Game</h4>
+    <table class="table">
+        <tr>
+            <td>User</td>
+            <td>High Game</td>
+        </tr>
+        <tr>
+            <td>
+                <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@(((Game)ViewData["HighestLeagueGame"]).UserID)">@(((Game)ViewData["HighestLeagueGame"]).UserName)</a>
+            </td>
+
+            <td>
+                @(((Game)ViewData["HighestLeagueGame"]).Score)
+            </td>
+
+        </tr>
+
+    </table>
+
+    <h4>Series</h4>
+    <table class="table">
+        <tr>
+            <td>User</td>
+            <td>High Series</td>
+        </tr>
+
+        <tr>
+            <td>
+                <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@(((Series)ViewData["HighestLeagueSeries"]).UserID)">@(((Series)ViewData["HighestLeagueSeries"]).UserName)</a>
+            </td>
+
+            <td>
+                @(((Series)ViewData["HighestLeagueSeries"]).SeriesScore)
+            </td>
+
+        </tr>
+
+    </table>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
+@*
+    <div>
+        <h4>League</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.StartDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.EndDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.CreatedDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ModifiedDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ModifiedDate)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+*@
