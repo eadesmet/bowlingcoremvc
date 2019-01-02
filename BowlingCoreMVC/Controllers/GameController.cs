@@ -36,12 +36,12 @@ namespace BowlingCoreMVC.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null) { return RedirectToAction("Login", "Account"); }
 
-            List<Game> GamesList = await _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate).ToListAsync();
+            var GamesList = _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate);
             //List<Game> GamesList = DataHelper.GetNonSeriesGamesByUserID(user.Id, _db);
 
             ViewData["UserSeries"] = DataHelper.GetAllSeriesByUserID(user.Id, _db);
 
-            return View(GamesList);
+            return View(await GamesList.ToListAsync());
         }
 
         // GET Create (Create a new game, redirect to Edit page)

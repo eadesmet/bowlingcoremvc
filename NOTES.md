@@ -1,3 +1,4 @@
+
 ****ASP.NET Core MVC Bowling App****
 https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/?view=aspnetcore-2.0
 
@@ -752,4 +753,22 @@ because the strike bonus, spare bonus code would be repeated
        to get the username, etc.
        I need to convert these to helper functions that gather all that data for me
 
+}
+
+
+
+1-2-2019
+{
+    Learning async/await a bit more
+        await means that the function waits for that process to finish
+            so my understanding is:
+            you call a big query first
+            then do a bunch of small work not depending on that query
+            at the end, you do a 'await query.tolistasync'
+    As for authorization
+        the docs suggest that all controllers get an authorize policy by default
+        then get a [AllowAnonymous] if I want them public
+        supposedly that's more secure?
+        
+    
 }

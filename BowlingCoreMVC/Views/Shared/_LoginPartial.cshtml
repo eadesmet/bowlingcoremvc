@@ -13,7 +13,7 @@
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello @UserManager.GetUserName(User)!</a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a asp-action="UserSummary" asp-route-id="@UserManager.GetUserId(User)" class="dropdown-item">Overall Stats</a>
+                    <a asp-controller="Stats" asp-action="UserSummary" asp-route-id="@UserManager.GetUserId(User)" class="dropdown-item">Overall Stats</a>
                     <div class="dropdown-divider"></div>
                     <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage" class="dropdown-item">Manage Account</a>
                     <div class="dropdown-divider"></div>
