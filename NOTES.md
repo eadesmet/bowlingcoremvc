@@ -785,5 +785,10 @@ because the strike bonus, spare bonus code would be repeated
 
         idk, i've been afraid to do database updates
         it will require a migration script to be generated and i don't want to corrupt anything
-        
+
+    actually, i think some of the bugs that i was seeing today were from running from the command line
+    the global.json file was pointing to dotnet core 2.1, when i want 2.0 because of some bugs
+    since it's not on azure, azure runs on 2.0, so it doesn't see those bugs
+    and i'm pretty sure it's not run when i run it from visual studio
+    
 }
