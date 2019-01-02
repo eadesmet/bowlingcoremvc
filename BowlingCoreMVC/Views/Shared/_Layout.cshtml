@@ -82,7 +82,10 @@
 
                 @*<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
                 <li class="nav-item"><a asp-controller="Game" asp-action="Index" class="nav-link">My Games</a></li>
-                <li class="nav-item"><a asp-controller="Stats" asp-action="MyStats" class="nav-link">My Statistics</a></li>
+<li class="nav-item"><a asp-controller="Stats" asp-action="UserSummary" asp-route-id="@UserManager.GetUserId(User)" class="nav-link">My Statistics</a></li>
+@*
+<li class="nav-item"><a asp-controller="Stats" asp-action="MyStats" class="nav-link">My Statistics</a></li>
+*@
                 @*<li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Scores<span class="caret"></span></a>
             <div class="dropdown-menu">
