@@ -67,6 +67,8 @@ namespace BowlingCoreMVC.Controllers
                 g.UserName = user.UserName;
             }
 
+            s.UserName = user.UserName;
+
             return View(s);
         }
 

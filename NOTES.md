@@ -765,10 +765,25 @@ because the strike bonus, spare bonus code would be repeated
             you call a big query first
             then do a bunch of small work not depending on that query
             at the end, you do a 'await query.tolistasync'
+
     As for authorization
         the docs suggest that all controllers get an authorize policy by default
         then get a [AllowAnonymous] if I want them public
         supposedly that's more secure?
         
-    
+    The Logout button doesn't work
+        it's something to do with the redirect afterwards?
+
+    TODO: Combine the Stats page (MyStats) with the UserSummary page
+
+    Maybe add some extra info on the Game
+        Bowled on date - so there's no amiguitiy on when it was actually bowled
+            this will also provide a way to score previous games
+            only trouble is them remembering all their frames
+        Notes per game - ?
+            ball change frame 3, moved left frame 7, etc. ?
+
+        idk, i've been afraid to do database updates
+        it will require a migration script to be generated and i don't want to corrupt anything
+        
 }

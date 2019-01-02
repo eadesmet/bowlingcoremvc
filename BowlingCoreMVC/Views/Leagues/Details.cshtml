@@ -46,7 +46,7 @@
                 @foreach (Game g in (ICollection<Game>)s.Games)
                 {
                     <td>
-                        @g.Score
+                        <a asp-action="Details" asp-controller="Game" asp-route-id="@g.ID">@g.Score</a>
                     </td>
                 }
                 <td>
@@ -90,7 +90,7 @@
             </td>
 
             <td>
-                @(((Game)ViewData["HighestLeagueGame"]).Score)
+                <a asp-action="Details" asp-controller="Game" asp-route-id="@(((Game)ViewData["HighestLeagueGame"]).ID)">@(((Game)ViewData["HighestLeagueGame"]).Score)</a>
             </td>
 
         </tr>
@@ -110,7 +110,7 @@
             </td>
 
             <td>
-                @(((Series)ViewData["HighestLeagueSeries"]).SeriesScore)
+                <a asp-action="Details" asp-controller="Series" asp-route-id="@(((Series)ViewData["HighestLeagueSeries"]).ID)">@(((Series)ViewData["HighestLeagueSeries"]).SeriesScore)</a>
             </td>
 
         </tr>

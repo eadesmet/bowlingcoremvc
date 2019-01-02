@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
-
+using BowlingCoreMVC.Helpers;
 
 namespace BowlingCoreMVC.Controllers
 {
@@ -95,6 +95,16 @@ namespace BowlingCoreMVC.Controllers
 
             // Games per league, then narrow down by user afterwards
             List<Series> LeagueSeries = _db.Series.Include(o => o.Games).Where(o => o.LeagueID == id).ToList();
+            if (LeagueSeries.Count == 0) { return RedirectToAction("Error", "Home"); }
+            
+            foreach (Series s in LeagueSeries)
+            {
+                s.UserName = DataHelper.GetUserNameFromID(s.UserID, _db);
+                foreach (Game g in s.Games)
+                {
+                    g.UserName = s.UserName;
+                }
+            }
 
             Game HighestLeagueGame = LeagueSeries.SelectMany(o => o.Games).OrderByDescending(o => o.Score).FirstOrDefault(); // Top 1 by default
             ViewData["HighestLeagueGame"] = HighestLeagueGame;
@@ -109,6 +119,7 @@ namespace BowlingCoreMVC.Controllers
                         select new ResultItem
                         {
                             UserID = lsGroup.Key,
+                            UserName = DataHelper.GetUserNameFromID(lsGroup.Key, _db),
                             Average = lsGroup.SelectMany(o => o.Games).Average(o => o.Score),
                             // Could put the other queries here too.
                         };

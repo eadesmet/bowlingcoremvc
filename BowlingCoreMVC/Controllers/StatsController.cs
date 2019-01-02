@@ -111,6 +111,9 @@ namespace BowlingCoreMVC.Controllers
             int PossibleSpares = 0;
             int SpareConversions = 0;
 
+            int Over600Series = 0;
+
+            
             foreach (var g in AllGames)
             {
                 if (g.Score >= 200)
@@ -163,6 +166,14 @@ namespace BowlingCoreMVC.Controllers
                 }
             }
 
+            List<Series> AllSeries = _db.Series.Where(o => o.UserID == user.Id).ToList();
+
+            foreach (Series s in AllSeries)
+            {
+                if (s.SeriesScore >= 600)
+                    Over600Series++;
+            }
+
             var StatsList = new List<StatsViewModel>();
             var s2 = new StatsViewModel { StatTitle = "Strike Percentage", Conversions = TotalStrikes, Total = TotalPossibleStrikes };
             StatsList.Add(s2);
@@ -174,6 +185,8 @@ namespace BowlingCoreMVC.Controllers
             StatsList.Add(s4);
             var s3 = new StatsViewModel { StatTitle = "Over 200 Games", Conversions = GamesOver200, Total = TotalGames };
             StatsList.Add(s3);
+            var s6 = new StatsViewModel { StatTitle = "Over 600 Series", Conversions = Over600Series, Total = AllSeries.Count };
+            StatsList.Add(s6);
             
 
 
@@ -244,6 +257,100 @@ namespace BowlingCoreMVC.Controllers
 
             ViewData["OverallStrikePerc"] = TotalStrikes / TotalFrames;
             ViewData["OverallSparePerc"] = TotalSpares / TotalSpareFrames;
+
+
+
+            int SinglePinsTotal = 0;
+            int SinglePinsSpares = 0;
+//            int TotalStrikes = 0;
+//            int TotalFrames = 0;
+            int GamesOver200 = 0;
+            int TotalPossibleStrikes = 0;
+            int TotalGames = AllUsersGames.Count();
+            int TenPinSpares = 0;
+            int TenPinConversions = 0;
+            int PossibleSpares = 0;
+            int SpareConversions = 0;
+
+            int Over600Series = 0;
+
+            
+            foreach (var g in AllUsersGames)
+            {
+                if (g.Score >= 200)
+                    GamesOver200++;
+
+                TotalPossibleStrikes += 12;
+
+                foreach (var f in g.Frames)
+                {
+                    TotalFrames++;
+
+                    // Single pin spares
+                    if (f.ThrowOneScore == 9)
+                    {
+                        SinglePinsTotal++;
+                        if (f.ThrowTwoScore == 1)
+                        {
+                            SinglePinsSpares++;
+                        }
+
+                        if (f.ThrowOnePins == MISSED_10)
+                        {
+                            TenPinSpares++;
+                            if (f.ThrowTwoPins == MISSED_0)
+                            {
+                                TenPinConversions++;
+                            }
+                        }
+                    }
+                    else if (f.ThrowOneScore == 10)
+                    {
+                        TotalStrikes++;
+                        if (f.FrameNum == 10 && f.ThrowTwoScore != 10)
+                        {
+                            // Can only get 1 spare in the 10th frame
+                            // but it might be from the second + third throw
+                            PossibleSpares++;
+                        }
+                    }
+
+                    if (f.ThrowOneScore != 10)
+                    {
+                        PossibleSpares++;
+                        
+                        if (f.ThrowOneScore + f.ThrowTwoScore == 10)
+                        {
+                            SpareConversions++;
+                        }
+                    }
+                }
+            }
+
+            foreach (Series s in AllUsersSeries)
+            {
+                if (s.SeriesScore >= 600)
+                    Over600Series++;
+            }
+
+            var StatsList = new List<StatsViewModel>();
+            var s2 = new StatsViewModel { StatTitle = "Strike Percentage", Conversions = TotalStrikes, Total = TotalPossibleStrikes };
+            StatsList.Add(s2);
+            var s5 = new StatsViewModel { StatTitle = "Spare Percentage", Conversions = SpareConversions, Total = PossibleSpares };
+            StatsList.Add(s5);
+            var s1 = new StatsViewModel { StatTitle = "Single Pin Spare Percentage", Conversions = SinglePinsSpares, Total = SinglePinsTotal };
+            StatsList.Add(s1);
+            var s4 = new StatsViewModel { StatTitle = "10 Pin Spares", Conversions = TenPinConversions, Total = TenPinSpares };
+            StatsList.Add(s4);
+            var s3 = new StatsViewModel { StatTitle = "Over 200 Games", Conversions = GamesOver200, Total = TotalGames };
+            StatsList.Add(s3);
+            var s6 = new StatsViewModel { StatTitle = "Over 600 Series", Conversions = Over600Series, Total = AllUsersSeries.Count };
+            StatsList.Add(s6);
+
+            ViewData["StatsList"] = StatsList;
+
+
+            
             
             return View();
         }
