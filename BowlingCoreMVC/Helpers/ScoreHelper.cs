@@ -18,7 +18,7 @@ namespace BowlingCoreMVC.Helpers
         //public. Called when next button was clicked.
         public static Game ThrowCurrent(Game g)
         {
-            var tempFramesList = g.Frames.ToList();
+            // var tempFramesList = g.Frames.ToList();
             int ThrowOneScore = tempFramesList[g.CurrentFrame - 1].ThrowOneScore;
 
             g = CalculateNext(g, ThrowOneScore);

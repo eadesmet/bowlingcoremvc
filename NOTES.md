@@ -775,6 +775,7 @@ because the strike bonus, spare bonus code would be repeated
         it's something to do with the redirect afterwards?
 
     TODO: Combine the Stats page (MyStats) with the UserSummary page
+          DONE pretty much - could use some additions
 
     Maybe add some extra info on the Game
         Bowled on date - so there's no amiguitiy on when it was actually bowled
@@ -791,4 +792,18 @@ because the strike bonus, spare bonus code would be repeated
     since it's not on azure, azure runs on 2.0, so it doesn't see those bugs
     and i'm pretty sure it's not run when i run it from visual studio
     
+}
+
+1-7
+{
+    Small bug fix - creating a series now shows the username on the edit page
+
+    rethinking of adding Teams
+               and this tab is way out here..
+
+    ugh, so teams.. they kind of seem pointless in this app
+    i don't want to have users keep track of all their teammates
+    it would only be useful if i start tracking points and everything a league does
+
+    damn i need a new project.
 }

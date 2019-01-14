@@ -73,14 +73,19 @@ namespace BowlingCoreMVC.Helpers
             db.Attach(s);
             db.Entry(s).State = EntityState.Added;
             db.SaveChanges();
+
+            string UserName = GetUserNameFromID(UserID, db);
             
             foreach (var g in s.Games)
             {
                 g.SeriesID = s.ID;
                 g.UserID = UserID;
+                g.UserName = UserName;
             }
             
             db.SaveChanges();
+
+            s.UserName = UserName;
             
             return (s);
         }
