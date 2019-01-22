@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Services;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace BowlingCoreMVC
 {
@@ -128,6 +129,10 @@ namespace BowlingCoreMVC
                 //DEFAULT
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
+
+                // https?
+                //var options = new RewriteOptions().AddRedirectToHttpsPermanent();
+                //app.UseRewriter(options);
             }
 
             app.UseHttpsRedirection();
