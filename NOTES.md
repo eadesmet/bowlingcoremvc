@@ -807,3 +807,93 @@ because the strike bonus, spare bonus code would be repeated
 
     damn i need a new project.
 }
+
+
+1-17
+{
+    I'm still craving a new project, but have none yet
+    I started reading the Rust book some more, but don't know if I should continue at the moment
+    CIS658 will have me learning Ruby and developing another full web app
+    considering doing the bowling app again, just in Ruby for the class
+        I'll have to ask the prof if I can do this, because I've done it before..
+
+    Maybe I could start on my blog website / homepage and start blogging?
+        Journey through learning Rust?
+        Things I learn about D365?
+        Things I learn about anything else?
+        life blogs, such as bowling/mountain biking/gaming?
+
+        you know, this file is supposed to be notes for just my bowling app
+        the past few entries prove that I need another outlet to put my thoughts
+
+
+
+}
+
+
+
+1-21
+{
+    Alright, keeping with this project for now
+    A few major things I want to do:
+
+    Upgrade to latest dotnet core (2.2.1)
+        Some Notes on this
+             Look into redoing the Identity authentication stuff
+             A lot of this is done for us in the newer versions?
+             I need to see what I changed to it
+                 Basically looks like the Email auth stuff
+                 (In register and Login methods)
+             Advantage of this is many files are removed
+
+    Redo the front-end
+
+    update all the javascript in the app to be typescript
+
+    Do my database updates to add Teams
+
+
+
+    end of day notes
+        made some progress on updating to 2.2.1
+        Identity isn't quite working (at least the old code for it is gone now)
+        might want to update the login screen to use username again
+              maybe not though?
+        The login page is giving me a blank SignInResult
+        
+
+}
+
+1-22
+{
+    Finish upgrading to dotnet core 2.2.1
+        Login issue
+              Might be from the input? username?
+
+
+
+
+    Redo the front-end
+
+    update all the javascript in the app to be typescript
+
+    Do my database updates to add teams
+
+
+    changelist so far
+        updagraded to 2.2.1
+        updated Identity to be the new 2.2 way
+            still works with old logins, updated to include usernames
+        fixing game duplication
+            caused by a new game ID being set to 0, the tags aren't updated after it saves
+            so then when it's saved again, the ID on the tag is still 0
+            Now i'm saving the game on the Get request, which is a bad idea
+
+            This should possibly be redone..
+                For a series, SaveGameClick gets called 3 times, each time updating the series
+                    Not terrible, but a little extra computation than needed
+                All the checks for when a GameID is 0 seem silly
+                    and are actually causing much more needing to be done
+                
+
+}

@@ -17,10 +17,8 @@ namespace BowlingCoreMVC
     {
         public static void Main(string[] args)
         {
-            //NOTE: This single line was the default. It starts the web host
-            //BuildWebHost(args).Run();
-            var host = BuildWebHost(args);
-
+            var host = CreateWebHostBuilder(args).Build();
+            
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -39,9 +37,8 @@ namespace BowlingCoreMVC
             host.Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+                .UseStartup<Startup>();
     }
 }

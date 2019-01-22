@@ -317,21 +317,24 @@ function RefreshPinsOfCurrentThrow(GameID, MissedPins, FrameNum, CurrentThrow, S
 
 function SetMissedPinsChecked(GameID, MissedPins)
 {
-    $("#" + GameID + "-Missed_1").prop("checked", (MissedPins & MISSED_1) === MISSED_1);
-    $("#" + GameID + "-Missed_2").prop("checked", (MissedPins & MISSED_2) === MISSED_2);
-    $("#" + GameID + "-Missed_3").prop("checked", (MissedPins & MISSED_3) === MISSED_3);
-    $("#" + GameID + "-Missed_4").prop("checked", (MissedPins & MISSED_4) === MISSED_4);
-    $("#" + GameID + "-Missed_5").prop("checked", (MissedPins & MISSED_5) === MISSED_5);
-    $("#" + GameID + "-Missed_6").prop("checked", (MissedPins & MISSED_6) === MISSED_6);
-    $("#" + GameID + "-Missed_7").prop("checked", (MissedPins & MISSED_7) === MISSED_7);
-    $("#" + GameID + "-Missed_8").prop("checked", (MissedPins & MISSED_8) === MISSED_8);
-    $("#" + GameID + "-Missed_9").prop("checked", (MissedPins & MISSED_9) === MISSED_9);
-    $("#" + GameID + "-Missed_10").prop("checked", (MissedPins & MISSED_10) === MISSED_10);
+    for (var i = 1; i <= 10; i++)
+    {
+        // If the checkbox is NOT disabled, check it
+        if (!$("#" + GameID + "-Missed_" + i).is(":disabled"))
+        {
+            $("#" + GameID + "-Missed_" + i).prop("checked", (MissedPins & MISSED_PINS[i]) === MISSED_PINS[i]);
+        }
+    }
 }
 
 function SetMissedPinsEnabled(GameID, MissedPins)
 {
     //MissedPins here should be the previous frames missed pins (also, disabled false === enabled)
+    for (var i = 1; i <= 10; i++)
+    {
+        $("#" + GameID + "-Missed_" + i).prop("disabled", (MissedPins & MISSED_PINS[i]) !== MISSED_PINS[i]);
+    }
+    /*
     $("#" + GameID + "-Missed_1").prop("disabled", (MissedPins & MISSED_1) !== MISSED_1);
     $("#" + GameID + "-Missed_2").prop("disabled", (MissedPins & MISSED_2) !== MISSED_2);
     $("#" + GameID + "-Missed_3").prop("disabled", (MissedPins & MISSED_3) !== MISSED_3);
@@ -342,10 +345,16 @@ function SetMissedPinsEnabled(GameID, MissedPins)
     $("#" + GameID + "-Missed_8").prop("disabled", (MissedPins & MISSED_8) !== MISSED_8);
     $("#" + GameID + "-Missed_9").prop("disabled", (MissedPins & MISSED_9) !== MISSED_9);
     $("#" + GameID + "-Missed_10").prop("disabled", (MissedPins & MISSED_10) !== MISSED_10);
+    */
 }
 
 function EnableAllMissedPins(GameID)
 {
+    for (var i = 1; i <= 10; i++)
+    {
+        $("#" + GameID + "-Missed_" + i).prop("disabled", false);
+    }
+    /*
     $("#" + GameID + "-Missed_1").prop("disabled", false);
     $("#" + GameID + "-Missed_2").prop("disabled", false);
     $("#" + GameID + "-Missed_3").prop("disabled", false);
@@ -356,6 +365,7 @@ function EnableAllMissedPins(GameID)
     $("#" + GameID + "-Missed_8").prop("disabled", false);
     $("#" + GameID + "-Missed_9").prop("disabled", false);
     $("#" + GameID + "-Missed_10").prop("disabled", false);
+    */
 }
 
 
@@ -512,6 +522,22 @@ const MISSED_2 = 2;      // 0000 0000 0000 0010
 const MISSED_1 = 1;      // 0000 0000 0000 0001
 const MISSED_0 = 0;      // 0000 0000 0000 0000
 const MISSED_ALL = 1023; // 0000 0011 1111 1111
+
+const MISSED_PINS =
+    [
+        MISSED_0,
+        MISSED_1,
+        MISSED_2,
+        MISSED_3,
+        MISSED_4,
+        MISSED_5,
+        MISSED_6,
+        MISSED_7,
+        MISSED_8,
+        MISSED_9,
+        MISSED_10,
+        MISSED_ALL
+    ];
 
 //----------Highlight functions-------------
 function ClearHighlight(GameID, FrameNum)

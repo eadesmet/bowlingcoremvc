@@ -57,9 +57,18 @@ namespace BowlingCoreMVC.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             Game game;
+            var user = await GetCurrentUserAsync();
+            if (user == null) { return RedirectToAction("Login", "Account"); }
+
+            
             if (id == 0)
             {
                 game = Game.Create();
+                game.UserName = user.UserName;
+                game.UserID = user.Id;
+
+                // Save the game immediately, so the Tags on the page are not 0
+                game = DataHelper.SaveGame(game, _db);
             }
             else
             {
@@ -68,10 +77,7 @@ namespace BowlingCoreMVC.Controllers
             
             game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
 
-            var user = await GetCurrentUserAsync();
-            if (user == null) { return RedirectToAction("Login", "Account"); }
-
-            game.UserName = user.UserName;
+            
 
             return View(game);
         }
@@ -159,7 +165,7 @@ namespace BowlingCoreMVC.Controllers
 
             if (g.SeriesID != null && g.SeriesID != 0)
             {
-                //update series
+                // Update series (to recalculate series score)
                 DataHelper.UpdateSeries(Convert.ToInt32(g.SeriesID), _db);
             }
             

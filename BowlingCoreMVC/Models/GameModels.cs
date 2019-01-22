@@ -44,7 +44,7 @@ namespace BowlingCoreMVC.Models
 
     public class Game
     {
-        public static Game Create(int SeriesID = 0)
+        public static Game Create(int? SeriesID = null)
         {
             var g = new Game();
             g.ID = 0;

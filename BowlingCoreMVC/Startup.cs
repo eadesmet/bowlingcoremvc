@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Services;
@@ -37,7 +40,13 @@ namespace BowlingCoreMVC
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration["DefaultConnection"]));
 
-            
+            // dotnet 2.1+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -46,6 +55,7 @@ namespace BowlingCoreMVC
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(Configuration["DefaultConnection"]));
 
+            //services.AddIdentity<IdentityUser, IdentityRole>(config =>
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
                 config.SignIn.RequireConfirmedEmail = true;
@@ -72,24 +82,31 @@ namespace BowlingCoreMVC
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddRazorPagesOptions(options =>
+                {
+                    options.AllowAreas = true;
+                    options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
+                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
+                });
+
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(300);
-                // If the LoginPath isn't set, ASP.NET Core defaults 
-                // the path to /Account/Login.
-                options.LoginPath = "/Account/Login";
-                // If the AccessDeniedPath isn't set, ASP.NET Core defaults 
-                // the path to /Account/AccessDenied.
-                options.AccessDeniedPath = "/Account/AccessDenied";
+                
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+
                 options.SlidingExpiration = true;
             });
 
             // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddSingleton<IEmailSender, EmailSender>();
 
-            services.AddMvc();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,23 +114,25 @@ namespace BowlingCoreMVC
         {
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
+                //app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
             else
             {
                 //TEMPORARY
-                app.UseBrowserLink();
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                //app.UseBrowserLink();
+                //app.UseDeveloperExceptionPage();
+                //app.UseDatabaseErrorPage();
 
                 //DEFAULT
-                //app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseCookiePolicy();
             app.UseAuthentication();
 
             app.UseMvc(routes =>

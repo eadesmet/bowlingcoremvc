@@ -16,6 +16,7 @@ using BowlingCoreMVC.Services;
 
 namespace BowlingCoreMVC.Controllers
 {
+    /*
     [Authorize]
     [Route("[controller]/[action]")]
     public class AccountController : Controller
@@ -482,4 +483,5 @@ namespace BowlingCoreMVC.Controllers
 
         #endregion
     }
+    */
 }
