@@ -4,11 +4,11 @@ project_name = "BowlingCoreMVCProj";
 
 patterns = {
 	"*.cs",
-	"*.bat",
+//	"*.bat",
 	"*.cshtml",
-	"*.js",
-	"*.css",
-	"*.json",
+//	"*.js",
+//	"*.css",
+//	"*.json",
 	"*.4coder",
 	"*.md",
 	"*.config"

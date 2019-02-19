@@ -31,10 +31,11 @@ namespace BowlingCoreMVC.Controllers
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET Index (game list page)
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var user = await GetCurrentUserAsync();
-            if (user == null) { return RedirectToAction("Login", "Account"); }
+            if (user == null) { return Redirect("Identity/Account/Login"); /* RedirectToAction("Login", "Account"); */}
 
             var GamesList = _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate);
             //List<Game> GamesList = DataHelper.GetNonSeriesGamesByUserID(user.Id, _db);
@@ -53,6 +54,7 @@ namespace BowlingCoreMVC.Controllers
         //}
 
         // GET Edit page (Edit a single game by ID)
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -82,7 +84,7 @@ namespace BowlingCoreMVC.Controllers
             return View(game);
         }
 
-        // GET (new) details page
+        // GET details page
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -98,6 +100,7 @@ namespace BowlingCoreMVC.Controllers
         }
 
         // GET: Games/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -117,6 +120,7 @@ namespace BowlingCoreMVC.Controllers
 
         // POST: Games/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -128,6 +132,7 @@ namespace BowlingCoreMVC.Controllers
 
 
         #region "editgame buttons"
+#if false
         // Next Throw buton handler
         [HttpPost]
         public JsonResult NextThrowClick(string JSONGame, int[] GameIDs)
@@ -149,7 +154,7 @@ namespace BowlingCoreMVC.Controllers
 
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
         }
-
+#endif
         // Save game button handler
         [HttpPost]
         public JsonResult SaveGameClick(string JSONGame, int GameID)
@@ -171,7 +176,7 @@ namespace BowlingCoreMVC.Controllers
             
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g)/*, redirect = IsNewGame*/ });
         }
-        #endregion
+#endregion
 
     }
 }

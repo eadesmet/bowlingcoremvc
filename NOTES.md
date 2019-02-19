@@ -897,3 +897,65 @@ because the strike bonus, spare bonus code would be repeated
                 
 
 }
+
+2-7
+{
+    something i thought of during class
+    I might want to have a separate page between the list view and the other actions for it
+        so for a game, i would just click on it to a landing page for that game
+        then go into details, edit it, or delete it.
+        maybe a modal popup of it? that would be nice..
+    then I could make the tables a bit smaller, and the entire row clickable.
+
+    experiment with position:fixed on the scoreboard?
+
+    css rule to style by attribute:
+        value = 10, text = 'X'
+        
+}
+
+2-14
+{
+	Some more notes from during class
+
+	I can probably reorganize my javascript to be much better
+	event listener function being applied to all the frames
+		when something changes, can try to rescore the game, etc.
+		I know I'm practically doing this already, but..
+		it could be cleaner
+	all this comes along with, well it works currently, don't need to redo it all
+
+
+
+}
+
+
+2-19
+{
+	just some more random thoughts
+
+	I should be creating my own homepage, with a blog
+
+	add a progress bar for the series?
+	with indicators for when the game/series is done?
+	when they are done, semi lock them out?
+
+	i think modals would work for what i said above (list pages, remove links, add modal)
+
+	TODO: Combine the create pages of Game and Series
+		checkbox: isSeries ?
+
+		I could assume that if a league is selected, that it's a series with 3 games.
+			BUT, what if they arrive late and only bowl 2 games?
+
+		A lot of things here are possible, so..
+		have league at the top, if they select one, default these fields:
+			numofgames = 3
+			isseries = yes
+			
+
+	TODO: Detect what day it is, and see if the user has a league on that day
+			if so, have a quick create button for a series in that league
+
+	
+}

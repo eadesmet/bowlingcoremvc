@@ -161,10 +161,8 @@ namespace BowlingCoreMVC.Controllers
         public IActionResult Create()
         {
             var Model = League.Create();
-            Model.Locations = Helpers.DataHelper.GetAllLocations(_db);
-
-            //COULD put this into ViewData, maybe in the future
-            //ViewData["Locations"] = ViewModel.Locations;
+            Model.Locations = DataHelper.GetAllLocations(_db);
+            Model.Days = DataHelper.GetAllDays();
 
             return View(Model);
         }
@@ -194,6 +192,8 @@ namespace BowlingCoreMVC.Controllers
 
                 Model.CreatedDate = DateTime.Now;
                 Model.ModifiedDate = DateTime.Now;
+
+                Model.LeagueDay = Model.LeagueDay;
 
                 _db.Add(Model);
                 await _db.SaveChangesAsync();

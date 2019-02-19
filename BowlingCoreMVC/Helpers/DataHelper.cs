@@ -129,6 +129,16 @@ namespace BowlingCoreMVC.Helpers
             
             return (result);
         }
+
+        public static List<SelectListItem> GetAllDays()
+        {
+            List<SelectListItem> Result = new List<SelectListItem>();
+            foreach (var day in Enum.GetNames(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList())
+            {
+                Result.Add(new SelectListItem() { Value = ((int)day).ToString(), Text = day.ToString() });
+            }
+            return (Result);
+        }
         
         public static List<League> UserLeagues(string UserID, ApplicationDbContext _db)
         {
