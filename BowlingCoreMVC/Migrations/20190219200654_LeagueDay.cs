@@ -1,16 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
-namespace BowlingCoreMVC.Data.Migrations
+namespace BowlingCoreMVC.Migrations
 {
-    public partial class SeriesToGame : Migration
+    public partial class LeagueDay : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "SeriesID",
-                table: "Games",
+                name: "LeagueDay",
+                table: "Leagues",
                 nullable: false,
                 defaultValue: 0);
         }
@@ -18,8 +16,8 @@ namespace BowlingCoreMVC.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "SeriesID",
-                table: "Games");
+                name: "LeagueDay",
+                table: "Leagues");
         }
     }
 }

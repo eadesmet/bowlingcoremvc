@@ -194,7 +194,6 @@ namespace BowlingCoreMVC.Models
         //[DisplayFormat(DataFormatString = @"{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
-        
         public DayOfWeek LeagueDay { get; set; }
 
         [NotMapped]

@@ -958,4 +958,26 @@ because the strike bonus, spare bonus code would be repeated
 			if so, have a quick create button for a series in that league
 
 	
+
+	NOTE: We updated the migrations locally, but not on Azure yet.
+		Will need to research a bit how  Azure will try to handle it..
+		
+
+}
+
+
+2-20
+{
+	NOTE: Azure Backups!
+		everything costs money
+		their way to do automatic backups is through a VM
+
+		My Backups are located:
+			Storage Account/Storage Container > Blob Containers > eric-container
+
+		SQL Database Export puts the files there.
+		Must be done manually
+
+		I guess theres also a Restore option that goes back in time?
+		
 }
