@@ -48,6 +48,9 @@ namespace BowlingCoreMVC.Data
         {
             context.Database.EnsureCreated();
 
+            // Apply migrations if any are available
+            context.Database.Migrate();
+
             if (context.Games.Any())
                 return;
 
