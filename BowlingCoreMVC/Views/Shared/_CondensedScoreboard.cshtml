@@ -1,0 +1,63 @@
+﻿@model BowlingCoreMVC.Models.Game
+
+@{Model.Frames = Model.Frames.OrderBy(f => f.FrameNum).ToList(); }
+
+
+    <div class="flex-row scoreboard force-flex">
+        @foreach (var f in Model.Frames)
+        {
+            <div class="flex-column scoreboard-frame">
+                <div class="d-flex flex-row scoreboard-framenum bg-dark">
+                    <div class="extra-pad">@f.FrameNum</div>
+                </div>
+
+                <div class="d-flex flex-row scoreboard-row">
+                    <div class="flex-fill extra-pad">@f.ThrowOneScore</div>
+                    <div class="flex-fill extra-pad">@f.ThrowTwoScore</div>
+                    @if (f.FrameNum == 10)
+                    {
+                        <div class="flex-fill extra-pad">@f.ThrowThreeScore</div>
+                    }
+                </div>
+
+                <div class="d-flex flex-row scoreboard-framescore extra-pad">
+                    <div class="extra-pad">@f.FrameTotal</div>
+                </div>
+
+                @*<div class="d-flex flex-row scoreboard-row">
+                        <div class="flex-fill"><frame-throw frame="@f" throw-num="1"></frame-throw></div>
+
+                        <div class="flex-fill"><frame-throw frame="@f" throw-num="2"></frame-throw></div>
+
+
+
+                        @if (f.FrameNum == 10)
+                        {
+                            <div class="flex-fill"><frame-throw frame="@f" throw-num="3"></frame-throw></div>
+                        }
+
+
+                    </div>
+
+
+
+                    <div class="d-flex flex-row scoreboard-framescore">
+                        <frame-score frame="@f"></frame-score>
+                    </div>*@
+            </div>
+
+        }
+    </div>
+
+<style>
+    .extra-pad {
+        padding: 5px;
+        padding-bottom: 10px;
+    }
+    .no-wrap {
+        flex-shrink: 0;
+    }
+    .force-flex {
+        display: flex;
+    }
+</style>

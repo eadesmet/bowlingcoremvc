@@ -32,17 +32,31 @@ namespace BowlingCoreMVC.Controllers
 
         // GET Index (game list page)
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? SeriesPage, int? GamePage)
         {
             var user = await GetCurrentUserAsync();
-            if (user == null) { return Redirect("Identity/Account/Login"); /* RedirectToAction("Login", "Account"); */}
+            int PageSize = 12;
+            
+            // NOTE(ERIC): All Games vs NonSeries Games? DataHelper.GetNonSeriesGamesByUserID(user.Id, _db);
 
-            var GamesList = _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate);
-            //List<Game> GamesList = DataHelper.GetNonSeriesGamesByUserID(user.Id, _db);
+            
+            ViewData["UserSeries"] = await PaginatedList<Series>.
+                CreateAsync(DataHelper.GetAllSeriesByUserIDQueryable(user.Id, _db), 
+                SeriesPage ?? 1, PageSize);
 
-            ViewData["UserSeries"] = DataHelper.GetAllSeriesByUserID(user.Id, _db);
+            
+            IQueryable<Game> games = _db.Games
+                .Where(o => o.UserID == user.Id)
+                .Include(o => o.Frames)
+                .OrderByDescending(o => o.CreatedDate).AsNoTracking();
+            
+            
+            ViewData["UserGames"] = await PaginatedList<Game>.
+                CreateAsync(games, 
+                GamePage ?? 1, PageSize);
 
-            return View(await GamesList.ToListAsync());
+
+            return View();
         }
 
         // GET Create (Create a new game, redirect to Edit page)

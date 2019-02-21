@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BowlingCoreMVC.Models.Game>
+﻿@*@model IEnumerable<BowlingCoreMVC.Models.Game>*@
 
 @{
     ViewData["Title"] = "My Scores";
@@ -31,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in (List<Series>)ViewData["UserSeries"])
+        @foreach (var item in (PaginatedList<Series>)ViewData["UserSeries"])
         {
             <tr>
                 <td>
@@ -75,6 +75,25 @@
     </tbody>
 </table>
 
+@{
+    // NOTE: Might not be needed because the call is on the list iteself, and we are always passing one?
+    //bool SeriesPrevDisabled, SeriesNextDisabled = true;
+    //if (((PaginatedList<Series>)ViewData["UserSeries"])[0] != null)
+    //{
+    string SeriesPrevDisabled = !((PaginatedList<Series>)ViewData["UserSeries"]).HasPreviousPage ? "disabled" : "";
+    string SeriesNextDisabled = !((PaginatedList<Series>)ViewData["UserSeries"]).HasNextPage ? "disabled" : "";
+    //}
+
+}
+
+<a asp-action="Index" asp-route-SeriesPage="@(((PaginatedList<Series>)ViewData["UserSeries"]).PageIndex - 1)"
+   asp-route-GamePage="@(((PaginatedList<Game>)ViewData["UserGames"]).PageIndex)"
+   class="btn btn-primary @SeriesPrevDisabled">Prev</a>
+
+<a asp-action="Index" asp-route-SeriesPage="@(((PaginatedList<Series>)ViewData["UserSeries"]).PageIndex + 1)"
+   asp-route-GamePage="@(((PaginatedList<Game>)ViewData["UserGames"]).PageIndex)"
+   class="btn btn-primary @SeriesNextDisabled">Next</a>
+
 <br />
 <hr />
 <br />
@@ -87,17 +106,18 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Score)
+                @* These supposedly work even without an item in the collection!*@
+                @Html.DisplayNameFor(model => ((List<Game>)ViewData["UserGames"])[0].Score)
             </th>
             <th>
                 Series?
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
+                @Html.DisplayNameFor(model => ((List<Game>)ViewData["UserGames"])[0].CreatedDate)
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.ModifiedDate)
-            </th>*@
+                    @Html.DisplayNameFor(model => model.ModifiedDate)
+                </th>*@
             @*<th>
                     @Html.DisplayNameFor(model => model.CurrentFrame)
                 </th>
@@ -111,11 +131,40 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in ((List<Game>)ViewData["UserGames"]))
         {
             <tr>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.Score)</a>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-@item.ID" data-GameModel="@item">
+                        @Html.DisplayFor(modelItem => item.Score)
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal-@item.ID" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">@item.CreatedDate.ToString("MMM dd, yyyy")</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <partial name="_CondensedScoreboard" model="@item" />
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+                                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary float-left" >Details</a>
+                                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary btn-block">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </td>
                 <td>
                     @{
@@ -133,8 +182,8 @@
                     @Html.DisplayFor(modelItem => item.CreatedDate)
                 </td>
                 @*<td>
-                    @Html.DisplayFor(modelItem => item.ModifiedDate)
-                </td>*@
+                        @Html.DisplayFor(modelItem => item.ModifiedDate)
+                    </td>*@
 
                 @*<td>
                         @Html.DisplayFor(modelItem => item.CurrentFrame)
@@ -156,4 +205,47 @@
         }
     </tbody>
 </table>
+
+@{
+    // NOTE: Might not be needed because the call is on the list iteself, and we are always passing one?
+    //bool SeriesPrevDisabled, SeriesNextDisabled = true;
+    //if (((PaginatedList<Series>)ViewData["UserSeries"])[0] != null)
+    //{
+    string GamePrevDisabled = !((PaginatedList<Game>)ViewData["UserGames"]).HasPreviousPage ? "disabled" : "";
+    string GameNextDisabled = !((PaginatedList<Game>)ViewData["UserGames"]).HasNextPage ? "disabled" : "";
+    //}
+
+}
+
+<a asp-action="Index" asp-route-SeriesPage="@(((PaginatedList<Series>)ViewData["UserSeries"]).PageIndex)"
+   asp-route-GamePage="@(((PaginatedList<Game>)ViewData["UserGames"]).PageIndex - 1)"
+   class="btn btn-primary @GamePrevDisabled">Prev</a>
+
+<a asp-action="Index" asp-route-SeriesPage="@(((PaginatedList<Series>)ViewData["UserSeries"]).PageIndex)"
+   asp-route-GamePage="@(((PaginatedList<Game>)ViewData["UserGames"]).PageIndex + 1)"
+   class="btn btn-primary @GameNextDisabled">Next</a>
+
+
+
+@*<script>
+    $('#exampleModal').on('show.bs.modal', function (event)
+    {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var GameModel = button.data('GameModel') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+    })
+</script>*@
+
+
+
+
+
+
+
+
+
 

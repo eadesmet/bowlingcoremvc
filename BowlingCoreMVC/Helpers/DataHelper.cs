@@ -133,7 +133,7 @@ namespace BowlingCoreMVC.Helpers
         public static List<SelectListItem> GetAllDays()
         {
             List<SelectListItem> Result = new List<SelectListItem>();
-            foreach (var day in Enum.GetNames(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList())
+            foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList())
             {
                 Result.Add(new SelectListItem() { Value = ((int)day).ToString(), Text = day.ToString() });
             }
@@ -192,14 +192,28 @@ namespace BowlingCoreMVC.Helpers
         
         public static List<Series> GetAllSeriesByUserID(string UserID, ApplicationDbContext _db)
         {
-            List<Series> Result = (_db.Series.Include(o => o.Games).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).ToList());
-            foreach(var s in Result)
+            // TODO(ERIC): Clean this up. Minimize DB calls, it's crazy now.
+            List<Series> Result = (_db.Series.Include(o => o.Games).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).AsNoTracking().ToList());
+            string UserName = GetUserNameFromID(UserID, _db);
+            foreach (var s in Result)
+            {
+                s.LeagueName = GetLeagueNameByID(s.LeagueID ?? 0, _db);
+                s.UserName = UserName;
+            }
+            return (Result);
+        }
+
+        public static IQueryable<Series> GetAllSeriesByUserIDQueryable(string UserID, ApplicationDbContext _db)
+        {
+            IQueryable<Series> Result = (_db.Series.Include(o => o.Games).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).AsNoTracking());
+            string UserName = GetUserNameFromID(UserID, _db);
+            foreach (var s in Result)
             {
                 s.LeagueName = GetLeagueNameByID(s.LeagueID ?? 0, _db);
             }
             return (Result);
         }
-        
+
         public static string GetLeagueNameByID(int LeagueID, ApplicationDbContext _db)
         {
             League Result = _db.Leagues.Where(o => o.ID == LeagueID).SingleOrDefault();

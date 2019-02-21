@@ -3,53 +3,8 @@
     ViewData["Title"] = "Default";
 }
 
-<div class="row">
-    <div id="scoreboard">
-        <table class="table table-bordered table-condensed GameTable">
-            <thead>
-                <tr>
-                    @*OR just 1-10..*@
-                    @foreach (var f in Model.Frames)
-                    {
-                        if (f.FrameNum != 10)
-                        {
-                            <th colspan="2">@f.FrameNum</th>
-                        }
-                        else
-                        {
-                            <th colspan="3">@f.FrameNum</th>
-                        }
 
-
-                    }
-                </tr>
-            </thead>
-@*
-            <tr>
-                @foreach (var f in Model.Frames)
-                {
-                    <frame-throw frame="@f" throw-num="1"></frame-throw>
-                    <frame-throw frame="@f" throw-num="2"></frame-throw>
-
-                    if (f.FrameNum == 10)
-                    {
-                        <frame-throw frame="@f" throw-num="3"></frame-throw>
-                    }
-
-                }
-            </tr>
-*@
-            <tr>
-                @foreach (var f in Model.Frames)
-                {
-                    <frame-score frame="@f" game="@Model"></frame-score>
-
-                }
-            </tr>
-        </table>
-
-    </div>
-</div>
+<partial name="CondensedScoreboard" model="Model" />
 
 <div class="row">
     @foreach (var f in Model.Frames)

@@ -95,7 +95,12 @@ namespace BowlingCoreMVC.Controllers
 
             // Games per league, then narrow down by user afterwards
             List<Series> LeagueSeries = _db.Series.Include(o => o.Games).Where(o => o.LeagueID == id).ToList();
-            if (LeagueSeries.Count == 0) { return RedirectToAction("Error", "Home"); }
+
+            
+            if (LeagueSeries.Count == 0)
+            {
+                return RedirectToAction("Error", "Home", new { Message = "League contains no Games!" });
+            }
             
             foreach (Series s in LeagueSeries)
             {
@@ -129,7 +134,7 @@ namespace BowlingCoreMVC.Controllers
 
             //Game TopLeagueGames = _db.Games.OrderByDescending(o => o.Score).Take(1).SingleOrDefault();
 
-            DayOfWeek LeagueDay = league.StartDate.DayOfWeek;
+            //DayOfWeek LeagueDay = league.StartDate.DayOfWeek;
 
             foreach (Series s in LeagueSeries)
             {
@@ -202,6 +207,7 @@ namespace BowlingCoreMVC.Controllers
 
             //if modelstate is invalid, get the locations again and redisplay form
             Model.Locations = Helpers.DataHelper.GetAllLocations(_db);
+            Model.Days = DataHelper.GetAllDays();
             return View(Model);
         }
 
@@ -220,6 +226,7 @@ namespace BowlingCoreMVC.Controllers
             }
 
             league.Locations = Helpers.DataHelper.GetAllLocations(_db);
+            league.Days = DataHelper.GetAllDays();
 
             return View(league);
         }
@@ -229,7 +236,7 @@ namespace BowlingCoreMVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LocationID,CreatedByID,StartDate,EndDate")] League league)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LocationID,CreatedByID,StartDate,EndDate,LeagueDay")] League league)
         {
             if (id != league.ID)
             {
@@ -257,6 +264,10 @@ namespace BowlingCoreMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            league.Locations = Helpers.DataHelper.GetAllLocations(_db);
+            league.Days = DataHelper.GetAllDays();
+
             return View(league);
         }
 

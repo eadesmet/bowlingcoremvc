@@ -184,21 +184,25 @@ namespace BowlingCoreMVC.Models
         [Display(Name = "Select a Location")]
         public int? LocationID { get; set; }
 
+        [Required(ErrorMessage = "Please provide a Name for the League")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "Please provide a Start Date for the League")]
         [DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = @"{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
+        [Required(ErrorMessage = "Please provide an End Date for the League")]
         [DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = @"{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
+        [Required(ErrorMessage = "Please select a Day")]
+        [Range(0, 6, ErrorMessage = "Please enter a the Day of the week this league is bowled on")]
         public DayOfWeek LeagueDay { get; set; }
 
         [NotMapped]
         public List<SelectListItem> Days { get; set; }
-
 
         [StringLength(128)]
         public string CreatedByID { get; set; }

@@ -33,8 +33,10 @@ namespace BowlingCoreMVC.Controllers
         //    return View();
         //}
 
-        public IActionResult Error()
+        public IActionResult Error(string Message = "")
         {
+            // TODO(ERIC): Better error handling; I don't want the message in the URL
+            ViewData["Message"] = Message;
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

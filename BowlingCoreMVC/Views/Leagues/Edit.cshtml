@@ -11,8 +11,8 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <input asp-for="CreatedByID" class="hidden" />
-            <input asp-for="CreatedDate" class="hidden" />
+            <input asp-for="CreatedByID" class="d-none" />
+            <input asp-for="CreatedDate" class="d-none" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -38,6 +38,15 @@
                 <input asp-for="EndDate" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="LeagueDay" class="control-label"></label>
+                <select asp-for="LeagueDay" asp-items="@Model.Days" class="form-control" id="ddlDays">
+                    @*<option value="10">---League Day---</option>*@
+                </select>
+                <span asp-validation-for="LeagueDay" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
