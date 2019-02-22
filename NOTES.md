@@ -981,3 +981,24 @@ because the strike bonus, spare bonus code would be repeated
 		I guess theres also a Restore option that goes back in time?
 		
 }
+
+2-22
+{
+	TODO: If they leave the Game page, and current throw is 1, and score is 0
+			then DELETE the game!
+
+	I've been messing with modals, it's a little more complicated than i want it to be.
+
+	Error page!
+		I CAN actually pass the model to the view
+		return View("Error", ErrorViewModel)
+		!!
+
+
+	sigh..long night
+
+	So i spent hours messing with the IQueryable garbage, see comments
+	it's still not getting leaguename
+	
+
+}

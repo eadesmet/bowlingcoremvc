@@ -36,21 +36,32 @@ namespace BowlingCoreMVC.Controllers
         {
             var user = await GetCurrentUserAsync();
             int PageSize = 12;
-            
+
             // NOTE(ERIC): All Games vs NonSeries Games? DataHelper.GetNonSeriesGamesByUserID(user.Id, _db);
 
-            
-            ViewData["UserSeries"] = await PaginatedList<Series>.
-                CreateAsync(DataHelper.GetAllSeriesByUserIDQueryable(user.Id, _db), 
-                SeriesPage ?? 1, PageSize);
+            IQueryable<Series> series = DataHelper.GetAllSeriesByUserIDQueryable(user.Id, _db);
+            //await series.ForEachAsync(o => o.LeagueName = (_db.Leagues.Where(l => l.ID == o.LeagueID).Select(ln => ln.Name).DefaultIfEmpty("").ToString()));
 
-            
-            IQueryable<Game> games = _db.Games
+            //*************
+            // This one was somewhat working, but paging broke. It needs to be async??
+            //List<Series> s = series.ToList();
+            //s.ForEach(o => o.LeagueName = DataHelper.GetLeagueNameByID(o.LeagueID ?? 0, _db));
+            //PaginatedList<Series> pagSeries = new PaginatedList<Series>(s, s.Count, 1, 3);
+            //*************
+
+
+            ViewData["UserSeries"] = 
+                await PaginatedList<Series>.CreateAsync(series, SeriesPage ?? 1, PageSize);
+            //ViewData["UserSeries"] = pagSeries;
+
+            IQueryable < Game> games = _db.Games
                 .Where(o => o.UserID == user.Id)
                 .Include(o => o.Frames)
                 .OrderByDescending(o => o.CreatedDate).AsNoTracking();
+
             
-            
+
+
             ViewData["UserGames"] = await PaginatedList<Game>.
                 CreateAsync(games, 
                 GamePage ?? 1, PageSize);
