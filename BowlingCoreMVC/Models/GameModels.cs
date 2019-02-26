@@ -92,8 +92,8 @@ namespace BowlingCoreMVC.Models
         public virtual ICollection<Frame> Frames { get; set; }
 
 
-        //nvarcher(128)
-        [StringLength(128)]
+        //nvarcher(450)
+        [StringLength(450)]
         public string UserID { get; set; }
 
         public int SeriesIndex { get; set; }
@@ -135,12 +135,12 @@ namespace BowlingCoreMVC.Models
 
         public int ID { get; set; }
 
-        [StringLength(128)]
+        [StringLength(450)]
         public string UserID { get; set; }
 
         public int? LeagueID { get; set; }
 
-        //public int? TeamID {get;set;}
+        public int? TeamID {get;set;}
 
         public int SeriesScore { get; set; }
 
@@ -160,6 +160,9 @@ namespace BowlingCoreMVC.Models
         [ForeignKey("LeagueID")]
         public virtual League League { get; set; }
 
+        [ForeignKey("TeamID")]
+        public virtual Team Team { get; set; }
+
         [NotMapped]
         public List<SelectListItem> Leagues { get; set; }
 
@@ -173,6 +176,14 @@ namespace BowlingCoreMVC.Models
 
         [NotMapped]
         public string UserName { get; set; }
+    }
+
+    // TODO(ERIC): Will need some queries behind this to get when a league occurs
+    public enum LeagueOccurance
+    {
+        EveryWeek,
+        EveryOtherWeek,
+        EveryMonth
     }
 
     [DisplayColumn("Name")]
@@ -194,6 +205,12 @@ namespace BowlingCoreMVC.Models
         [Required(ErrorMessage = "Please provide a Name for the League")]
         public string Name { get; set; }
 
+        public string Message { get; set; }
+
+        public LeagueOccurance Occurance { get; set; }
+
+        public int DefaultNumOfGames { get; set; }
+
         [Required(ErrorMessage = "Please provide a Start Date for the League")]
         [DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = @"{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
@@ -211,7 +228,7 @@ namespace BowlingCoreMVC.Models
         [NotMapped]
         public List<SelectListItem> Days { get; set; }
 
-        [StringLength(128)]
+        [StringLength(450)]
         public string CreatedByID { get; set; }
 
         [Display(Name = "Created")]
@@ -255,33 +272,12 @@ namespace BowlingCoreMVC.Models
 
     }
 
-    public class LeagueUsers
-    {
-        public int ID { get; set; }
-        public int LeagueID { get; set; }
-
-        [StringLength(128)]
-        public string UserID { get; set; }
-
-        //Add a flag here?
-    }
-    
-
-    /*
-     * League > LeagueUsers
-     * LeagueUsers > User
-     * User > Series
-     * Series > Game
-     * 
-     * */
-
-
     public class Location
     {
         public int ID { get; set; }
         public string Name { get; set; }
 
-        [StringLength(128)]
+        [StringLength(450)]
         public string CreatedByID { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
@@ -291,8 +287,6 @@ namespace BowlingCoreMVC.Models
         public string CreatedByUserName { get; set; }
     }
 
-    // NOTE: Not implimented yet
-    // Need to update Series: replace LeagueID with TeamID
     public class Team
     {
         public static Team Create()
@@ -310,6 +304,7 @@ namespace BowlingCoreMVC.Models
         [NotMapped]
         public List<SelectListItem> Leagues {get;set;}
 
+        [ForeignKey("LeagueID")]
         public virtual League League { get; set; }
 
         [NotMapped]
@@ -317,30 +312,29 @@ namespace BowlingCoreMVC.Models
         public string CreatedByUserName { get; set; }
 
 
-        [StringLength(128)]
+        [StringLength(450)]
         public string CreatedByID { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
     }
 
-    public class TeamToUser
+    public class UserLeagueTeam
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public string UserID { get; set; }
-        public int TeamID { get; set; }
-    }
 
-    
-
-    public class LeagueToUser
-    {
-        public int ID { get; set; }
+        [StringLength(450)]
         public string UserID { get; set; }
         public int LeagueID { get; set; }
         public int TeamID { get; set; }
 
         // If Today is before the League End date
         public bool IsActive { get; set; }
+
+        // If the user is an Owner/Admin of this League/Team
+        // NOTE: Might want to split this out between League and Team
+        //  CreatedByID should default to IsAdmin!
+        public bool IsAdmin { get; set; }
     }
 
 }

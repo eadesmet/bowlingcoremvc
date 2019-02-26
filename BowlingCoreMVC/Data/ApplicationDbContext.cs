@@ -26,20 +26,29 @@ namespace BowlingCoreMVC.Data
             //    .WithMany(s => s.Games)
             //    .OnDelete(DeleteBehavior.Cascade);
 
-            
-                
+            // Convert the LeagueOccurance enum to a String in the database
+            // When I get it in code, it should still be an enum
+            builder
+                .Entity<League>()
+                .Property(e => e.Occurance)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (LeagueOccurance)Enum.Parse(typeof(LeagueOccurance), v));
+
+
         }
 
-        public DbSet<BowlingCoreMVC.Models.Game> Games { get; set; }
-        public DbSet<BowlingCoreMVC.Models.Frame> Frames { get; set; }
+        public DbSet<Game> Games { get; set; }
+        public DbSet<Frame> Frames { get; set; }
 
         public DbSet<Series> Series { get; set; }
         public DbSet<League> Leagues { get; set; }
         public DbSet<Location> Locations { get; set; }
 
-        public DbSet<LeagueToUser> LeagueToUsers { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<UserLeagueTeam> UserLeagueTeams { get; set; }
 
-        //public DbSet<Team> Teams {get;set;}
+        
         //public DbSet<TeamToUser> TeamToUsers {get;set;}
 
     }
