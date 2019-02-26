@@ -28,11 +28,11 @@
                 @{
                     if (Model.SeriesID != 0 && Model.SeriesID != null)
                     {
-                        @Model.UserName @: - Game @Model.SeriesIndex of Series
+                        @Model.User.UserName @: - Game @Model.SeriesIndex of Series
                     }
                     else
                     {
-                        @Model.UserName
+                        @Model.User.UserName
                     }
                 }
 

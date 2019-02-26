@@ -9,22 +9,29 @@
 	var i = 1;
 }
 
-<div class="page-header"><h3>@Model.LeagueName : Series from @Model.CreatedDate.ToShortDateString() <small>last modified on @Model.ModifiedDate.ToShortDateString()</small></h3></div>
-
-
-
-@foreach (var g in Model.Games)
+<h1>Series Summary</h1>
+@if (Model.League != null)
 {
-	<h5>Game @i</h5>
-    @await Component.InvokeAsync("GameDetails", new { GameID = g.ID })
-	i++;
+    <div class="border-bottom border-secondary">League: @Model.League.Name</div>
 }
 
+<div class="border-bottom border-secondary">Bowled On: @Model.CreatedDate.ToShortDateString()</div>
+
+@if (Model.User != null)
+{
+    <div class="border-bottom border-secondary">Bowled By: @Model.User.UserName</div>
+}
+<br />
+@foreach (var g in Model.Games)
+{
+    <h3>Game @i</h3>
+    @await Component.InvokeAsync("GameDetails", new { GameID = g.ID })
+    i++;
+}
 
 <environment include="Development">
     <script src="~/js/editgame.js" asp-append-version="true"></script>
 </environment>
-
 <environment exclude="Development">
     <script src="~/js/editgame.min.js" asp-append-version="true"></script>
 </environment>

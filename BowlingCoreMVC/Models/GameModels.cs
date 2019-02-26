@@ -103,6 +103,9 @@ namespace BowlingCoreMVC.Models
         //test
         //public virtual Series Series { get; set; }
 
+        [ForeignKey("UserID")]
+        public virtual ApplicationUser User { get; set; }
+
         [NotMapped]
         public string UserName { get; set; }
     }
@@ -121,7 +124,7 @@ namespace BowlingCoreMVC.Models
             s.Games = new List<Game>();
             for (int i = 1; i <= NumberOfGames; i++)
             {
-                Game g = Game.Create();
+                Game g = Game.Create(s.ID);
                 g.SeriesIndex = i;
                 s.Games.Add(g);
             }
@@ -135,7 +138,6 @@ namespace BowlingCoreMVC.Models
         [StringLength(128)]
         public string UserID { get; set; }
 
-        //[NotMapped]
         public int? LeagueID { get; set; }
 
         //public int? TeamID {get;set;}
@@ -152,6 +154,11 @@ namespace BowlingCoreMVC.Models
         [DisplayFormat(DataFormatString = "{0:MM/dd/yy (ddd) hh:mm tt}")]
         public DateTime ModifiedDate { get; set; }
 
+        [ForeignKey("UserID")]
+        public virtual ApplicationUser User { get; set; }
+
+        [ForeignKey("LeagueID")]
+        public virtual League League { get; set; }
 
         [NotMapped]
         public List<SelectListItem> Leagues { get; set; }
@@ -321,6 +328,19 @@ namespace BowlingCoreMVC.Models
         public int ID { get; set; }
         public string UserID { get; set; }
         public int TeamID { get; set; }
+    }
+
+    
+
+    public class LeagueToUser
+    {
+        public int ID { get; set; }
+        public string UserID { get; set; }
+        public int LeagueID { get; set; }
+        public int TeamID { get; set; }
+
+        // If Today is before the League End date
+        public bool IsActive { get; set; }
     }
 
 }

@@ -19,7 +19,8 @@
 
 @foreach (var g in Model.Games)
 {
-    @await Component.InvokeAsync("EditGame", new { GameID = g.ID })
+    @*@await Component.InvokeAsync("EditGame", new { GameID = g.ID })*@
+    @await Component.InvokeAsync("EditGame", new { Game = g })
 
 }
 

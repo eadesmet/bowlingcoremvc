@@ -54,7 +54,7 @@ namespace BowlingCoreMVC.Controllers
                 await PaginatedList<Series>.CreateAsync(series, SeriesPage ?? 1, PageSize);
             //ViewData["UserSeries"] = pagSeries;
 
-            IQueryable < Game> games = _db.Games
+            IQueryable <Game> games = _db.Games
                 .Where(o => o.UserID == user.Id)
                 .Include(o => o.Frames)
                 .OrderByDescending(o => o.CreatedDate).AsNoTracking();

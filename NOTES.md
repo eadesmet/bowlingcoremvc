@@ -1002,3 +1002,107 @@ because the strike bonus, spare bonus code would be repeated
 	
 
 }
+
+2-25
+{
+	fixed the league name issue in 5 minutes
+		added a virtual League to the series and added a .include to the query
+	
+	So, in thinking of separating the series page and the game page..
+
+		why don't i tie the series to the league itself?
+		each league would have a series list
+		the new button would be 'new league night'
+			could then lock down what you can create for it
+			only create a league's series if it's on the league night
+			
+
+	could have a landing page type thing for all of my games
+		links to all series
+		links to all games
+		links to my leagues
+
+	
+	League message to display on the league when users view it
+
+	User home page revamp
+		upcoming leagues
+		recent stuff
+
+	If i were to re-add teams, I would almost like them to be optional
+
+	TODO: Association table between Leagues and Users, also include TeamID
+
+	When a User wants to join a league, they go to a 'current leagues' page..
+		then they say they'd like to join one
+			possibly have a user be a 'league owner/manager' to approve/deny these requests
+		after they join one, populate the association table, and let them create series for it
+
+		i really should lock down the amount of bowling they can do per league
+
+		have it in the league setup how often they bowl, num of games, etc.
+			then i can lock down the series and when they bowl one, default a lot of stuff in
+
+
+	ok, so serius TODO list HERE:
+
+	TODO: Team table and views going with that.
+			possible other things to go with this
+				Create a team upon creation of a league
+			Teams are OPTIONAL for a league
+
+	TODO: Association table between League, User, and Team
+
+	TODO: Revamp User Home page
+			Quick create a series for a league on the current day
+			Recent activity
+			my leagues
+			links to 'all my series' and 'all my games'
+				(I don't want the main 'all series/games' to be a place they always go)
+
+	TODO: Lock down League with the amount of bowling users can do for them
+			League new fields: 
+				Occurance (every week, every other week)
+				Number of games each week/per series
+			Only allow users to bowl 1 series per occurance
+				might have to tie this to series somehow? just do by bowl date?
+
+	TODO: Add a Manager/Owner for each league
+			Only this person can edit the league
+			possible, in the future, have this person approve/deny users request to join
+			also possibly have more than one person in this role
+				(if the main owner is unresponsive or needs help)
+
+	TODO: Add a League Message to display as a banner to all users for the league
+			appear on the new User Home page per league
+			explain what users can do with this league message
+
+	TODO: Redo navigation and some page layouts:
+		TODO: (Not priority) League summary page to be more of a landing page
+			League night quick create button (if you are in it)
+			
+
+		TODO: admin(?) menu for edit pages
+			League and location edit list, 
+
+		TODO: (Not priority) redo league/location list to use list-group
+
+		TODO: separate the series and games lists
+
+		
+	TODO: Style the list-group to be a different background color, and alternating rows
+			maybe add a thick border too
+			TODO: Actually, make this a tag helper/partial view
+				to accept any kind of data
+				pass in a special view model that is generic
+				maybe the modal would be part of all this too
+					would have to tell which type of record it's opening on the fly
+			have a thick border with a nice title
+			maybe generate my own theme with my own colors to user sitewide
+
+
+	enough of a todo list for you?
+	try to stick to it and make progress on them one at a time
+			
+
+}

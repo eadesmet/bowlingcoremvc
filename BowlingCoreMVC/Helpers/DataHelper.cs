@@ -74,18 +74,18 @@ namespace BowlingCoreMVC.Helpers
             db.Entry(s).State = EntityState.Added;
             db.SaveChanges();
 
-            string UserName = GetUserNameFromID(UserID, db);
+            //string UserName = GetUserNameFromID(UserID, db);
             
             foreach (var g in s.Games)
             {
                 g.SeriesID = s.ID;
                 g.UserID = UserID;
-                g.UserName = UserName;
+                g.UserName = s.User.UserName;// UserName;
             }
             
             db.SaveChanges();
 
-            s.UserName = UserName;
+            //s.UserName = UserName;
             
             return (s);
         }
@@ -194,11 +194,11 @@ namespace BowlingCoreMVC.Helpers
         {
             // TODO(ERIC): Clean this up. Minimize DB calls, it's crazy now.
             List<Series> Result = (_db.Series.Include(o => o.Games).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).AsNoTracking().ToList());
-            string UserName = GetUserNameFromID(UserID, _db);
+            //string UserName = GetUserNameFromID(UserID, _db);
             foreach (var s in Result)
             {
-                s.LeagueName = GetLeagueNameByID(s.LeagueID ?? 0, _db);
-                s.UserName = UserName;
+                //s.LeagueName = GetLeagueNameByID(s.LeagueID ?? 0, _db);
+                //s.UserName = UserName;
             }
             return (Result);
         }
@@ -216,87 +216,19 @@ namespace BowlingCoreMVC.Helpers
         {
             IQueryable<Series> Result = (IQueryable<Series>)_db.Series
                 .Include(o => o.Games).ThenInclude(x => x.Frames)
+                .Include(o => o.League)
                 .Where(o => o.UserID == UserID)
                 .OrderByDescending(o => o.CreatedDate)
                 .AsNoTracking();
 
-            //var test =
-            //    (from s in _db.Series
-            //     from l in _db.Leagues
-            //     from g in _db.Games
-            //    where s.UserID == UserID
-            //    && l.ID == s.LeagueID
-            //    && g.SeriesID == s.ID
-            //    orderby s.CreatedDate descending
-                
-            //    select new SeriesQueryResult { ID = s.ID, SeriesScore = s.SeriesScore, LeagueName = l.Name, CreatedDate = s.CreatedDate, Games = g }).AsNoTracking();
-
-
-            /*
-             * List of series
-             * for each series, get its league name from league
-             * for each series, get its games from game
-             * 
-             * result is a list of series
-             * series has its games
-             * series has leaguename set
-             * games has its frames
-             * 
-             * 
-             * */
-
-            //foreach (var a in test)
-            //{
-            //    Series s = a.series;
-            //    s.LeagueName = a.LeagueName;
-
-            //}
-
-            //test.ForEachAsync(o => o.series.LeagueName = o.LeagueName);
-            /*
-             * See what I'm trying to do here?
-             * I only need to get the league name and put it in LeagueName in the series
-             * that's it.
-             * 
-             * The trouble is, I can't figure out a way to set the LeagueName _inside_ of the query
-             * When I try to do it outside the query in a foreach, the value doesn't stick for some reason
-             * When I try to convert it to a list, then do it, and convert it back, it's then not a 'real' IQueryable..
-             *   Even though it's the same exact type, it's not coming from the same source, so it doesn't have some async thing on it..
-             *   
-             * 
-             * */
-
-
-            //List<Series> serieslist = Result.ToList();
-            //foreach (var s in serieslist)
-            //{
-            //    s.LeagueName = GetLeagueNameByID(s.LeagueID ?? 0, _db);
-            //}
-
-
-            //Result = serieslist.AsQueryable().AsNoTracking();
-
-            //Result.ForEachAsync(o => o.LeagueName = _db.Leagues.Where(l => l.ID == o.ID).SingleOrDefault().Name);
-
-            //List<Series> ResultList = new List<Series>();
-
-            //string UserName = GetUserNameFromID(UserID, _db);
-
-            //foreach (var s in ResultList)
-            //{
-            //    s.LeagueName = GetLeagueNameByID(s.LeagueID ?? 0, _db);
-            // This will probably blow up if there are no games in the series
-            //s.Games = _db.Games.Where(o => o.SeriesID == s.ID).Include(o => o.Frames).ToList();
-            //}
             return (Result);
-            //return (test);
         }
 
-        public static string GetLeagueNameByID(int LeagueID, ApplicationDbContext _db)
-        {
-            League Result = _db.Leagues.Where(o => o.ID == LeagueID).SingleOrDefault();
-            return (Result != null) ? Result.Name : "";
-        }
+        //public static string GetLeagueNameByID(int LeagueID, ApplicationDbContext _db)
+        //{
+        //    League Result = _db.Leagues.Where(o => o.ID == LeagueID).SingleOrDefault();
+        //    return (Result != null) ? Result.Name : "";
+        //}
 
         public static DateTime GetNextLeagueNight(DateTime StartDate)
         {

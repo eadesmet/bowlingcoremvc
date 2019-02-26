@@ -19,7 +19,7 @@
         <button type="button" data-toggle="modal" data-SeriesID="@item.ID" data-target="#seriesModal-@item.ID" class="list-group-item list-group-item-action flex-column align-items-start">
             <span class="bade badge-primary badge-pill">@Html.DisplayFor(modelItem => item.SeriesScore)</span>
             <p class="mb-1">@item.CreatedDate.ToString("MMM dd, yyyy")</p>
-            <p class="mb-1">@Html.DisplayFor(modelItem => item.LeagueName)</p>
+            <p class="mb-1">@Html.DisplayFor(modelItem => item.League.Name)</p>
         </button>
 
 

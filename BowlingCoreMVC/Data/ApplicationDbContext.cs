@@ -37,6 +37,8 @@ namespace BowlingCoreMVC.Data
         public DbSet<League> Leagues { get; set; }
         public DbSet<Location> Locations { get; set; }
 
+        public DbSet<LeagueToUser> LeagueToUsers { get; set; }
+
         //public DbSet<Team> Teams {get;set;}
         //public DbSet<TeamToUser> TeamToUsers {get;set;}
 
