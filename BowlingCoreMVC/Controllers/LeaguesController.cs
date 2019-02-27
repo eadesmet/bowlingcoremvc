@@ -161,6 +161,9 @@ namespace BowlingCoreMVC.Controllers
 
             ViewData["LastWeekSeries"] = LastWeekSeries;
 
+            List<Team> teams = _db.Teams.Where(o => o.LeagueID == league.ID).ToList();
+            ViewData["Teams"] = teams;
+
             return View(league);
         }
 
@@ -170,6 +173,10 @@ namespace BowlingCoreMVC.Controllers
             var Model = League.Create();
             Model.Locations = DataHelper.GetAllLocations(_db);
             Model.Days = DataHelper.GetAllDays();
+            Model.Occurances = DataHelper.GetAllOccurances();
+
+            // Select the first item by default
+            Model.Occurances[0].Selected = true;
 
             return View(Model);
         }
@@ -206,10 +213,16 @@ namespace BowlingCoreMVC.Controllers
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                // Get error out of modelstate.
+                //IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+            }
 
             //if modelstate is invalid, get the locations again and redisplay form
             Model.Locations = Helpers.DataHelper.GetAllLocations(_db);
             Model.Days = DataHelper.GetAllDays();
+            Model.Occurances = DataHelper.GetAllOccurances();
             return View(Model);
         }
 
@@ -229,6 +242,7 @@ namespace BowlingCoreMVC.Controllers
 
             league.Locations = Helpers.DataHelper.GetAllLocations(_db);
             league.Days = DataHelper.GetAllDays();
+            league.Occurances = DataHelper.GetAllOccurances();
 
             return View(league);
         }
@@ -269,6 +283,7 @@ namespace BowlingCoreMVC.Controllers
 
             league.Locations = Helpers.DataHelper.GetAllLocations(_db);
             league.Days = DataHelper.GetAllDays();
+            league.Occurances = DataHelper.GetAllOccurances();
 
             return View(league);
         }

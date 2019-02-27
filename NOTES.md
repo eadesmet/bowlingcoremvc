@@ -1106,3 +1106,38 @@ because the strike bonus, spare bonus code would be repeated
 			
 
 }
+
+2-26
+{
+	alright, so I got the teams migration up and running
+	new team and userleagueteam tables
+	generated controller and views for team
+
+	before I go into how the views should act, I need to figure out how the pages will go
+
+	I don't want to have a 'teams' list way of adding them
+	instead, i want to go under a league, have a list of that leagues teams there
+	then from there, i'll add teams etc.
+
+	so I guess at the bottom of the league summary page, there will be a list of teams
+
+
+	3:48pm update
+		still need to finish up how teams work.
+
+}
+
+2-27
+{
+
+	TODO: Upgrade the forms to look better
+			bootstrap 4 has different form styling than what was generated
+			move some fields to be inline as well (start date/end date?)
+
+
+	See the cards on the homepage; I like them
+	TODO: Replace the tables on the league summary page with a partial of a card
+		TODO: Create several partials for cards with lists/tables in them
+
+
+}

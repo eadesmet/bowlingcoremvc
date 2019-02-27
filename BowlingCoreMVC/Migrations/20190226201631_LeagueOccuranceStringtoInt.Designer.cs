@@ -4,14 +4,16 @@ using BowlingCoreMVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BowlingCoreMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190226201631_LeagueOccuranceStringtoInt")]
+    partial class LeagueOccuranceStringtoInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -148,9 +150,7 @@ namespace BowlingCoreMVC.Migrations
 
                     b.Property<DateTime>("CreatedDate");
 
-                    b.Property<int>("DefaultNumOfGames")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(3);
+                    b.Property<int>("DefaultNumOfGames");
 
                     b.Property<DateTime?>("EndDate")
                         .IsRequired();
@@ -166,9 +166,7 @@ namespace BowlingCoreMVC.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<int>("Occurance")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(1);
+                    b.Property<int>("Occurance");
 
                     b.Property<DateTime?>("StartDate")
                         .IsRequired();

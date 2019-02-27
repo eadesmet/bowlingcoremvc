@@ -139,7 +139,18 @@ namespace BowlingCoreMVC.Helpers
             }
             return (Result);
         }
-        
+
+        public static List<SelectListItem> GetAllOccurances()
+        {
+            List<SelectListItem> Result = new List<SelectListItem>();
+            foreach (var occ in Enum.GetValues(typeof(LeagueOccurance)).Cast<LeagueOccurance>().ToList())
+            {
+                Result.Add(new SelectListItem() { Value = ((int)occ).ToString(), Text = occ.ToString() });
+            }
+            return (Result);
+        }
+
+
         public static List<League> UserLeagues(string UserID, ApplicationDbContext _db)
         {
             //user is in a league if they have a series in that league

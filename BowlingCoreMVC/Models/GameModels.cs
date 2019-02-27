@@ -181,9 +181,9 @@ namespace BowlingCoreMVC.Models
     // TODO(ERIC): Will need some queries behind this to get when a league occurs
     public enum LeagueOccurance
     {
-        EveryWeek,
-        EveryOtherWeek,
-        EveryMonth
+        EveryWeek = 1,
+        EveryOtherWeek = 2,
+        EveryMonth = 4
     }
 
     [DisplayColumn("Name")]
@@ -194,6 +194,8 @@ namespace BowlingCoreMVC.Models
             League l = new League();
             l.CreatedDate = DateTime.Now;
             l.ModifiedDate = DateTime.Now;
+            l.Occurance = LeagueOccurance.EveryWeek;
+            l.DefaultNumOfGames = 3;
             return (l);
         }
 
@@ -205,22 +207,27 @@ namespace BowlingCoreMVC.Models
         [Required(ErrorMessage = "Please provide a Name for the League")]
         public string Name { get; set; }
 
+        [Display(Name = "League Message")]
         public string Message { get; set; }
 
+        [Display(Name = "Occurance (How often the league bowls)")]
         public LeagueOccurance Occurance { get; set; }
 
+        [Range(2, 9)]
+        [Display(Name = "How many games are played each day?")]
         public int DefaultNumOfGames { get; set; }
 
+        [Display(Name="Leagues first day (Start Date)")]
         [Required(ErrorMessage = "Please provide a Start Date for the League")]
         [DataType(DataType.Date)]
-        //[DisplayFormat(DataFormatString = @"{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? StartDate { get; set; }
 
+        [Display(Name = "Leagues last day (End Date)")]
         [Required(ErrorMessage = "Please provide an End Date for the League")]
         [DataType(DataType.Date)]
-        //[DisplayFormat(DataFormatString = @"{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? EndDate { get; set; }
 
+        [Display(Name="Which day of the week is the league bowled on?")]
         [Required(ErrorMessage = "Please select a Day")]
         [Range(0, 6, ErrorMessage = "Please enter a the Day of the week this league is bowled on")]
         public DayOfWeek LeagueDay { get; set; }
@@ -247,6 +254,9 @@ namespace BowlingCoreMVC.Models
 
         [NotMapped]
         public List<SelectListItem> Locations { get; set; }
+
+        [NotMapped]
+        public List<SelectListItem> Occurances { get; set; }
 
         [NotMapped]
         [Display(Name = "Create a new Location?")]
@@ -310,6 +320,9 @@ namespace BowlingCoreMVC.Models
         [NotMapped]
         [Display(Name="Created By")]
         public string CreatedByUserName { get; set; }
+
+        [NotMapped]
+        public List<string> TeamMembers { get; set; }
 
 
         [StringLength(450)]

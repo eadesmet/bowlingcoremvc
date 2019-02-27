@@ -4,7 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
 
@@ -12,17 +15,21 @@ namespace BowlingCoreMVC.Controllers
 {
     public class TeamsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _db;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public TeamsController(ApplicationDbContext context)
+        public TeamsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _db = context;
+            _userManager = userManager;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Teams
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Teams.Include(t => t.League);
+            var applicationDbContext = _db.Teams.Include(t => t.League);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +41,7 @@ namespace BowlingCoreMVC.Controllers
                 return NotFound();
             }
 
-            var team = await _context.Teams
+            var team = await _db.Teams
                 .Include(t => t.League)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (team == null)
@@ -46,10 +53,22 @@ namespace BowlingCoreMVC.Controllers
         }
 
         // GET: Teams/Create
-        public IActionResult Create()
+        public IActionResult Create(int LeagueID)
         {
-            ViewData["LeagueID"] = new SelectList(_context.Leagues, "ID", "Name");
-            return View();
+
+            // TODO(ERIC): Make this into a modal or something, it's only a name right now..
+
+            //ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name");
+            Team team = new Team();
+            team.LeagueID = LeagueID;
+
+            team.Leagues = BowlingCoreMVC.Helpers.DataHelper.GetCurrentLeagues(_db);
+
+            int index = team.Leagues.FindIndex(o => o.Value == LeagueID.ToString());
+
+            team.Leagues[index].Selected = true;
+
+            return View(team);
         }
 
         // POST: Teams/Create
@@ -61,11 +80,16 @@ namespace BowlingCoreMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(team);
-                await _context.SaveChangesAsync();
+                team.CreatedDate = DateTime.Now;
+                team.ModifiedDate = DateTime.Now;
+                var user = await GetCurrentUserAsync();
+                team.CreatedByID = user.Id;
+                
+                _db.Add(team);
+                await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LeagueID"] = new SelectList(_context.Leagues, "ID", "Name", team.LeagueID);
+            ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);
             return View(team);
         }
 
@@ -77,12 +101,12 @@ namespace BowlingCoreMVC.Controllers
                 return NotFound();
             }
 
-            var team = await _context.Teams.FindAsync(id);
+            var team = await _db.Teams.FindAsync(id);
             if (team == null)
             {
                 return NotFound();
             }
-            ViewData["LeagueID"] = new SelectList(_context.Leagues, "ID", "Name", team.LeagueID);
+            ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);
             return View(team);
         }
 
@@ -102,8 +126,8 @@ namespace BowlingCoreMVC.Controllers
             {
                 try
                 {
-                    _context.Update(team);
-                    await _context.SaveChangesAsync();
+                    _db.Update(team);
+                    await _db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -118,7 +142,7 @@ namespace BowlingCoreMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LeagueID"] = new SelectList(_context.Leagues, "ID", "Name", team.LeagueID);
+            ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);
             return View(team);
         }
 
@@ -130,7 +154,7 @@ namespace BowlingCoreMVC.Controllers
                 return NotFound();
             }
 
-            var team = await _context.Teams
+            var team = await _db.Teams
                 .Include(t => t.League)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (team == null)
@@ -146,15 +170,15 @@ namespace BowlingCoreMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var team = await _context.Teams.FindAsync(id);
-            _context.Teams.Remove(team);
-            await _context.SaveChangesAsync();
+            var team = await _db.Teams.FindAsync(id);
+            _db.Teams.Remove(team);
+            await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TeamExists(int id)
         {
-            return _context.Teams.Any(e => e.ID == id);
+            return _db.Teams.Any(e => e.ID == id);
         }
     }
 }

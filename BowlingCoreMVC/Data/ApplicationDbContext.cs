@@ -28,12 +28,21 @@ namespace BowlingCoreMVC.Data
 
             // Convert the LeagueOccurance enum to a String in the database
             // When I get it in code, it should still be an enum
+            //builder
+            //    .Entity<League>()
+            //    .Property(e => e.Occurance)
+            //    .HasConversion(
+            //        v => v.ToString(),
+            //        v => (LeagueOccurance)Enum.Parse(typeof(LeagueOccurance), v));
+            builder
+                .Entity<League>()
+                .Property(e => e.DefaultNumOfGames)
+                .HasDefaultValue(3);
+
             builder
                 .Entity<League>()
                 .Property(e => e.Occurance)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (LeagueOccurance)Enum.Parse(typeof(LeagueOccurance), v));
+                .HasDefaultValue(LeagueOccurance.EveryWeek);
 
 
         }

@@ -38,6 +38,12 @@
                 <span asp-validation-for="NewLocationName" class="text-danger"></span>
             </div>
 
+            <div class="form-group" id="grpDefaultNumOfGames">
+                <label asp-for="DefaultNumOfGames" class="control-label"></label>
+                <input asp-for="DefaultNumOfGames" class="form-control" id="NumOfGames" min="2" max="9" value="3" />
+                <span asp-validation-for="DefaultNumOfGames" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="StartDate" class="control-label"></label>
                 <input asp-for="StartDate" class="form-control" asp-format="{0:MM/dd/yyyy}" />
@@ -55,6 +61,13 @@
                     @*<option value="10" selected="selected">---League Day---</option>*@
                 </select>
                 <span asp-validation-for="LeagueDay" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Occurance" class="control-label"></label>
+                <select asp-for="Occurance" asp-items="@Model.Occurances" class="form-control" >
+                </select>
+                <span asp-validation-for="Occurance" class="text-danger"></span>
             </div>
 
             <div class="form-group">
