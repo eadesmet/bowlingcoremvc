@@ -33,19 +33,9 @@
 </div>
 
 
-<div class="card text-white bg-secondary w-50">
-    <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <h6 class="card-subtitle mb-2">Card subtitle</h6>
-        <ul class="list-group w-100 border-primary">
-            <li class="list-group-item text-black-50">Cras justo odio<small class="float-right">123</small></li>
-            <li class="list-group-item text-black-50">Dapibus ac facilisis in<span class="badge badge-primary badge-pill float-right">14</span></li>
-            <li class="list-group-item">Morbi leo risus</li>
-            <li class="list-group-item">Porta ac consectetur ac</li>
-            <li class="list-group-item">Vestibulum at eros</li>
-        </ul>
-    </div>
-</div>
+<partial name="_CardListSingleValue" model='@ViewData["ListSingleValue"]' />
+
+<partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
 
 <div class="card" style="width: 18rem;">
     <div class="card-body">

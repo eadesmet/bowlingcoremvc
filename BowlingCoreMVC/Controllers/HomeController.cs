@@ -27,18 +27,38 @@ namespace BowlingCoreMVC.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             //    ViewData["EnvironmentTest"] = "It worked!";
             //else
             //    ViewData["EnvironmentTest"] = "nahh :(";
-            var user = GetCurrentUserAsync();
+            var user = await GetCurrentUserAsync();
             if (user == null) { return View(); }
 
             // Check if there are any leagues today
             // THAT THE USER IS IN!
-            
+
+            ViewData["ListSingleValue"] = new ListSingleValue()
+            {
+                Title = "Test Title",
+                SubTitle = "Subtitle here",
+                Keys = new List<string>() { "bowler 1", "bowler 2" },
+                Values = new List<int>() { 123, 234 }
+            };
+
+            TeamLastWeekData data = new TeamLastWeekData()
+            {
+                TeamName = "Team Name",
+                SubTitle = "subtitle",
+                UserNames = new List<string>() { "user 1", "user 2" },
+                Averages = new List<double>() { 123, 234 },
+                TotalGames = new List<int>() { 12, 12 },
+                TotalPins = new List<int>() { 400, 400 },
+                Series = DataHelper.GetAllSeriesByUserID(user.Id.ToString(), _db).ToList()
+            };
+
+            ViewData["TeamWeekSummary"] = data;
 
             return View();
         }

@@ -100,7 +100,7 @@ namespace BowlingCoreMVC.Controllers
             if (LeagueSeries.Count == 0)
             {
                 //return RedirectToAction("Error", "Home", new { Message = "League contains no Games!" });
-                ErrorViewModel ErrorModel = new ErrorViewModel() { Message = "League contains no Series!" };
+                ErrorViewModel ErrorModel = new ErrorViewModel() { Message = "Bowl some games first to see your league sheet" };
                 return View("Error", ErrorModel);
             }
             

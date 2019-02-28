@@ -270,3 +270,8 @@ input[type='checkbox']:disabled.pins-checkbox + label:before {
 .pins-checkbox-10:checked + label:before {
     content: "\2793";
 }
+
+
+.card-inline {
+    display: inline-block;
+}

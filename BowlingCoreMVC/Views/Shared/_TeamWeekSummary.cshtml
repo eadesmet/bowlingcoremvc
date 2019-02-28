@@ -1,0 +1,44 @@
+﻿@model BowlingCoreMVC.Models.TeamLastWeekData
+
+
+<div class="card text-white bg-secondary w-50 border-primary card-inline">
+    <div class="card-body">
+        <h5 class="card-title">@Model.TeamName</h5>
+        <h6 class="card-subtitle mb-2">@Model.SubTitle</h6>
+        
+            <table class="table table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">User</th>
+                        <th scope="col">Average</th>
+                        <th scope="col">Total Pins</th>
+                        <th scope="col">Total Games</th>
+                        <th scope="col">Game 1</th>
+                        <th scope="col">Game 2</th>
+                        <th scope="col">Game 3</th>
+                        <th scope="col">Series</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i <= Model.UserNames.Count - 1; i++)
+                    {
+                    <tr>
+                        <td scope="col">@Model.UserNames[i]</td>
+                        <td scope="col">@Model.Averages[i]</td>
+                        <td scope="col">@Model.TotalPins[i]</td>
+                        <td scope="col">@Model.TotalGames[i]</td>
+                        <td scope="col">@Model.Series[i].Games.Where(o => o.SeriesIndex == 1).Single().Score</td>
+                        <td scope="col">@Model.Series[i].Games.Where(o => o.SeriesIndex == 2).Single().Score</td>
+                        <td scope="col">@Model.Series[i].Games.Where(o => o.SeriesIndex == 3).Single().Score</td>
+                        <td scope="col">@Model.Series[i].SeriesScore</td>
+                    </tr>
+                    }
+                    
+                </tbody>
+            </table>
+    </div>
+</div>
+
+
+
+
