@@ -254,5 +254,86 @@ namespace BowlingCoreMVC.Helpers
         {
             return (_db.Users.Where(o => o.Id == UserID).SingleOrDefault().UserName);
         }
+
+        #region Teams
+        public static List<TeamLastWeekData> GetTeamLastWeekData(int LeagueID, ApplicationDbContext _db)
+        {
+            List<TeamLastWeekData> Result = new List<TeamLastWeekData>();
+
+            var LeagueTeams = _db.Teams.Where(o => o.LeagueID == LeagueID).ToList();
+
+            foreach (var Team in LeagueTeams)
+            {
+                TeamLastWeekData TeamData = new TeamLastWeekData();
+                TeamData.TeamName = Team.TeamName;
+                // Get all users in the team
+
+                // Can I get this result from Team.TeamMembers instead of another db call?
+                var UserLeagueTeam = _db.UserLeagueTeams.Where(o => o.TeamID == Team.ID).ToList();
+                foreach (var ult in UserLeagueTeam)
+                {
+                    
+                    
+                    // TODO(ERIC): (FIRST THING) Need to fix up the data in order to test this
+                    // Also some checks if the Series is null
+
+
+
+                    Series UserSeries = GetLastUserTeamSeries(ult.UserID, ult.TeamID, ult.LeagueID, _db);
+                    UserTeamWeekData UserWeekData = GetUserTeamWeekData(ult.UserID, ult.TeamID, ult.LeagueID, _db);
+                    
+                    TeamData.UserNames.Add(GetUserNameFromID(ult.UserID, _db));
+                    TeamData.Averages.Add(UserWeekData.Average);
+                    TeamData.Series.Add(UserSeries);
+                    TeamData.TotalGames.Add(UserWeekData.TotalGames);
+                    TeamData.TotalPins.Add(UserWeekData.TotalPins);
+
+                    Result.Add(TeamData);
+                }
+            }
+
+
+            return (Result);
+        }
+
+        public struct UserTeamWeekData
+        {
+            public double Average;
+            public int TotalPins;
+            public int TotalGames;
+
+        }
+
+        public static UserTeamWeekData GetUserTeamWeekData(string UserID, int TeamID, int LeagueID, ApplicationDbContext _db)
+        {
+            var UserTeamSeries = _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID).Include(o => o.Games);
+
+            List<Game> Games = new List<Game>();
+            foreach (var s in UserTeamSeries)
+            {
+                foreach(var g in s.Games)
+                {
+                    Games.Add(g);
+                }
+            }
+            //var Result = UserTeamSeries.Select(o => o.Games.Average(g => g.Score));
+            //return (Result.SingleOrDefault());
+            UserTeamWeekData Result = new UserTeamWeekData();
+
+            Result.TotalGames = Games.Count;
+            Result.Average = Games.Average(g => g.Score);
+            Result.TotalPins = Games.Sum(g => g.Score);
+
+            return (Result);
+        }
+
+        public static Series GetLastUserTeamSeries(string UserID, int TeamID, int LeagueID, ApplicationDbContext _db)
+        {
+            // TODO(ERIC): Get the Range of dates, not just now - 7
+            return _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID && o.CreatedDate >= DateTime.Now.AddDays(-7)).Include(o => o.Games).SingleOrDefault();
+        }
+
+        
+        #endregion
     }
 }

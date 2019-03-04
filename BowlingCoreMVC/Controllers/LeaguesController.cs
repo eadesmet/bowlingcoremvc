@@ -164,6 +164,15 @@ namespace BowlingCoreMVC.Controllers
             List<Team> teams = _db.Teams.Where(o => o.LeagueID == league.ID).ToList();
             ViewData["Teams"] = teams;
 
+
+
+
+            // Team Data (to be final later)
+            // TODO: Clean this whole Action up
+
+            ViewData["TeamWeekData"] = DataHelper.GetTeamLastWeekData(league.ID, _db);
+
+
             return View(league);
         }
 

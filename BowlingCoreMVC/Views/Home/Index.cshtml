@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-lg-2"></div>
             @*<h3>Environment test:</h3>
-            <h3>@ViewData["EnvironmentTest"]</h3>*@
+                <h3>@ViewData["EnvironmentTest"]</h3>*@
             <div class="col-lg-8">
                 <h2 class="text-info">Welcome to BowlingHub!</h2>
                 <p>BowlingHub is the place to log all of your bowling scores and view your progress. You will be able to create leagues, log your series/games, see your statistics, and compete on the highscores! Click the Register button above to get started.</p>
@@ -32,11 +32,18 @@
     </ul>
 </div>
 
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
-<partial name="_CardListSingleValue" model='@ViewData["ListSingleValue"]' />
+@if (SignInManager.IsSignedIn(User))
+{
+    <partial name="_CardListSingleValue" model='@ViewData["ListSingleValue"]' />
 
-<partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
-
+    <partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
+    <partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
+    <partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
+    <partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
+}
 <div class="card" style="width: 18rem;">
     <div class="card-body">
         <h5 class="card-title">Card title</h5>
