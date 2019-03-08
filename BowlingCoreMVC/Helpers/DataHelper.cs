@@ -260,7 +260,7 @@ namespace BowlingCoreMVC.Helpers
         {
             List<TeamLastWeekData> Result = new List<TeamLastWeekData>();
 
-            var LeagueTeams = _db.Teams.Where(o => o.LeagueID == LeagueID).ToList();
+            var LeagueTeams = _db.Teams.Where(o => o.LeagueID == LeagueID).Include(o => o.UserLeagueTeams).ToList();
 
             foreach (var Team in LeagueTeams)
             {
@@ -269,13 +269,16 @@ namespace BowlingCoreMVC.Helpers
                 // Get all users in the team
 
                 // Can I get this result from Team.TeamMembers instead of another db call?
-                var UserLeagueTeam = _db.UserLeagueTeams.Where(o => o.TeamID == Team.ID).ToList();
-                foreach (var ult in UserLeagueTeam)
+                //var UserLeagueTeam = _db.UserLeagueTeams.Where(o => o.TeamID == Team.ID).ToList();
+                //foreach (var ult in UserLeagueTeam)
+                foreach (var ult in Team.UserLeagueTeams)
                 {
                     
                     
-                    // TODO(ERIC): (FIRST THING) Need to fix up the data in order to test this
-                    // Also some checks if the Series is null
+                    // TODO(ERIC): FIRST THING ACTUALLY!!!
+                    // REDO ALL OF THESE QUERIES AND OBJECTS, HOLY CRAP
+                    // CAN MINIMIZE QUERIES SUBSTANTIALLY AND GATHER THEM MUCH MORE NICELY
+                    // ALSO, REMEMBER NULL CHECKS HERE AND IN THE VIEW
 
 
 
@@ -301,12 +304,24 @@ namespace BowlingCoreMVC.Helpers
             public double Average;
             public int TotalPins;
             public int TotalGames;
-
+            public Series Series;
         }
 
         public static UserTeamWeekData GetUserTeamWeekData(string UserID, int TeamID, int LeagueID, ApplicationDbContext _db)
         {
+            //
+            // NOTE(ERic): I wonder how I can narrow this down..
+            // So basically I need only a weeks worth of data
+            // Can I narrow it down by date somehow? or do an order by date, take 1?
+            // I also need to take nulls into account
+            //
+
+
+            // All series of League + Team + User
+            // so THIS is why i'm doing this..
+            // To calculate their average and total pins for the Team+League, I need to get All their series from it
             var UserTeamSeries = _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID).Include(o => o.Games);
+            
 
             List<Game> Games = new List<Game>();
             foreach (var s in UserTeamSeries)
@@ -319,10 +334,16 @@ namespace BowlingCoreMVC.Helpers
             //var Result = UserTeamSeries.Select(o => o.Games.Average(g => g.Score));
             //return (Result.SingleOrDefault());
             UserTeamWeekData Result = new UserTeamWeekData();
+            if (UserTeamSeries == null || !UserTeamSeries.Any()) { return Result; }
+            if (Games != null)
+            {
+                Result.TotalGames = Games.Count;
+                Result.Average = Games.Average(g => g.Score);
+                Result.TotalPins = Games.Sum(g => g.Score);
+            }
 
-            Result.TotalGames = Games.Count;
-            Result.Average = Games.Average(g => g.Score);
-            Result.TotalPins = Games.Sum(g => g.Score);
+            // TODO(ERIC): ENsure this is the last series they bowled.
+            Result.Series = UserTeamSeries.OrderBy(o => o.CreatedDate).Take(1).SingleOrDefault();
 
             return (Result);
         }

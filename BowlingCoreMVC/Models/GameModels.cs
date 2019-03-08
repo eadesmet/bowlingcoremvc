@@ -324,6 +324,7 @@ namespace BowlingCoreMVC.Models
         [NotMapped]
         public List<string> TeamMembers { get; set; }
 
+        public virtual ICollection<UserLeagueTeam> UserLeagueTeams { get; set; }
 
         [StringLength(450)]
         public string CreatedByID { get; set; }
@@ -340,6 +341,8 @@ namespace BowlingCoreMVC.Models
         public string UserID { get; set; }
         public int LeagueID { get; set; }
         public int TeamID { get; set; }
+
+        // TODO(Eric): Consider adding the Average here for less DB queries
 
         // If Today is before the League End date
         public bool IsActive { get; set; }

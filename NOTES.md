@@ -1142,3 +1142,26 @@ because the strike bonus, spare bonus code would be repeated
 
 }
 
+3-6
+{
+	NOTE: Telecasts have the scoreboard showing only 3-4 frames at a time
+		This might look better on mobile, and be able to show more of other things
+}
+
+
+3-8
+{
+	Data query cleanup
+
+		Have queries gather multiple things
+			.Include(...)
+			However, Be concious of gathering too much data we don't need
+				for the league, don't need to get ALL the games
+				a top 5 call is a good candidate to be it's own query
+			Run queries off of the initial query to avoid multiple database calls
+
+
+		Roll up data that can be rolled up
+			Averages in the UserLeagueTeam table
+			If something can be at the level above, that's less data we need to pull
+}
