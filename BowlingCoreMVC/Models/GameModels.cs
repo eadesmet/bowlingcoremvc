@@ -112,7 +112,7 @@ namespace BowlingCoreMVC.Models
 
     public class Series
     {
-        public static Series Create(int NumberOfGames, int LeagueID = 0)
+        public static Series Create(int NumberOfGames, int? LeagueID = null, int? TeamID = null)
         {
             Series s = new Series();
             s.CreatedDate = DateTime.Now;
@@ -120,6 +120,7 @@ namespace BowlingCoreMVC.Models
             s.LeagueID = LeagueID;
             //s.UserID = ; //TODO: Set current User
             s.SeriesScore = 0;
+            s.TeamID = TeamID;
 
             s.Games = new List<Game>();
             for (int i = 1; i <= NumberOfGames; i++)
@@ -220,12 +221,12 @@ namespace BowlingCoreMVC.Models
         [Display(Name="Leagues first day (Start Date)")]
         [Required(ErrorMessage = "Please provide a Start Date for the League")]
         [DataType(DataType.Date)]
-        public DateTime? StartDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         [Display(Name = "Leagues last day (End Date)")]
         [Required(ErrorMessage = "Please provide an End Date for the League")]
         [DataType(DataType.Date)]
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         [Display(Name="Which day of the week is the league bowled on?")]
         [Required(ErrorMessage = "Please select a Day")]

@@ -10,10 +10,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BowlingCoreMVC.Helpers
 {
+    // Trying this out
+    public struct DBOperationResult<T>
+    {
+        public bool IsError;
+        public string Message;
+        public T Item;
+    }
+
     public static class DataHelper
     {
         public static readonly ApplicationDbContext db;
-        
+
 #region Games
         public static Game SaveGame(Game PageGame, ApplicationDbContext db)
         {
@@ -66,8 +74,9 @@ namespace BowlingCoreMVC.Helpers
             return (DBGame);
         }
 #endregion
+
 #region Series/leagues
-        public static Series CreateSeries(Series s, ApplicationDbContext db, string UserID)
+        public static Series InsertSeries(Series s, ApplicationDbContext db, string UserID)
         {
             s.UserID = UserID;
             db.Attach(s);
@@ -88,6 +97,73 @@ namespace BowlingCoreMVC.Helpers
             //s.UserName = UserName;
             
             return (s);
+        }
+        
+        public static DBOperationResult<Series>
+        CreateAndInsertSeries(ApplicationDbContext db, 
+            string UserID, int? LeagueID = null, int? TeamID = null)
+        {
+            DBOperationResult<Series> Result = new DBOperationResult<Series>();
+
+            int NumOfGames = 3;
+            if (LeagueID != null)
+            {
+                League l = db.Leagues.Where(o => o.ID == LeagueID).SingleOrDefault();
+                if (l.DefaultNumOfGames > 0)
+                    NumOfGames = l.DefaultNumOfGames;
+
+                if (!ValidateCanCreateSeries(db, UserID, l))
+                {
+                    Result.IsError = true;
+                    Result.Message = "Cannot create a Series - Either you already have one for this week, or it's the end of the league";
+                    Result.Item = null;
+                    return (Result);
+                }
+            }
+
+            Series s = Series.Create(NumOfGames, LeagueID, TeamID);
+            s.UserID = UserID;
+            s.UserName = GetUserNameFromID(UserID, db);
+
+            s.TeamID = TeamID;
+
+            db.Attach(s);
+            db.Entry(s).State = EntityState.Added;
+            db.SaveChanges();
+
+            foreach (var g in s.Games)
+            {
+                g.SeriesID = s.ID;
+                g.UserID = UserID;
+                g.UserName = s.User.UserName;// UserName;
+            }
+            
+            db.SaveChanges();
+
+            Result.Item = s;
+            return (Result);
+        }
+
+        private static bool
+        ValidateCanCreateSeries(ApplicationDbContext db, 
+            string UserID, League l)
+        {
+            // Can't create a Series if its not on the same day
+            if (DateTime.Today.DayOfWeek != l.LeagueDay)
+                return (false);
+
+            DateTime NextLeagueNight = GetNextLeagueNight(l);
+            // Can't create a Series if its after the end of the league
+            if (NextLeagueNight > l.EndDate)
+                return (false);
+
+            // Can't create a Series if they already have for for that day
+            if (db.Series.Where(o => o.UserID == UserID && o.CreatedDate.Date == DateTime.Today && o.LeagueID == l.ID).Any())
+                return (false);
+
+
+
+            return (true);
         }
         
         public static void UpdateSeries(int SeriesID, ApplicationDbContext db)
@@ -155,20 +231,28 @@ namespace BowlingCoreMVC.Helpers
         {
             //user is in a league if they have a series in that league
             var result = new List<League>();
-            var series = _db.Series.Where(o => o.UserID == UserID).ToList();
-            foreach (var s in series)
+            var UserLeagueTeams = _db.UserLeagueTeams.Where(o => o.UserID == UserID).ToList();
+            foreach (var ult in UserLeagueTeams)
             {
-                if (s.LeagueID != null && s.LeagueID != 0)
+                //Do not add duplicates (legacy - was from series search. only needed if multiple teams for same league)
+                if (result.Find(o => o.ID == ult.LeagueID) == null)
                 {
-                    //Do not add duplicates
-                    if (result.Find(o => o.ID == s.LeagueID) == null)
-                    {
-                        result.Add(_db.Leagues.Where(o => o.ID == s.LeagueID).SingleOrDefault());
-                    }
+                    result.Add(_db.Leagues.Where(o => o.ID == ult.LeagueID).SingleOrDefault());
                 }
+            
             }
             
             return (result);
+        }
+
+        public static int? GetTeamIfExists(int LeagueID, string UserID, ApplicationDbContext _db)
+        {
+            int? Result = null;
+
+            // TODO(ERIC): Handle multiple teams? Only allow one??
+            var q = _db.UserLeagueTeams.Where(o => o.UserID == UserID && o.LeagueID == LeagueID).FirstOrDefault();
+            if (q != null) { Result = q.TeamID; }
+            return (Result);
         }
         
         public static double UsersLeagueAverage(string UserID, int LeagueID, ApplicationDbContext _db)
@@ -250,6 +334,41 @@ namespace BowlingCoreMVC.Helpers
             return (DateTime.Today.AddDays(DaysUntil));
         }
 
+        public static DateTime GetNextLeagueNight(League l)
+        {
+            int DaysUntil = -1;
+            DayOfWeek LeagueDayOfWeek = l.LeagueDay;
+            if (l.Occurance == LeagueOccurance.EveryWeek)
+            {
+                DaysUntil = ((int)LeagueDayOfWeek - (int)DateTime.Today.DayOfWeek + 7) % 7;
+            }
+            else if (l.Occurance == LeagueOccurance.EveryOtherWeek)
+            {
+                DaysUntil = ((int)LeagueDayOfWeek - (int)DateTime.Today.DayOfWeek + 14) % 14;
+            }
+            else if (l.Occurance == LeagueOccurance.EveryMonth)
+            {
+                DaysUntil = ((int)LeagueDayOfWeek - (int)DateTime.Today.DayOfWeek + 28) % 28;
+            }
+
+            // Scenerio 1:
+            //      It is Wednesday, League night is Tuesday
+            //      I want to get the Next Tuesday
+
+
+            
+            DateTime Result = DateTime.Today.AddDays(DaysUntil);
+
+            // Confirm that it is before the end date (maybe not needed?)
+            if (Result > l.EndDate)
+            {
+                 // What would we even return here? Today? null? Last league night?
+                Result = DateTime.Today.AddYears(-50);
+            }
+
+            return (Result);
+        }
+
         public static string GetUserNameFromID(string UserID, ApplicationDbContext _db)
         {
             return (_db.Users.Where(o => o.Id == UserID).SingleOrDefault().UserName);
@@ -273,21 +392,33 @@ namespace BowlingCoreMVC.Helpers
                 //foreach (var ult in UserLeagueTeam)
                 foreach (var ult in Team.UserLeagueTeams)
                 {
-                    
+                    // UserLeagueTeam - Has UserIDs and the Team, and the League
+                    // Need to get their Average, their Last Series, Games Count and Games Total
                     
                     // TODO(ERIC): FIRST THING ACTUALLY!!!
                     // REDO ALL OF THESE QUERIES AND OBJECTS, HOLY CRAP
                     // CAN MINIMIZE QUERIES SUBSTANTIALLY AND GATHER THEM MUCH MORE NICELY
                     // ALSO, REMEMBER NULL CHECKS HERE AND IN THE VIEW
 
+                    // NOTE(ERIC) 3-12-19: I'm not sure.. This all seems reasonable..
+                    //
+                    // I have one database call for all the Teams in this League
+                    // Then in GetUserTEamWeekData I have one database call to get all of that users games.
+                    //    well, so in reality, for every team......
+                    //    let's say a league has 5 teams, each with 5 members
+                    //    I'll then have 1 + (5 * 5) database calls (26)
+                    //
+                    // Then would creating one big query (teams.include(Series).include(games)) etc. be faster?
+                    // 
 
 
-                    Series UserSeries = GetLastUserTeamSeries(ult.UserID, ult.TeamID, ult.LeagueID, _db);
+                    //Series UserSeries = GetLastUserTeamSeries(ult.UserID, ult.TeamID, ult.LeagueID, _db);
                     UserTeamWeekData UserWeekData = GetUserTeamWeekData(ult.UserID, ult.TeamID, ult.LeagueID, _db);
-                    
-                    TeamData.UserNames.Add(GetUserNameFromID(ult.UserID, _db));
+
+                    string UserName = GetUserNameFromID(ult.UserID, _db);
+                    TeamData.UserNames.Add(UserName);
                     TeamData.Averages.Add(UserWeekData.Average);
-                    TeamData.Series.Add(UserSeries);
+                    TeamData.Series.Add(UserWeekData.Series);
                     TeamData.TotalGames.Add(UserWeekData.TotalGames);
                     TeamData.TotalPins.Add(UserWeekData.TotalPins);
 

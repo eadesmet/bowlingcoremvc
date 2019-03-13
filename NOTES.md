@@ -1165,3 +1165,51 @@ because the strike bonus, spare bonus code would be repeated
 			Averages in the UserLeagueTeam table
 			If something can be at the level above, that's less data we need to pull
 }
+
+
+3-12
+{
+	delete series page links back to the old one
+	TODO: Update this link to the new games list page
+
+	NOTE: League details - update the links to the games to be the modal window
+			would then need to add permissions to the window to hide the edit buttons etc.
+
+
+}
+
+3-13
+{
+	Not sure what I'm doing yet
+	I need to design how the pages for teams/leagues will work
+
+	TODO: Restrain the data!
+		A User can only be on one team per League
+		A User can only have one series per league per week (as per league day and occurance)
+
+
+	How to tell if a User is in a league, not necessarily a team
+		Will need a record in UserLeagueTeams table
+
+		So the question is, how and where do I insert that record?
+
+		New page for a User requesting to join a league. (for now, no approval needed)
+			'Request to Join League'
+			Leagues Dropdown
+			Teams Dropdown (optional)
+
+		So then where do they view current leagues??
+
+			Current running leagues page (replace league list page?)
+
+
+	TODO: Where I left things
+		UserLeagueTeam Page basically
+		RequestToJoin on the League
+		Model to be UserLeagueTeam
+		Set up cascading comboboxs for Leagues and Teams
+			might have to be ajax..
+		show/hide the request button based on if they are in that league
+
+
+}

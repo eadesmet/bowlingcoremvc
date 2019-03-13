@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Helpers;
+
 
 namespace BowlingCoreMVC.Controllers
 {
@@ -38,6 +40,36 @@ namespace BowlingCoreMVC.Controllers
 
             // Check if there are any leagues today
             // THAT THE USER IS IN!
+            DayOfWeek Today = DateTime.Today.DayOfWeek;
+            int LeagueIndex = -1;
+            List<League> UsersLeagues = DataHelper.UserLeagues(user.Id, _db);
+            foreach (League l in UsersLeagues)
+            {
+                if (l.LeagueDay == Today)
+                {
+                    LeagueIndex = UsersLeagues.IndexOf(l);
+                }
+            }
+
+            if (LeagueIndex != -1)
+            {
+                ViewData["TodaysLeague"] = UsersLeagues[LeagueIndex];
+            }
+
+
+            // My Last 5 Games
+            List<Game> Last5Games = _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate).Take(5).ToList();
+            ListSingleValue Last5GamesList = new ListSingleValue();
+            Last5GamesList.Title = "My Last 5 Games";
+
+            foreach (var g in Last5Games)
+            {
+                Last5GamesList.Keys.Add(g.CreatedDate.ToShortDateString());
+                Last5GamesList.Values.Add(g.Score);
+            }
+            ViewData["MyLast5Games"] = Last5GamesList;
+
+
 
             ViewData["ListSingleValue"] = new ListSingleValue()
             {
@@ -63,6 +95,35 @@ namespace BowlingCoreMVC.Controllers
             return View();
         }
 
+
+        // Testing
+        public async Task<IActionResult> QuickCreateSeries(int LeagueID)
+        {
+            var user = await GetCurrentUserAsync();
+            if (user == null) { RedirectToAction("Error", "User Not logged in"); }
+
+            // I wanted to pass the whole league back to this action, but we can't
+            // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/built-in/anchor-tag-helper?view=aspnetcore-2.2#asp-route-value
+            League l = _db.Leagues.Where(o => o.ID == LeagueID).SingleOrDefault();
+            if (l == null) { RedirectToAction("Error", "League Not Found"); }
+
+            // TODO(ERIC): TeamID here?
+            DBOperationResult<Series> DBResult = DataHelper.CreateAndInsertSeries(_db, user.Id, l.ID);
+            if (DBResult.IsError) 
+            {
+                HttpContext.Session.SetString("Message", DBResult.Message);
+                return RedirectToAction("Index", "Home"); //, new { Message = DBResult.Message }
+            }
+            
+            //Series s = Series.Create(l.DefaultNumOfGames, l.ID);
+            //s = DataHelper.InsertSeries(s, _db, user.Id);
+
+            return RedirectToAction("Edit", "Series", new { id = DBResult.Item.ID });
+        }
+
+
+
+
         public IActionResult About()
         {
             ViewData["Message"] = "So, what is this place?";
@@ -81,7 +142,7 @@ namespace BowlingCoreMVC.Controllers
         {
             // TODO(ERIC): Better error handling; I don't want the message in the URL
             ViewData["Message"] = Message;
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, Message = Message });
         }
     }
 }

@@ -125,10 +125,15 @@ namespace BowlingCoreMVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                // TODO(ERIC): Let them select the Team on the page/in the model here?
+                // Then pass it into Series.Create ?
                 Series s = Series.Create(model.NumberOfGames, model.LeagueID ?? 0);
                 var user = await GetCurrentUserAsync();
                 // s.UserName = user.UserName;
-                s = Helpers.DataHelper.CreateSeries(s, _db, user.Id);
+                if (s.LeagueID != null)
+                    s.TeamID = Helpers.DataHelper.GetTeamIfExists((int)model.LeagueID, user.Id, _db);
+
+                s = Helpers.DataHelper.InsertSeries(s, _db, user.Id);
 
                 return View("Edit", s);
             }

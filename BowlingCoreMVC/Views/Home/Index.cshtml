@@ -2,9 +2,16 @@
     ViewData["Title"] = "Home";
 }
 
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@*TODO: Revamped home page for logged in user*@
 
 <div class="body-content">
     <div class="container">
+        @if (!SignInManager.IsSignedIn(User))
+        {
+
         <div class="row">
             <div class="col-lg-2"></div>
             @*<h3>Environment test:</h3>
@@ -15,69 +22,25 @@
             </div>
             <div class="col-lg-2"></div>
         </div>
+        }
+        @* User is signed in *@
+        else 
+        {
+            if (ViewData["MyLast5Games"] != null)
+            {
+                <partial name="_CardListSingleValue" model='@ViewData["MyLast5Games"]' />
+            }
+
+            if (ViewData["TodaysLeague"] != null)
+            {
+                League l = (League)ViewData["TodaysLeague"];
+                <h1>League @l.Name is Happening today!</h1>
+                <a asp-action="QuickCreateSeries" asp-controller="Home" asp-route-LeagueID="@l.ID" class="btn btn-primary btn-block">New Series for this league tonight</a>
+            }
+            
+
+            <partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
+        }
+
     </div>
 </div>
-
-@*TODO: Revamped home page for logged in user*@
-
-<h1>Test listgroup partial</h1>
-
-<div class="border-primary">
-    <ul class="list-group w-25 border-primary">
-        <li class="list-group-item">Cras justo odio<small class="float-right">123</small></li>
-        <li class="list-group-item">Dapibus ac facilisis in<span class="badge badge-primary badge-pill float-right">14</span></li>
-        <li class="list-group-item">Morbi leo risus</li>
-        <li class="list-group-item">Porta ac consectetur ac</li>
-        <li class="list-group-item">Vestibulum at eros</li>
-    </ul>
-</div>
-
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-
-@if (SignInManager.IsSignedIn(User))
-{
-    <partial name="_CardListSingleValue" model='@ViewData["ListSingleValue"]' />
-
-    <partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
-    <partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
-    <partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
-    <partial name="_TeamWeekSummary" model='@ViewData["TeamWeekSummary"]' />
-}
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-        <table class="table table-sm">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>twitter</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-

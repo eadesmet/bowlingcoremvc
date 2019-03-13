@@ -138,22 +138,22 @@
 *@
 
 <div class="card-deck">
-    @foreach (Team t in (List<Team>)ViewData["Teams"])
+    @*@foreach (Team t in (List<Team>)ViewData["Teams"])
     {
-        @*this worked for an a tag: href="@Url.Action("Edit", "Teams", new { ID = t.ID })"*@
+        @*this worked for an a tag: href="@Url.Action("Edit", "Teams", new { ID = t.ID })"@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">@t.TeamName</h5>
                 <p class="card-text">Team members and their averages/scores go here.</p>
                 <div class="card-footer">
-                    @* IF CURRENT USER IS NOT ON ANY TEAM*@
+                    @* IF CURRENT USER IS NOT ON ANY TEAM@
                     <button type="button" class="btn btn-secondary">Request to Join</button>
                 </div>
             </div>
 
 
         </div>
-    }
+    }*@
 
     @foreach (TeamLastWeekData TeamWeekData in (List<TeamLastWeekData>)ViewData["TeamWeekData"])
     {

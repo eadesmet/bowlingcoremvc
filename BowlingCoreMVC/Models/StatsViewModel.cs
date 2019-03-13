@@ -21,6 +21,12 @@ namespace BowlingCoreMVC.Models
 
     public class ListSingleValue
     {
+        public ListSingleValue()
+        {
+            this.Keys = new List<string>();
+            this.Values = new List<int>();
+        }
+
         public string Title { get; set; }
         public string SubTitle { get; set; }
 
@@ -30,6 +36,14 @@ namespace BowlingCoreMVC.Models
 
     public class TeamLastWeekData
     {
+        public TeamLastWeekData()
+        {
+            this.UserNames = new List<string>();
+            this.Averages = new List<double>();
+            this.TotalPins = new List<int>();
+            this.TotalGames = new List<int>();
+            this.Series = new List<Series>();
+        }
         public string TeamName { get; set; }
         public string SubTitle { get; set; }
 

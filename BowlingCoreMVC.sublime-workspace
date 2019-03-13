@@ -4,6 +4,34 @@
 		"selected_items":
 		[
 			[
+				"coo",
+				"CookieName\tstring"
+			],
+			[
+				"ev",
+				"EveryOtherWeek\tLeagueOccurance"
+			],
+			[
+				"get",
+				"GetNextLeagueNight(DateTime StartDate)\tDateTime"
+			],
+			[
+				"redirecttoaction",
+				"RedirectToAction(string actionName, string controllerName, object routeValues)\tRedirectToActionResult"
+			],
+			[
+				"crea",
+				"Create(int NumberOfGames, int LeagueID = 0, int TeamID = 0)\tSeries"
+			],
+			[
+				"day",
+				"LeagueDay\tDayOfWeek"
+			],
+			[
+				"league",
+				"UserLeagues(string UserID, ApplicationDbContext _db)\tList<League>"
+			],
+			[
 				"Tent",
 				"TenthSecondThrowData"
 			],
@@ -16,20 +44,13 @@
 	"buffers":
 	[
 		{
-			"file": "BowlingCoreMVC.sublime-project",
+			"contents": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\nusing System.Threading.Tasks;\nusing Microsoft.AspNetCore.Mvc;\nusing Microsoft.AspNetCore.Mvc.Rendering;\nusing Microsoft.EntityFrameworkCore;\nusing Microsoft.AspNetCore.Identity;\nusing Microsoft.AspNetCore.Authorization;\n\nusing BowlingCoreMVC.Data;\nusing BowlingCoreMVC.Models;\nusing BowlingCoreMVC.Helpers;\n\nnamespace BowlingCoreMVC.Controllers\n{\n    [Authorize]\n    public class LeaguesController : Controller\n    {\n        private readonly ApplicationDbContext _db;\n        private readonly UserManager<ApplicationUser> _userManager;\n\n        public LeaguesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)\n        {\n            _db = context;\n            _userManager = userManager;\n        }\n\n        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);\n\n        // GET: RequestToJoin\n        public IActionResult RequestToJoin(int id)\n        {\n            // To be ULT Model\n            var ult = new UserLeagueTeam();\n            \n            var Model = League.Create();\n            Model.Locations = DataHelper.GetAllLocations(_db);\n            Model.Days = DataHelper.GetAllDays();\n            Model.Occurances = DataHelper.GetAllOccurances();\n\n            // Select the first item by default\n            Model.Occurances[0].Selected = true;\n\n            return View(Model);\n        }\n\n        [HttpPost]\n        [ValidateAntiForgeryToken]\n        public async Task<IActionResult> RequestToJoin(Models.League Model)\n        {\n            if (ModelState.IsValid)\n            {\n            }\n        }\n\n        // GET: Leagues\n        public async Task<IActionResult> Index()\n        {\n            //var LeaguesList = await _db.Leagues.Include(o => o.Location).ToListAsync();\n            var LeaguesList = await _db.Leagues.Where(o => o.EndDate >= DateTime.Today).ToListAsync();\n\n            var PreviousLeagues = await _db.Leagues.Where(o => o.EndDate <= DateTime.Today).ToListAsync();\n\n            //var ViewModelList = new List<Models.GameViewModels.GameViewModels.LeagueListViewModel>();\n\n            var user = await GetCurrentUserAsync();\n            if (user != null)\n            {\n                ViewData[\"CurrentUserID\"] = user.Id;\n            }\n            else { return View(\"Error\"); }\n\n            foreach (var l in LeaguesList)\n            {\n                l.CreatedByUserName = (await _userManager.FindByIdAsync(l.CreatedByID)).UserName ?? \"\";\n                if (l.LocationID != 0)\n                {\n                    l.Location = _db.Locations.Where(o => o.ID == l.LocationID).SingleOrDefault();\n                }\n            }\n\n\n            foreach (var l in PreviousLeagues)\n            {\n                l.CreatedByUserName = (await _userManager.FindByIdAsync(l.CreatedByID)).UserName ?? \"\";\n                if (l.LocationID != 0)\n                {\n                    l.Location = _db.Locations.Where(o => o.ID == l.LocationID).SingleOrDefault();\n                }\n            }\n\n            ViewData[\"PreviousLeagues\"] = PreviousLeagues;\n\n            return View(LeaguesList);\n        }\n\n        // GET: Leagues/Details/5\n        public async Task<IActionResult> Details(int? id)\n        {\n            if (id == null)\n            {\n                return NotFound();\n            }\n\n            var league = await _db.Leagues\n                .SingleOrDefaultAsync(m => m.ID == id);\n            if (league == null)\n            {\n                return NotFound();\n            }\n\n            // TODO: Populate the ViewData with League information for the League summary\n\n            // Since we don't have teams yet, let's narrow this down a bit\n            // Last weeks scores for everyone\n            // Season High Games + series\n            // High averages\n\n            List<Series> LastWeekSeries = new List<Series>();\n\n            // Games per league, then narrow down by user afterwards\n            List<Series> LeagueSeries = _db.Series.Include(o => o.Games).Where(o => o.LeagueID == id).ToList();\n\n            \n            if (LeagueSeries.Count == 0)\n            {\n                //return RedirectToAction(\"Error\", \"Home\", new { Message = \"League contains no Games!\" });\n                ErrorViewModel ErrorModel = new ErrorViewModel() { Message = \"Bowl some games first to see your league sheet\" };\n                return View(\"Error\", ErrorModel);\n            }\n            \n            foreach (Series s in LeagueSeries)\n            {\n                s.UserName = DataHelper.GetUserNameFromID(s.UserID, _db);\n                foreach (Game g in s.Games)\n                {\n                    g.UserName = s.UserName;\n                }\n            }\n\n            Game HighestLeagueGame = LeagueSeries.SelectMany(o => o.Games).OrderByDescending(o => o.Score).FirstOrDefault(); // Top 1 by default\n            ViewData[\"HighestLeagueGame\"] = HighestLeagueGame;\n\n            Series HighestLeagueSeries = LeagueSeries.OrderByDescending(o => o.SeriesScore).FirstOrDefault();\n            ViewData[\"HighestLeagueSeries\"] = HighestLeagueSeries;\n\n            //var s = LeagueSeries.GroupBy(o => o.UserID);\n\n            var query = from ls in LeagueSeries\n                        group ls by ls.UserID into lsGroup\n                        select new ResultItem\n                        {\n                            UserID = lsGroup.Key,\n                            UserName = DataHelper.GetUserNameFromID(lsGroup.Key, _db),\n                            Average = lsGroup.SelectMany(o => o.Games).Average(o => o.Score),\n                            // Could put the other queries here too.\n                        };\n\n            var LeagueAverages = query.ToList();\n            ViewData[\"LeagueAverages\"] = LeagueAverages;\n\n            //Game TopLeagueGames = _db.Games.OrderByDescending(o => o.Score).Take(1).SingleOrDefault();\n\n            //DayOfWeek LeagueDay = league.StartDate.DayOfWeek;\n\n            foreach (Series s in LeagueSeries)\n            {\n                s.UserName = Helpers.DataHelper.GetUserNameFromID(s.UserID, _db);\n\n                // Now + days up to the next league night\n                DateTime NextLeagueNight = Helpers.DataHelper.GetNextLeagueNight(DateTime.Today);\n\n                if ((s.CreatedDate >= NextLeagueNight.AddDays(-7))\n                     && (s.CreatedDate.Date <= NextLeagueNight))\n                {\n                    // Series from last week\n                    // Today: 12/20 (thursday)\n                    // Next : 12/26 (wednesday)\n                    // Scores from: 12/19 - 12/26\n                    LastWeekSeries.Add(s);\n                }\n\n\n\n            }\n\n            ViewData[\"LastWeekSeries\"] = LastWeekSeries;\n\n            List<Team> teams = _db.Teams.Where(o => o.LeagueID == league.ID).ToList();\n            ViewData[\"Teams\"] = teams;\n\n\n\n\n            // Team Data (to be final later)\n            // TODO: Clean this whole Action up\n\n            ViewData[\"TeamWeekData\"] = DataHelper.GetTeamLastWeekData(league.ID, _db);\n\n\n            return View(league);\n        }\n\n        // GET: Leagues/Create\n        public IActionResult Create()\n        {\n            var Model = League.Create();\n            Model.Locations = DataHelper.GetAllLocations(_db);\n            Model.Days = DataHelper.GetAllDays();\n            Model.Occurances = DataHelper.GetAllOccurances();\n\n            // Select the first item by default\n            Model.Occurances[0].Selected = true;\n\n            return View(Model);\n        }\n\n        // POST: Leagues/Create\n        // To protect from overposting attacks, please enable the specific properties you want to bind to, for \n        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.\n        [HttpPost]\n        [ValidateAntiForgeryToken]\n        public async Task<IActionResult> Create(Models.League Model)\n        {\n            if (ModelState.IsValid)\n            {\n                var user = await GetCurrentUserAsync();\n                Model.CreatedByID = user.Id;\n\n                if (Model.NewLocation && !string.IsNullOrEmpty(Model.NewLocationName))\n                {\n                    Location l = new Location();\n                    l.CreatedByID = user.Id;\n                    l.CreatedDate = DateTime.Now;\n                    l.ModifiedDate = DateTime.Now;\n                    l.Name = Model.NewLocationName;\n                    _db.Add(l);\n                    Model.LocationID = l.ID;\n                }\n\n                Model.CreatedDate = DateTime.Now;\n                Model.ModifiedDate = DateTime.Now;\n\n                Model.LeagueDay = Model.LeagueDay;\n\n                _db.Add(Model);\n                await _db.SaveChangesAsync();\n                return RedirectToAction(nameof(Index));\n            }\n            else\n            {\n                // Get error out of modelstate.\n                //IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);\n            }\n\n            //if modelstate is invalid, get the locations again and redisplay form\n            Model.Locations = Helpers.DataHelper.GetAllLocations(_db);\n            Model.Days = DataHelper.GetAllDays();\n            Model.Occurances = DataHelper.GetAllOccurances();\n            return View(Model);\n        }\n\n        // GET: Leagues/Edit/5\n        public async Task<IActionResult> Edit(int? id)\n        {\n            if (id == null)\n            {\n                return NotFound();\n            }\n\n            var league = await _db.Leagues.SingleOrDefaultAsync(m => m.ID == id);\n            if (league == null)\n            {\n                return NotFound();\n            }\n\n            league.Locations = Helpers.DataHelper.GetAllLocations(_db);\n            league.Days = DataHelper.GetAllDays();\n            league.Occurances = DataHelper.GetAllOccurances();\n\n            return View(league);\n        }\n\n        // POST: Leagues/Edit/5\n        // To protect from overposting attacks, please enable the specific properties you want to bind to, for \n        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.\n        [HttpPost]\n        [ValidateAntiForgeryToken]\n        public async Task<IActionResult> Edit(int id, [Bind(\"ID,Name,LocationID,CreatedByID,StartDate,EndDate,LeagueDay\")] League league)\n        {\n            if (id != league.ID)\n            {\n                return NotFound();\n            }\n\n            if (ModelState.IsValid)\n            {\n                league.ModifiedDate = DateTime.Now;\n                try\n                {\n                    _db.Update(league);\n                    await _db.SaveChangesAsync();\n                }\n                catch (DbUpdateConcurrencyException)\n                {\n                    if (!LeagueExists(league.ID))\n                    {\n                        return NotFound();\n                    }\n                    else\n                    {\n                        throw;\n                    }\n                }\n                return RedirectToAction(nameof(Index));\n            }\n\n            league.Locations = Helpers.DataHelper.GetAllLocations(_db);\n            league.Days = DataHelper.GetAllDays();\n            league.Occurances = DataHelper.GetAllOccurances();\n\n            return View(league);\n        }\n\n        // GET: Leagues/Delete/5\n        public async Task<IActionResult> Delete(int? id)\n        {\n            if (id == null)\n            {\n                return NotFound();\n            }\n\n            var league = await _db.Leagues\n                .SingleOrDefaultAsync(m => m.ID == id);\n            if (league == null)\n            {\n                return NotFound();\n            }\n\n            return View(league);\n        }\n\n        // POST: Leagues/Delete/5\n        [HttpPost, ActionName(\"Delete\")]\n        [ValidateAntiForgeryToken]\n        public async Task<IActionResult> DeleteConfirmed(int id)\n        {\n            var league = await _db.Leagues.SingleOrDefaultAsync(m => m.ID == id);\n            _db.Leagues.Remove(league);\n            await _db.SaveChangesAsync();\n            return RedirectToAction(nameof(Index));\n        }\n\n        private bool LeagueExists(int id)\n        {\n            return _db.Leagues.Any(e => e.ID == id);\n        }\n    }\n}\n",
+			"file": "BowlingCoreMVC/Controllers/LeaguesController.cs",
+			"file_size": 11880,
+			"file_write_time": 131962132592046582,
 			"settings":
 			{
-				"buffer_size": 115,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Controllers/GameController.cs",
-			"settings":
-			{
-				"buffer_size": 4233,
-				"encoding": "UTF-8 with BOM",
+				"buffer_size": 12298,
 				"line_ending": "Windows"
 			}
 		},
@@ -37,145 +58,82 @@
 			"file": "BowlingCoreMVC/Helpers/DataHelper.cs",
 			"settings":
 			{
-				"buffer_size": 5129,
+				"buffer_size": 18562,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Controllers/HomeController.cs",
+			"settings":
+			{
+				"buffer_size": 5192,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "BowlingCoreMVC/Data/ApplicationDbContext.cs",
+			"file": "BowlingCoreMVC/Startup.cs",
 			"settings":
 			{
-				"buffer_size": 5780,
+				"buffer_size": 6213,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "BowlingCoreMVC/Controllers/SeriesController.cs",
+			"file": "BowlingCoreMVC/Views/Shared/_Layout.cshtml",
 			"settings":
 			{
-				"buffer_size": 3890,
+				"buffer_size": 6785,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/Color Scheme - Default/Mariana.sublime-color-scheme",
+			"file": "BowlingCoreMVC/Views/Shared/Error.cshtml",
 			"settings":
 			{
-				"buffer_size": 9683,
+				"buffer_size": 962,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/BuildBAT.sublime-build",
+			"settings":
+			{
+				"buffer_size": 75,
+				"encoding": "UTF-8",
+				"line_ending": "Windows",
+				"name": "untitled.sublime-build"
+			}
+		},
+		{
+			"file": "/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/BowlingCoreMVC.sublime-build",
+			"settings":
+			{
+				"buffer_size": 167,
+				"encoding": "UTF-8",
+				"line_ending": "Windows",
+				"name": "untitled.sublime-build"
+			}
+		},
+		{
+			"file": "build.bat",
+			"settings":
+			{
+				"buffer_size": 58,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Models/GameModels.cs",
-			"settings":
-			{
-				"buffer_size": 8590,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Helpers/ScoreHelper.cs",
-			"settings":
-			{
-				"buffer_size": 8182,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Windows"
 			}
 		},
 		{
 			"file": "NOTES.md",
 			"settings":
 			{
-				"buffer_size": 12411,
+				"buffer_size": 33580,
 				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Views/Leagues/Edit.cshtml",
-			"settings":
-			{
-				"buffer_size": 1815,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Controllers/LeaguesController.cs",
-			"settings":
-			{
-				"buffer_size": 6694,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Controllers/TeamController.cs",
-			"settings":
-			{
-				"buffer_size": 5962,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/wwwroot/js/site.js",
-			"settings":
-			{
-				"buffer_size": 25136,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "new useful sublime shortcuts\n\nctrl+shift+1 : move current file to group 1 (left)\nctrl+shift+2 : move current file to group 2 (right)\n\n",
-			"settings":
-			{
-				"buffer_size": 134,
-				"line_ending": "Windows",
-				"name": "new useful sublime shortcuts"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Views/Leagues/Create.cshtml",
-			"settings":
-			{
-				"buffer_size": 4101,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Views/Leagues/Index.cshtml",
-			"settings":
-			{
-				"buffer_size": 2224,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Views/Team/Index.cshtml",
-			"settings":
-			{
-				"buffer_size": 1716,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "@model BowlingCoreMVC.Models.Team\n\n@{\n    ViewData[\"Title\"] = \"Create\";\n}\n\n<h2>Create</h2>\n\n<h4>Team</h4>\n<hr />\n<div class=\"row\">\n    <div class=\"col-md-4\">\n        <form asp-action=\"Create\">\n            <div asp-validation-summary=\"ModelOnly\" class=\"text-danger\"></div>\n            <div class=\"form-group\">\n                <label asp-for=\"TeamName\" class=\"control-label\"></label>\n                <input asp-for=\"TeamName\" class=\"form-control\" />\n                <span asp-validation-for=\"TeamName\" class=\"text-danger\"></span>\n            </div>\n\n            <div class=\"form-group\">\n                <label asp-for=\"LeagueID\" class=\"control-label\"></label>\n                <select asp-for=\"LeagueID\" asp-items=\"@Model.Leagues\" class=\"form-control\">\n                    <option>---League---</option>\n                </select>\n                <span asp-validation-for=\"LeagueID\" class=\"text-danger\"></span>\n            </div>\n            \n            <div class=\"form-group\">\n                <input type=\"submit\" value=\"Create\" class=\"btn btn-default\" />\n            </div>\n        </form>\n    </div>\n</div>\n\n<div>\n    <a asp-action=\"Index\">Back to List</a>\n</div>\n\n",
-			"file": "BowlingCoreMVC/Views/Team/Create.cshtml",
-			"file_size": 1204,
-			"file_write_time": 131715603146998978,
-			"settings":
-			{
-				"buffer_size": 1165,
 				"line_ending": "Windows"
 			}
 		},
@@ -189,10 +147,105 @@
 			}
 		},
 		{
-			"file": "/c/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Models/GameModels.cs",
+			"contents": "using System;\nusing System.Collections.Generic;\nusing System.ComponentModel.DataAnnotations.Schema;\nusing System.ComponentModel.DataAnnotations;\nusing System.Linq;\nusing System.Threading.Tasks;\nusing Microsoft.AspNetCore.Mvc.Rendering;\n\nnamespace BowlingCoreMVC.Models\n{\n    // Testing\n    public class ResultItem\n    {\n        public string UserID;\n        public string UserName;\n        public double Average;\n    }\n\n    public class Frame\n    {\n        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]\n        public int ID { get; set; }\n\n        public int GameID { get; set; }\n\n        public int FrameNum { get; set; }\n        public int FrameScore { get; set; }\n        public int FrameTotal { get; set; }\n\n        public int ThrowOneScore { get; set; }\n        public int ThrowTwoScore { get; set; }\n        public int ThrowThreeScore { get; set; }\n\n        //These are int16s bit fields of the missed pins\n        // Example: Missed 10 pin: 1000000000\n        // Example: Missed washout: 1000101011 (1-2-4-6-10)\n        public short ThrowOnePins { get; set; }\n        public short ThrowTwoPins { get; set; }\n        public short ThrowThreePins { get; set; }\n\n        //[Editable(true)]\n        //public bool PinMissed { get; set; }\n    }\n\n    public class Game\n    {\n        public static Game Create(int? SeriesID = null)\n        {\n            var g = new Game();\n            g.ID = 0;\n            g.CurrentFrame = 1;\n            g.CurrentThrow = 1;\n            g.ScoreUpToFrame = 1;\n            g.CreatedDate = DateTime.Now;\n            g.ModifiedDate = DateTime.Now;\n            g.SeriesID = SeriesID;\n            //g.UserID = ; //TODO: Set current User\n\n            g.Frames = new List<Frame>();\n\n            for (int i = 1; i <= 10; i++)\n            {\n                Frame f = new Frame();\n                f.FrameNum = i;\n\n                g.Frames.Add(f);\n            }\n            return (g);\n        }\n\n        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]\n        public int ID { get; set; }\n\n        public int Score { get; set; }\n\n        [Display(Name=\"Created\")]\n        [DisplayFormat(DataFormatString = \"{0:MM/dd/yy (ddd) hh:mm tt}\")]\n        public DateTime CreatedDate { get; set; }\n\n        [Display(Name = \"Modified\")]\n        [DisplayFormat(DataFormatString = \"{0:MM/dd/yy (ddd) hh:mm tt}\")]\n        public DateTime ModifiedDate { get; set; }\n\n        public int CurrentFrame { get; set; }\n        public int CurrentThrow { get; set; }\n\n        //This is to score the game only up to this frame\n        //this number should only go up, max of 10\n        public int ScoreUpToFrame { get; set; }\n\n        [ForeignKey(\"GameID\")]\n        public virtual ICollection<Frame> Frames { get; set; }\n\n\n        //nvarcher(450)\n        [StringLength(450)]\n        public string UserID { get; set; }\n\n        public int SeriesIndex { get; set; }\n\n        public int? SeriesID { get; set; }\n\n        //test\n        //public virtual Series Series { get; set; }\n\n        [ForeignKey(\"UserID\")]\n        public virtual ApplicationUser User { get; set; }\n\n        [NotMapped]\n        public string UserName { get; set; }\n    }\n\n    public class Series\n    {\n        public static Series Create(int NumberOfGames, int? LeagueID = null, int? TeamID = null)\n        {\n            Series s = new Series();\n            s.CreatedDate = DateTime.Now;\n            s.ModifiedDate = DateTime.Now;\n            s.LeagueID = LeagueID;\n            //s.UserID = ; //TODO: Set current User\n            s.SeriesScore = 0;\n            s.TeamID = TeamID;\n\n            s.Games = new List<Game>();\n            for (int i = 1; i <= NumberOfGames; i++)\n            {\n                Game g = Game.Create(s.ID);\n                g.SeriesIndex = i;\n                s.Games.Add(g);\n            }\n\n            return (s);\n        }\n\n\n        public int ID { get; set; }\n\n        [StringLength(450)]\n        public string UserID { get; set; }\n\n        public int? LeagueID { get; set; }\n\n        public int? TeamID {get;set;}\n\n        public int SeriesScore { get; set; }\n\n        public virtual ICollection<Game> Games { get; set; }\n\n        [Display(Name = \"Created\")]\n        [DisplayFormat(DataFormatString = \"{0:MM/dd/yy (ddd) hh:mm tt}\")]\n        public DateTime CreatedDate { get; set; }\n\n        [Display(Name = \"Modified\")]\n        [DisplayFormat(DataFormatString = \"{0:MM/dd/yy (ddd) hh:mm tt}\")]\n        public DateTime ModifiedDate { get; set; }\n\n        [ForeignKey(\"UserID\")]\n        public virtual ApplicationUser User { get; set; }\n\n        [ForeignKey(\"LeagueID\")]\n        public virtual League League { get; set; }\n\n        [ForeignKey(\"TeamID\")]\n        public virtual Team Team { get; set; }\n\n        [NotMapped]\n        public List<SelectListItem> Leagues { get; set; }\n\n        [NotMapped]\n        [Range(2, 9)]\n        public int NumberOfGames { get; set; }\n\n        [NotMapped]\n        [Display(Name = \"League\")]\n        public string LeagueName { get; set; }\n\n        [NotMapped]\n        public string UserName { get; set; }\n    }\n\n    // TODO(ERIC): Will need some queries behind this to get when a league occurs\n    public enum LeagueOccurance\n    {\n        EveryWeek = 1,\n        EveryOtherWeek = 2,\n        EveryMonth = 4\n    }\n\n    [DisplayColumn(\"Name\")]\n    public class League : IValidatableObject\n    {\n        public static League Create()\n        {\n            League l = new League();\n            l.CreatedDate = DateTime.Now;\n            l.ModifiedDate = DateTime.Now;\n            l.Occurance = LeagueOccurance.EveryWeek;\n            l.DefaultNumOfGames = 3;\n            return (l);\n        }\n\n        public int ID { get; set; }\n\n        [Display(Name = \"Select a Location\")]\n        public int? LocationID { get; set; }\n\n        [Required(ErrorMessage = \"Please provide a Name for the League\")]\n        public string Name { get; set; }\n\n        [Display(Name = \"League Message\")]\n        public string Message { get; set; }\n\n        [Display(Name = \"Occurance (How often the league bowls)\")]\n        public LeagueOccurance Occurance { get; set; }\n\n        [Range(2, 9)]\n        [Display(Name = \"How many games are played each day?\")]\n        public int DefaultNumOfGames { get; set; }\n\n        [Display(Name=\"Leagues first day (Start Date)\")]\n        [Required(ErrorMessage = \"Please provide a Start Date for the League\")]\n        [DataType(DataType.Date)]\n        public DateTime StartDate { get; set; }\n\n        [Display(Name = \"Leagues last day (End Date)\")]\n        [Required(ErrorMessage = \"Please provide an End Date for the League\")]\n        [DataType(DataType.Date)]\n        public DateTime EndDate { get; set; }\n\n        [Display(Name=\"Which day of the week is the league bowled on?\")]\n        [Required(ErrorMessage = \"Please select a Day\")]\n        [Range(0, 6, ErrorMessage = \"Please enter a the Day of the week this league is bowled on\")]\n        public DayOfWeek LeagueDay { get; set; }\n\n        [NotMapped]\n        public List<SelectListItem> Days { get; set; }\n\n        [StringLength(450)]\n        public string CreatedByID { get; set; }\n\n        [Display(Name = \"Created\")]\n        [DisplayFormat(DataFormatString = \"{0:MM/dd/yy (ddd) hh:mm tt}\")]\n        public DateTime CreatedDate { get; set; }\n\n        [Display(Name = \"Modified\")]\n        [DisplayFormat(DataFormatString = \"{0:MM/dd/yy (ddd) hh:mm tt}\")]\n        public DateTime ModifiedDate { get; set; }\n\n        public virtual Location Location { get; set; }\n\n        [NotMapped]\n        [Display(Name = \"Created By\")]\n        public string CreatedByUserName { get; set; }\n\n        [NotMapped]\n        public List<SelectListItem> Locations { get; set; }\n\n        [NotMapped]\n        public List<SelectListItem> Occurances { get; set; }\n\n        [NotMapped]\n        [Display(Name = \"Create a new Location?\")]\n        public bool NewLocation { get; set; }\n\n        [NotMapped]\n        [Display(Name = \"New Location Name\")]\n        public string NewLocationName { get; set; }\n\n        public IEnumerable<ValidationResult> Validate(ValidationContext ctx)\n        {\n            if (NewLocation && string.IsNullOrEmpty(NewLocationName))\n            {\n                yield return new ValidationResult(\"New Location Name Required when creating a new Location.\");\n            }\n\n            if (!NewLocation && (LocationID == null || LocationID == 0))\n            {\n                yield return new ValidationResult(\"Select either a current location or choose to create a new one.\");\n            }\n            \n        }\n\n    }\n\n    public class Location\n    {\n        public int ID { get; set; }\n        public string Name { get; set; }\n\n        [StringLength(450)]\n        public string CreatedByID { get; set; }\n        public DateTime CreatedDate { get; set; }\n        public DateTime ModifiedDate { get; set; }\n\n        [NotMapped]\n        [Display(Name=\"Created By\")]\n        public string CreatedByUserName { get; set; }\n    }\n\n    public class Team\n    {\n        public static Team Create()\n        {\n            Team t = new Team();\n            t.CreatedDate = DateTime.Now;\n            t.ModifiedDate = DateTime.Now;\n            return (t);\n        }\n\n        public int ID { get; set; }\n        public int LeagueID { get; set; }\n        public string TeamName { get; set; }\n\n        [NotMapped]\n        public List<SelectListItem> Leagues {get;set;}\n\n        [ForeignKey(\"LeagueID\")]\n        public virtual League League { get; set; }\n\n        [NotMapped]\n        [Display(Name=\"Created By\")]\n        public string CreatedByUserName { get; set; }\n\n        [NotMapped]\n        public List<string> TeamMembers { get; set; }\n\n        public virtual ICollection<UserLeagueTeam> UserLeagueTeams { get; set; }\n\n        [StringLength(450)]\n        public string CreatedByID { get; set; }\n        public DateTime CreatedDate { get; set; }\n        public DateTime ModifiedDate { get; set; }\n    }\n\n    public class UserLeagueTeam\n    {\n        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]\n        public int ID { get; set; }\n\n        [StringLength(450)]\n        public string UserID { get; set; }\n        public int LeagueID { get; set; }\n        public int TeamID { get; set; }\n\n        // TODO(Eric): Consider adding the Average here for less DB queries\n\n        [NotMapped]\n        public List<SelectListItem> Leagues {get;set;}\n\n        [NotMapped]\n        public List<SelectListItem> Teams {get;set;}\n\n        // If Today is before the League End date\n        public bool IsActive { get; set; }\n\n        // If the user is an Owner/Admin of this League/Team\n        // NOTE: Might want to split this out between League and Team\n        //  CreatedByID should default to IsAdmin!\n        public bool IsAdmin { get; set; }\n    }\n\n}\n",
+			"file": "BowlingCoreMVC/Models/GameModels.cs",
+			"file_size": 10956,
+			"file_write_time": 131969686453680173,
 			"settings":
 			{
-				"buffer_size": 8590,
+				"buffer_size": 10746,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Controllers/TeamsController.cs",
+			"settings":
+			{
+				"buffer_size": 5764,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Models/StatsViewModel.cs",
+			"settings":
+			{
+				"buffer_size": 1600,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Controllers/StatsController.cs",
+			"settings":
+			{
+				"buffer_size": 13586,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Controllers/SeriesController.cs",
+			"settings":
+			{
+				"buffer_size": 6068,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Views/Home/Index.cshtml",
+			"settings":
+			{
+				"buffer_size": 1639,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Views/Game/Index.cshtml",
+			"settings":
+			{
+				"buffer_size": 6461,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Views/Leagues/Index.cshtml",
+			"settings":
+			{
+				"buffer_size": 4352,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Views/Leagues/Create.cshtml",
+			"settings":
+			{
+				"buffer_size": 4350,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "@model BowlingCoreMVC.Models.League\n\n@{\n    ViewData[\"Title\"] = \"Create\";\n}\n\n<h2>Request to Join a League</h2>\n\n<hr />\n<div class=\"row\">\n    <div class=\"col-md-4\">\n        <form asp-action=\"RequestToJoin\">\n            <div asp-validation-summary=\"ModelOnly\" class=\"text-danger\"></div>\n            <div class=\"form-group\">\n                <label asp-for=\"Name\" class=\"control-label\"></label>\n                <input asp-for=\"Name\" class=\"form-control\" />\n                <span asp-validation-for=\"Name\" class=\"text-danger\"></span>\n            </div>\n\n            <div class=\"form-group\">\n                <label asp-for=\"LocationID\" class=\"control-label\"></label>\n                <select asp-for=\"LocationID\" asp-items=\"@Model.Locations\" class=\"form-control\" id=\"ddlLocations\">\n                    <option value=\"0\">---Location---</option>\n                </select>\n                <span asp-validation-for=\"LocationID\" class=\"text-danger\"></span>\n            </div>\n\n            <div class=\"form-group\">\n                <label asp-for=\"NewLocation\" class=\"control-label\"></label>\n                <input asp-for=\"NewLocation\" class=\"\" id=\"chkNewLocation\" onchange=\"NewLocationCheckboxChanged(this);\" />\n\n            </div>\n\n            <div class=\"form-group\" id=\"grpNewLocation\">\n                <label asp-for=\"NewLocationName\" class=\"control-label\"></label>\n                <input asp-for=\"NewLocationName\" class=\"form-control\" id=\"txtLocationName\" />\n                <span asp-validation-for=\"NewLocationName\" class=\"text-danger\"></span>\n            </div>\n\n            <div class=\"form-group\" id=\"grpDefaultNumOfGames\">\n                <label asp-for=\"DefaultNumOfGames\" class=\"control-label\"></label>\n                <input asp-for=\"DefaultNumOfGames\" class=\"form-control\" id=\"NumOfGames\" min=\"2\" max=\"9\" value=\"3\" />\n                <span asp-validation-for=\"DefaultNumOfGames\" class=\"text-danger\"></span>\n            </div>\n\n            <div class=\"form-group\">\n                <label asp-for=\"StartDate\" class=\"control-label\"></label>\n                <input asp-for=\"StartDate\" class=\"form-control\" asp-format=\"{0:MM/dd/yyyy}\" />\n                <span asp-validation-for=\"StartDate\" class=\"text-danger\"></span>\n            </div>\n            <div class=\"form-group\">\n                <label asp-for=\"EndDate\" class=\"control-label\"></label>\n                <input asp-for=\"EndDate\" class=\"form-control\" asp-format=\"{0:MM/dd/yyyy}\" />\n                <span asp-validation-for=\"EndDate\" class=\"text-danger\"></span>\n            </div>\n\n            <div class=\"form-group\">\n                <label asp-for=\"LeagueDay\" class=\"control-label\"></label>\n                <select asp-for=\"LeagueDay\" asp-items=\"@Model.Days\" class=\"form-control\" id=\"ddlDays\">\n                    @*<option value=\"10\" selected=\"selected\">---League Day---</option>*@\n                </select>\n                <span asp-validation-for=\"LeagueDay\" class=\"text-danger\"></span>\n            </div>\n\n            <div class=\"form-group\">\n                <label asp-for=\"Occurance\" class=\"control-label\"></label>\n                <select asp-for=\"Occurance\" asp-items=\"@Model.Occurances\" class=\"form-control\" >\n                </select>\n                <span asp-validation-for=\"Occurance\" class=\"text-danger\"></span>\n            </div>\n\n            <div class=\"form-group\">\n                <input type=\"submit\" value=\"Create\" class=\"btn btn-default\" />\n            </div>\n        </form>\n    </div>\n</div>\n\n<div>\n    <a asp-action=\"Index\">Back to List</a>\n</div>\n\n\n<script>\n    window.onload = function ()\n    {\n        NewLocationCheckboxChanged(document.querySelector(\"#chkNewLocation\"));\n    }\n    \n    function NewLocationCheckboxChanged(e)\n    {\n        if (e.checked)\n        {\n            document.querySelector(\"#ddlLocations\").value = 0;\n            document.querySelector(\"#ddlLocations\").setAttribute(\"disabled\", \"\");\n            document.querySelector(\"#txtLocationName\").removeAttribute(\"disabled\");\n            document.querySelector(\"#grpNewLocation\").style.display = 'block';\n        }\n        else\n        {\n            document.querySelector(\"#ddlLocations\").removeAttribute(\"disabled\");\n            document.querySelector(\"#txtLocationName\").setAttribute(\"disabled\", \"\");\n            document.querySelector(\"#grpNewLocation\").style.display = 'none';\n        }\n    }\n</script>",
+			"file": "BowlingCoreMVC/Views/Leagues/RequestToJoin.cshtml",
+			"file_size": 4456,
+			"file_write_time": 131969784937366411,
+			"settings":
+			{
+				"buffer_size": 4359,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Views/Series/Index.cshtml",
+			"settings":
+			{
+				"buffer_size": 2168,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -209,6 +262,26 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"omni type",
+				"OmniSharpSublime: Type Lookup"
+			],
+			[
+				"omni ",
+				"OmniSharpSublime: Type Lookup"
+			],
+			[
+				"server",
+				"OmniSharpSublime: Restart Server"
+			],
+			[
+				"file",
+				"File: Close All"
+			],
+			[
+				"goto",
+				"OmniSharpSublime: Goto Definition"
+			],
 			[
 				"setcolor",
 				"UI: Select Color Scheme"
@@ -313,22 +386,34 @@
 	],
 	"file_history":
 	[
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/wwwroot/js/site.js",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/NOTES.md",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Views/Leagues/Create.cshtml",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Views/Leagues/Index.cshtml",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Views/Team/Create.cshtml",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Models/GameViewModels/GameViewModels.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Models/GameModels.cs",
+		"/c/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Models/GameModels.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC.sublime-project",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Controllers/GameController.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Helpers/DataHelper.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Data/ApplicationDbContext.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Controllers/SeriesController.cs",
+		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/Color Scheme - Default/Mariana.sublime-color-scheme",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Helpers/ScoreHelper.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Views/Leagues/Edit.cshtml",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Controllers/LeaguesController.cs",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Views/Team/Index.cshtml",
+		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Controllers/TeamController.cs",
 		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/HH/HH.tmTheme",
 		"/C/Users/EDeSmet/AppData/Roaming/.emacs.d/init.el",
-		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Helpers/DataHelper.cs",
 		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Views/Team/create.cshtml",
-		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/Color Scheme - Default/Mariana.sublime-color-scheme",
-		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Controllers/GameController.cs",
 		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/OmniCoreMVCProj.sublime-project",
 		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/Kulture/README.md",
 		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/OmniSharpSublime.sublime-settings",
-		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/wwwroot/js/site.js",
-		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/NOTES.md",
 		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/ScoringTagHelpers/FrameScoreTagHelper.cs",
-		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Views/Leagues/Create.cshtml",
 		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/OmniSharp/OmniSharpSublime.sublime-settings",
 		"/C/Users/EDeSmet/Documents/EDI/new testing notes.txt",
-		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Models/GameModels.cs",
 		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingSiteMVC/NOTES.md",
 		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingSiteMVC/.hgignore",
 		"/C/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/.hgignore",
@@ -351,7 +436,7 @@
 	],
 	"find":
 	{
-		"height": 41.0
+		"height": 40.0
 	},
 	"find_in_files":
 	{
@@ -366,6 +451,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"teams",
+			"\\",
+			"LeagueNight",
 			"line_highlight",
 			"line",
 			"league",
@@ -378,9 +466,11 @@
 		"highlight": true,
 		"in_selection": false,
 		"preserve_case": false,
-		"regex": true,
+		"regex": false,
 		"replace_history":
 		[
+			"/",
+			"LeagueDayOfWeek",
 			"team",
 			"},\\n"
 		],
@@ -393,24 +483,223 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 11,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "BowlingCoreMVC.sublime-project",
+					"file": "BowlingCoreMVC/Controllers/LeaguesController.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 115,
+						"buffer_size": 12298,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								112,
-								112
+								1084,
+								1084
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "BowlingCoreMVC/Helpers/DataHelper.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 18562,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8221,
+								8221
+							]
+						],
+						"settings":
+						{
+							"oops":
+							{
+								"3685,3689": "Cannot convert null to 'DBOperationResult<Series>' because it is a non-nullable value type",
+								"67,72": "Unnecessary using directive."
+							},
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2948.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "BowlingCoreMVC/Controllers/HomeController.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5192,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4026,
+								4026
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"oops":
+							{
+								"192,197": "Unnecessary using directive.",
+								"4120,4129": "'ISession' does not contain a definition for 'SetString' and no accessible extension method 'SetString' accepting a first argument of type 'ISession' could be found (are you missing a using directive or an assembly reference?)"
+							},
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1058.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "BowlingCoreMVC/Startup.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6213,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5950,
+								5950
+							]
+						],
+						"settings":
+						{
+							"oops":
+							{
+								"14,19": "Unnecessary using directive.",
+								"2114,2121": "'SessionOptions.CookieName' is obsolete: 'This property is obsolete and will be removed in a future version. The recommended alternative is Cookie.Name.'",
+								"48,53": "Unnecessary using directive.",
+								"486,491": "Unnecessary using directive.",
+								"67,72": "Unnecessary using directive."
+							},
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1382.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "BowlingCoreMVC/Views/Shared/_Layout.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6785,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6220,
+								6220
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1156.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "BowlingCoreMVC/Views/Shared/Error.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 962,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								186,
+								186
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/BuildBAT.sublime-build",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 75,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								75,
+								75
 							]
 						],
 						"settings":
@@ -421,345 +710,80 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "BowlingCoreMVC/Controllers/GameController.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4233,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								367,
-								393
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 188.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "BowlingCoreMVC/Helpers/DataHelper.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5129,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3894,
-								3894
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1043.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "BowlingCoreMVC/Data/ApplicationDbContext.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5780,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1362,
-								1406
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "BowlingCoreMVC/Controllers/SeriesController.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3890,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2595,
-								2595
-							]
-						],
-						"settings":
-						{
-							"oops":
-							{
-								"818,819": "Unexpected symbol `=>'', expecting `;'', `{'', or `where''"
-							},
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 842.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/Color Scheme - Default/Mariana.sublime-color-scheme",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 9683,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1480,
-								1480
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "BowlingCoreMVC/Models/GameModels.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8590,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"oops":
-							{
-								"113,127": "Unknown Resolver Error",
-								"128,143": "'?' does not contain a definition for 'DataAnnotations'",
-								"1782,1799": "'DatabaseGenerated' is not a known identifier",
-								"1800,1823": "'DatabaseGeneratedOption' is not a known identifier",
-								"1824,1832": "'?' does not contain a definition for 'Identity'",
-								"1833,1834": "Error: ?",
-								"1921,1928": "'Display' is not a known identifier",
-								"1943,1944": "'?' does not contain a definition for 'Name'",
-								"1944,1945": "Error: ?",
-								"1955,1968": "'DisplayFormat' is not a known identifier",
-								"2024,2025": "'?' does not contain a definition for 'DataFormatString'",
-								"2025,2026": "Error: ?",
-								"2087,2094": "'Display' is not a known identifier",
-								"210,220": "Unknown Resolver Error",
-								"2112,2113": "'?' does not contain a definition for 'Name'",
-								"2113,2114": "Error: ?",
-								"2124,2137": "'DisplayFormat' is not a known identifier",
-								"2193,2194": "'?' does not contain a definition for 'DataFormatString'",
-								"2194,2195": "Error: ?",
-								"221,224": "'?' does not contain a definition for 'Mvc'",
-								"225,234": "'?' does not contain a definition for 'Rendering'",
-								"2508,2518": "'ForeignKey' is not a known identifier",
-								"2528,2529": "Error: ?",
-								"2628,2640": "'StringLength' is not a known identifier",
-								"2645,2646": "Error: ?",
-								"2859,2868": "Error: ?",
-								"309,326": "'DatabaseGenerated' is not a known identifier",
-								"327,350": "'DatabaseGeneratedOption' is not a known identifier",
-								"351,359": "'?' does not contain a definition for 'Identity'",
-								"3587,3599": "'StringLength' is not a known identifier",
-								"360,361": "Error: ?",
-								"3604,3605": "Error: ?",
-								"3659,3668": "Error: ?",
-								"3870,3877": "'Display' is not a known identifier",
-								"3894,3895": "'?' does not contain a definition for 'Name'",
-								"3895,3896": "Error: ?",
-								"3906,3919": "'DisplayFormat' is not a known identifier",
-								"3975,3976": "'?' does not contain a definition for 'DataFormatString'",
-								"3976,3977": "Error: ?",
-								"4038,4045": "'Display' is not a known identifier",
-								"4063,4064": "'?' does not contain a definition for 'Name'",
-								"4064,4065": "Error: ?",
-								"4075,4088": "'DisplayFormat' is not a known identifier",
-								"4144,4145": "'?' does not contain a definition for 'DataFormatString'",
-								"4145,4146": "Error: ?",
-								"4209,4218": "Error: ?",
-								"4240,4254": "'SelectListItem' is not a known identifier",
-								"4288,4297": "Error: ?",
-								"4308,4313": "'Range' is not a known identifier",
-								"4319,4320": "Error: ?",
-								"4378,4387": "Error: ?",
-								"4398,4405": "'Display' is not a known identifier",
-								"4421,4422": "'?' does not contain a definition for 'Name'",
-								"4422,4423": "Error: ?",
-								"4481,4490": "Error: ?",
-								"4549,4562": "'DisplayColumn' is not a known identifier",
-								"4570,4571": "Error: ?",
-								"4816,4823": "'Display' is not a known identifier",
-								"4835,4836": "'?' does not contain a definition for 'Name'",
-								"4836,4837": "Error: ?",
-								"4971,4979": "'DataType' is not a known identifier",
-								"4980,4988": "'DataType' is not a known identifier",
-								"4989,4993": "'?' does not contain a definition for 'Date'",
-								"4994,4995": "Error: ?",
-								"5148,5156": "'DataType' is not a known identifier",
-								"5157,5165": "'DataType' is not a known identifier",
-								"5166,5170": "'?' does not contain a definition for 'Date'",
-								"5171,5172": "Error: ?",
-								"5324,5336": "'StringLength' is not a known identifier",
-								"5341,5342": "Error: ?",
-								"5401,5408": "'Display' is not a known identifier",
-								"5425,5426": "'?' does not contain a definition for 'Name'",
-								"5426,5427": "Error: ?",
-								"5437,5450": "'DisplayFormat' is not a known identifier",
-								"5506,5507": "'?' does not contain a definition for 'DataFormatString'",
-								"5507,5508": "Error: ?",
-								"5569,5576": "'Display' is not a known identifier",
-								"5594,5595": "'?' does not contain a definition for 'Name'",
-								"5595,5596": "Error: ?",
-								"5606,5619": "'DisplayFormat' is not a known identifier",
-								"5675,5676": "'?' does not contain a definition for 'DataFormatString'",
-								"5676,5677": "Error: ?",
-								"5795,5804": "Error: ?",
-								"5815,5822": "'Display' is not a known identifier",
-								"5842,5843": "'?' does not contain a definition for 'Name'",
-								"5843,5844": "Error: ?",
-								"5909,5918": "Error: ?",
-								"5940,5954": "'SelectListItem' is not a known identifier",
-								"61,75": "Unknown Resolver Error",
-								"6111,6123": "'StringLength' is not a known identifier",
-								"6128,6129": "Error: ?",
-								"6455,6467": "'StringLength' is not a known identifier",
-								"6472,6473": "Error: ?",
-								"6633,6642": "Error: ?",
-								"6653,6660": "'Display' is not a known identifier",
-								"6678,6679": "'?' does not contain a definition for 'Name'",
-								"6679,6680": "Error: ?",
-								"6995,7004": "Error: ?",
-								"7026,7040": "'SelectListItem' is not a known identifier",
-								"7071,7083": "'StringLength' is not a known identifier",
-								"7088,7089": "Error: ?",
-								"76,91": "'?' does not contain a definition for 'DataAnnotations'",
-								"92,98": "'?' does not contain a definition for 'Schema'"
-							},
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3028.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 11,
+					"stack_index": 16,
 					"type": "text"
 				},
 				{
 					"buffer": 7,
-					"file": "BowlingCoreMVC/Helpers/ScoreHelper.cs",
+					"file": "/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/BowlingCoreMVC.sublime-build",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8182,
+						"buffer_size": 167,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								650,
-								650
+								167,
+								167
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 17,
+					"stack_index": 15,
 					"type": "text"
 				},
 				{
 					"buffer": 8,
-					"file": "NOTES.md",
+					"file": "build.bat",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 12411,
+						"buffer_size": 58,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								55,
+								55
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Batch File/Batch File.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "NOTES.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 33580,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								32871,
+								32871
 							]
 						],
 						"settings":
@@ -768,32 +792,322 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 376.0,
+						"translation.y": 16847.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 21,
+					"stack_index": 17,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
-					"file": "BowlingCoreMVC/Views/Leagues/Edit.cshtml",
+					"buffer": 10,
+					"file": "BowlingCoreMVC/Models/GameViewModels/GameViewModels.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1815,
+						"buffer_size": 2119,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								644,
-								644
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 18,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "BowlingCoreMVC/Models/GameModels.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10746,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10417,
+								10417
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4397.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "BowlingCoreMVC/Controllers/TeamsController.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5764,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2141,
+								2141
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 315.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 19,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "BowlingCoreMVC/Models/StatsViewModel.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1600,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								668,
+								668
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 23,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "BowlingCoreMVC/Controllers/StatsController.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13586,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1813,
+								1813
 							]
 						],
 						"settings":
 						{
 							"history_list_is_closing": true,
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 177.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 24,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "BowlingCoreMVC/Controllers/SeriesController.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6068,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2970,
+								2970
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 825.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 21,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 9,
+					"file": "NOTES.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 33580,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								33576,
+								33576
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 17400.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "BowlingCoreMVC/Views/Home/Index.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1639,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1221,
+								1221
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "BowlingCoreMVC/Helpers/DataHelper.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 18562,
+						"regions":
+						{
+							"bookmarks":
+							{
+								"flags": 144,
+								"icon": "bookmark",
+								"regions":
+								[
+								],
+								"scope": "bookmarks"
+							}
+						},
+						"selection":
+						[
+							[
+								3957,
+								3957
+							]
+						],
+						"settings":
+						{
+							"oops":
+							{
+								"3685,3689": "Cannot convert null to 'DBOperationResult<Series>' because it is a non-nullable value type",
+								"67,72": "Unnecessary using directive."
+							},
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1291.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "BowlingCoreMVC/Views/Game/Index.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6461,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								136,
+								231
+							]
+						],
+						"settings":
+						{
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
@@ -806,210 +1120,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 10,
-					"file": "BowlingCoreMVC/Controllers/LeaguesController.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6694,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 432.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 10,
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "BowlingCoreMVC/Controllers/TeamController.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5962,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"oops":
-							{
-								"821,822": "Unexpected symbol `=>'', expecting `;'', `{'', or `where''"
-							},
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 9,
-					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 1,
-			"sheets":
-			[
-				{
-					"buffer": 12,
-					"file": "BowlingCoreMVC/wwwroot/js/site.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 25136,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2025.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 18,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "NOTES.md",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 12411,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								12407,
-								12407
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Markdown/Markdown.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 6465.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 13,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 134,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								134,
-								134
-							]
-						],
-						"settings":
-						{
-							"auto_name": "new useful sublime shortcuts",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 14,
-					"file": "BowlingCoreMVC/Views/Leagues/Create.cshtml",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4101,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								689,
-								689
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 14,
-					"type": "text"
-				},
-				{
-					"buffer": 15,
+					"buffer": 18,
 					"file": "BowlingCoreMVC/Views/Leagues/Index.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2224,
+						"buffer_size": 4352,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								2224
+								96,
+								96
 							]
 						],
 						"settings":
@@ -1022,375 +1146,128 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 13,
-					"type": "text"
-				},
-				{
-					"buffer": 16,
-					"file": "BowlingCoreMVC/Views/Team/Index.cshtml",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1716,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								616,
-								616
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 12,
-					"type": "text"
-				},
-				{
-					"buffer": 17,
-					"file": "BowlingCoreMVC/Views/Team/Create.cshtml",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1165,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1165,
-								1165
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 15,
-					"type": "text"
-				},
-				{
-					"buffer": 18,
-					"file": "BowlingCoreMVC/Models/GameViewModels/GameViewModels.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2119,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1754,
-								1754
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 58.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 19,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "BowlingCoreMVC/Models/GameModels.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8590,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"oops":
-							{
-								"113,127": "Unknown Resolver Error",
-								"128,143": "'?' does not contain a definition for 'DataAnnotations'",
-								"1782,1799": "'DatabaseGenerated' is not a known identifier",
-								"1800,1823": "'DatabaseGeneratedOption' is not a known identifier",
-								"1824,1832": "'?' does not contain a definition for 'Identity'",
-								"1833,1834": "Error: ?",
-								"1921,1928": "'Display' is not a known identifier",
-								"1943,1944": "'?' does not contain a definition for 'Name'",
-								"1944,1945": "Error: ?",
-								"1955,1968": "'DisplayFormat' is not a known identifier",
-								"2024,2025": "'?' does not contain a definition for 'DataFormatString'",
-								"2025,2026": "Error: ?",
-								"2087,2094": "'Display' is not a known identifier",
-								"210,220": "Unknown Resolver Error",
-								"2112,2113": "'?' does not contain a definition for 'Name'",
-								"2113,2114": "Error: ?",
-								"2124,2137": "'DisplayFormat' is not a known identifier",
-								"2193,2194": "'?' does not contain a definition for 'DataFormatString'",
-								"2194,2195": "Error: ?",
-								"221,224": "'?' does not contain a definition for 'Mvc'",
-								"225,234": "'?' does not contain a definition for 'Rendering'",
-								"2508,2518": "'ForeignKey' is not a known identifier",
-								"2528,2529": "Error: ?",
-								"2628,2640": "'StringLength' is not a known identifier",
-								"2645,2646": "Error: ?",
-								"2859,2868": "Error: ?",
-								"309,326": "'DatabaseGenerated' is not a known identifier",
-								"327,350": "'DatabaseGeneratedOption' is not a known identifier",
-								"351,359": "'?' does not contain a definition for 'Identity'",
-								"3587,3599": "'StringLength' is not a known identifier",
-								"360,361": "Error: ?",
-								"3604,3605": "Error: ?",
-								"3659,3668": "Error: ?",
-								"3870,3877": "'Display' is not a known identifier",
-								"3894,3895": "'?' does not contain a definition for 'Name'",
-								"3895,3896": "Error: ?",
-								"3906,3919": "'DisplayFormat' is not a known identifier",
-								"3975,3976": "'?' does not contain a definition for 'DataFormatString'",
-								"3976,3977": "Error: ?",
-								"4038,4045": "'Display' is not a known identifier",
-								"4063,4064": "'?' does not contain a definition for 'Name'",
-								"4064,4065": "Error: ?",
-								"4075,4088": "'DisplayFormat' is not a known identifier",
-								"4144,4145": "'?' does not contain a definition for 'DataFormatString'",
-								"4145,4146": "Error: ?",
-								"4209,4218": "Error: ?",
-								"4240,4254": "'SelectListItem' is not a known identifier",
-								"4288,4297": "Error: ?",
-								"4308,4313": "'Range' is not a known identifier",
-								"4319,4320": "Error: ?",
-								"4378,4387": "Error: ?",
-								"4398,4405": "'Display' is not a known identifier",
-								"4421,4422": "'?' does not contain a definition for 'Name'",
-								"4422,4423": "Error: ?",
-								"4481,4490": "Error: ?",
-								"4549,4562": "'DisplayColumn' is not a known identifier",
-								"4570,4571": "Error: ?",
-								"4816,4823": "'Display' is not a known identifier",
-								"4835,4836": "'?' does not contain a definition for 'Name'",
-								"4836,4837": "Error: ?",
-								"4971,4979": "'DataType' is not a known identifier",
-								"4980,4988": "'DataType' is not a known identifier",
-								"4989,4993": "'?' does not contain a definition for 'Date'",
-								"4994,4995": "Error: ?",
-								"5148,5156": "'DataType' is not a known identifier",
-								"5157,5165": "'DataType' is not a known identifier",
-								"5166,5170": "'?' does not contain a definition for 'Date'",
-								"5171,5172": "Error: ?",
-								"5324,5336": "'StringLength' is not a known identifier",
-								"5341,5342": "Error: ?",
-								"5401,5408": "'Display' is not a known identifier",
-								"5425,5426": "'?' does not contain a definition for 'Name'",
-								"5426,5427": "Error: ?",
-								"5437,5450": "'DisplayFormat' is not a known identifier",
-								"5506,5507": "'?' does not contain a definition for 'DataFormatString'",
-								"5507,5508": "Error: ?",
-								"5569,5576": "'Display' is not a known identifier",
-								"5594,5595": "'?' does not contain a definition for 'Name'",
-								"5595,5596": "Error: ?",
-								"5606,5619": "'DisplayFormat' is not a known identifier",
-								"5675,5676": "'?' does not contain a definition for 'DataFormatString'",
-								"5676,5677": "Error: ?",
-								"5795,5804": "Error: ?",
-								"5815,5822": "'Display' is not a known identifier",
-								"5842,5843": "'?' does not contain a definition for 'Name'",
-								"5843,5844": "Error: ?",
-								"5909,5918": "Error: ?",
-								"5940,5954": "'SelectListItem' is not a known identifier",
-								"61,75": "Unknown Resolver Error",
-								"6111,6123": "'StringLength' is not a known identifier",
-								"6128,6129": "Error: ?",
-								"6455,6467": "'StringLength' is not a known identifier",
-								"6472,6473": "Error: ?",
-								"6633,6642": "Error: ?",
-								"6653,6660": "'Display' is not a known identifier",
-								"6678,6679": "'?' does not contain a definition for 'Name'",
-								"6679,6680": "Error: ?",
-								"6995,7004": "Error: ?",
-								"7026,7040": "'SelectListItem' is not a known identifier",
-								"7071,7083": "'StringLength' is not a known identifier",
-								"7088,7089": "Error: ?",
-								"76,91": "'?' does not contain a definition for 'DataAnnotations'",
-								"92,98": "'?' does not contain a definition for 'Schema'"
-							},
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2415.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 19,
-					"file": "/c/Users/EDeSmet/Documents/Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Models/GameModels.cs",
+					"file": "BowlingCoreMVC/Views/Leagues/Create.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8590,
+						"buffer_size": 4350,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								4350,
+								4350
 							]
 						],
 						"settings":
 						{
-							"oops":
-							{
-								"113,127": "Unknown Resolver Error",
-								"128,143": "'?' does not contain a definition for 'DataAnnotations'",
-								"1782,1799": "'DatabaseGenerated' is not a known identifier",
-								"1800,1823": "'DatabaseGeneratedOption' is not a known identifier",
-								"1824,1832": "'?' does not contain a definition for 'Identity'",
-								"1833,1834": "Error: ?",
-								"1921,1928": "'Display' is not a known identifier",
-								"1943,1944": "'?' does not contain a definition for 'Name'",
-								"1944,1945": "Error: ?",
-								"1955,1968": "'DisplayFormat' is not a known identifier",
-								"2024,2025": "'?' does not contain a definition for 'DataFormatString'",
-								"2025,2026": "Error: ?",
-								"2087,2094": "'Display' is not a known identifier",
-								"210,220": "Unknown Resolver Error",
-								"2112,2113": "'?' does not contain a definition for 'Name'",
-								"2113,2114": "Error: ?",
-								"2124,2137": "'DisplayFormat' is not a known identifier",
-								"2193,2194": "'?' does not contain a definition for 'DataFormatString'",
-								"2194,2195": "Error: ?",
-								"221,224": "'?' does not contain a definition for 'Mvc'",
-								"225,234": "'?' does not contain a definition for 'Rendering'",
-								"2508,2518": "'ForeignKey' is not a known identifier",
-								"2528,2529": "Error: ?",
-								"2628,2640": "'StringLength' is not a known identifier",
-								"2645,2646": "Error: ?",
-								"2859,2868": "Error: ?",
-								"309,326": "'DatabaseGenerated' is not a known identifier",
-								"327,350": "'DatabaseGeneratedOption' is not a known identifier",
-								"351,359": "'?' does not contain a definition for 'Identity'",
-								"3587,3599": "'StringLength' is not a known identifier",
-								"360,361": "Error: ?",
-								"3604,3605": "Error: ?",
-								"3659,3668": "Error: ?",
-								"3870,3877": "'Display' is not a known identifier",
-								"3894,3895": "'?' does not contain a definition for 'Name'",
-								"3895,3896": "Error: ?",
-								"3906,3919": "'DisplayFormat' is not a known identifier",
-								"3975,3976": "'?' does not contain a definition for 'DataFormatString'",
-								"3976,3977": "Error: ?",
-								"4038,4045": "'Display' is not a known identifier",
-								"4063,4064": "'?' does not contain a definition for 'Name'",
-								"4064,4065": "Error: ?",
-								"4075,4088": "'DisplayFormat' is not a known identifier",
-								"4144,4145": "'?' does not contain a definition for 'DataFormatString'",
-								"4145,4146": "Error: ?",
-								"4209,4218": "Error: ?",
-								"4240,4254": "'SelectListItem' is not a known identifier",
-								"4288,4297": "Error: ?",
-								"4308,4313": "'Range' is not a known identifier",
-								"4319,4320": "Error: ?",
-								"4378,4387": "Error: ?",
-								"4398,4405": "'Display' is not a known identifier",
-								"4421,4422": "'?' does not contain a definition for 'Name'",
-								"4422,4423": "Error: ?",
-								"4481,4490": "Error: ?",
-								"4549,4562": "'DisplayColumn' is not a known identifier",
-								"4570,4571": "Error: ?",
-								"4816,4823": "'Display' is not a known identifier",
-								"4835,4836": "'?' does not contain a definition for 'Name'",
-								"4836,4837": "Error: ?",
-								"4971,4979": "'DataType' is not a known identifier",
-								"4980,4988": "'DataType' is not a known identifier",
-								"4989,4993": "'?' does not contain a definition for 'Date'",
-								"4994,4995": "Error: ?",
-								"5148,5156": "'DataType' is not a known identifier",
-								"5157,5165": "'DataType' is not a known identifier",
-								"5166,5170": "'?' does not contain a definition for 'Date'",
-								"5171,5172": "Error: ?",
-								"5324,5336": "'StringLength' is not a known identifier",
-								"5341,5342": "Error: ?",
-								"5401,5408": "'Display' is not a known identifier",
-								"5425,5426": "'?' does not contain a definition for 'Name'",
-								"5426,5427": "Error: ?",
-								"5437,5450": "'DisplayFormat' is not a known identifier",
-								"5506,5507": "'?' does not contain a definition for 'DataFormatString'",
-								"5507,5508": "Error: ?",
-								"5569,5576": "'Display' is not a known identifier",
-								"5594,5595": "'?' does not contain a definition for 'Name'",
-								"5595,5596": "Error: ?",
-								"5606,5619": "'DisplayFormat' is not a known identifier",
-								"5675,5676": "'?' does not contain a definition for 'DataFormatString'",
-								"5676,5677": "Error: ?",
-								"5795,5804": "Error: ?",
-								"5815,5822": "'Display' is not a known identifier",
-								"5842,5843": "'?' does not contain a definition for 'Name'",
-								"5843,5844": "Error: ?",
-								"5909,5918": "Error: ?",
-								"5940,5954": "'SelectListItem' is not a known identifier",
-								"61,75": "Unknown Resolver Error",
-								"6111,6123": "'StringLength' is not a known identifier",
-								"6128,6129": "Error: ?",
-								"6455,6467": "'StringLength' is not a known identifier",
-								"6472,6473": "Error: ?",
-								"6633,6642": "Error: ?",
-								"6653,6660": "'Display' is not a known identifier",
-								"6678,6679": "'?' does not contain a definition for 'Name'",
-								"6679,6680": "Error: ?",
-								"7194,7203": "Error: ?",
-								"7225,7239": "'SelectListItem' is not a known identifier",
-								"7322,7331": "Error: ?",
-								"7342,7349": "'Display' is not a known identifier",
-								"7367,7368": "'?' does not contain a definition for 'Name'",
-								"7368,7369": "Error: ?",
-								"7435,7447": "'StringLength' is not a known identifier",
-								"7452,7453": "Error: ?",
-								"76,91": "'?' does not contain a definition for 'DataAnnotations'",
-								"92,98": "'?' does not contain a definition for 'Schema'"
-							},
-							"syntax": "Packages/C#/C#.sublime-syntax",
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3223.0,
+						"translation.y": 587.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 16,
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 20,
+					"file": "BowlingCoreMVC/Views/Leagues/RequestToJoin.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4359,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								218,
+								218
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 21,
+					"file": "BowlingCoreMVC/Views/Series/Index.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2168,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								92,
+								92
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 22,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "BowlingCoreMVC/Views/Shared/_Layout.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6785,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6330,
+								6330
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1111.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
 					"type": "text"
 				}
 			]
@@ -1398,11 +1275,11 @@
 	],
 	"incremental_find":
 	{
-		"height": 24.0
+		"height": 27.0
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 37.0
 	},
 	"layout":
 	{
@@ -1436,7 +1313,7 @@
 	"menu_visible": false,
 	"output.exec":
 	{
-		"height": 102.0
+		"height": 188.0
 	},
 	"output.find_results":
 	{
@@ -1446,11 +1323,11 @@
 	{
 		"height": 199.0
 	},
-	"pinned_build_system": "",
+	"pinned_build_system": "Packages/User/BowlingCoreMVC.sublime-build",
 	"project": "BowlingCoreMVC.sublime-project",
 	"replace":
 	{
-		"height": 73.0
+		"height": 71.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1460,12 +1337,132 @@
 		"selected_items":
 		[
 			[
-				"",
-				"C:\\Users\\EDeSmet\\AppData\\Roaming\\Sublime Text 3\\Packages\\HH\\HH.tmTheme"
-			],
-			[
 				"notes",
 				"NOTES.md"
+			],
+			[
+				"gamemo",
+				"BowlingCoreMVC\\Models\\GameModels.cs"
+			],
+			[
+				"leaguecreate",
+				"BowlingCoreMVC\\Views\\Leagues\\Create.cshtml"
+			],
+			[
+				"leagu",
+				"BowlingCoreMVC\\Controllers\\LeaguesController.cs"
+			],
+			[
+				"leagues index",
+				"BowlingCoreMVC\\Views\\Leagues\\Index.cshtml"
+			],
+			[
+				"data",
+				"BowlingCoreMVC\\Helpers\\DataHelper.cs"
+			],
+			[
+				"datahe",
+				"BowlingCoreMVC\\Helpers\\DataHelper.cs"
+			],
+			[
+				"star",
+				"BowlingCoreMVC\\Startup.cs"
+			],
+			[
+				"_layou",
+				"BowlingCoreMVC\\Views\\Shared\\_Layout.cshtml"
+			],
+			[
+				"",
+				"BowlingCoreMVC\\Views\\Home\\Index.cshtml"
+			],
+			[
+				"startup",
+				"BowlingCoreMVC\\Startup.cs"
+			],
+			[
+				"_layout",
+				"BowlingCoreMVC\\Views\\Shared\\_Layout.cshtml"
+			],
+			[
+				"error",
+				"BowlingCoreMVC\\Views\\Shared\\Error.cshtml"
+			],
+			[
+				"home",
+				"BowlingCoreMVC\\Controllers\\HomeController.cs"
+			],
+			[
+				"buil",
+				"build.bat"
+			],
+			[
+				"build",
+				"C:\\Users\\EDeSmet\\AppData\\Roaming\\Sublime Text 3\\Packages\\User\\BuildBAT.sublime-build"
+			],
+			[
+				"game",
+				"BowlingCoreMVC\\Models\\GameModels.cs"
+			],
+			[
+				"gamemod",
+				"BowlingCoreMVC\\Models\\GameModels.cs"
+			],
+			[
+				"gamemodd",
+				"BowlingCoreMVC\\Models\\GameViewModels\\GameViewModels.cs"
+			],
+			[
+				"datahel",
+				"BowlingCoreMVC\\Helpers\\DataHelper.cs"
+			],
+			[
+				"tea",
+				"BowlingCoreMVC\\Controllers\\TeamsController.cs"
+			],
+			[
+				"home inde",
+				"BowlingCoreMVC\\Views\\Home\\Index.cshtml"
+			],
+			[
+				"game index",
+				"BowlingCoreMVC\\Views\\Game\\Index.cshtml"
+			],
+			[
+				"hom",
+				"BowlingCoreMVC\\Controllers\\HomeController.cs"
+			],
+			[
+				"serie",
+				"BowlingCoreMVC\\Controllers\\SeriesController.cs"
+			],
+			[
+				"series index",
+				"BowlingCoreMVC\\Views\\Series\\Index.cshtml"
+			],
+			[
+				"league index",
+				"BowlingCoreMVC\\Views\\Leagues\\Index.cshtml"
+			],
+			[
+				"home index",
+				"BowlingCoreMVC\\Views\\Home\\Index.cshtml"
+			],
+			[
+				"stats",
+				"BowlingCoreMVC\\Controllers\\StatsController.cs"
+			],
+			[
+				"series",
+				"BowlingCoreMVC\\Controllers\\SeriesController.cs"
+			],
+			[
+				"datahelp",
+				"BowlingCoreMVC\\Helpers\\DataHelper.cs"
+			],
+			[
+				"leaguecon",
+				"BowlingCoreMVC\\Controllers\\LeaguesController.cs"
 			],
 			[
 				"application",
@@ -1480,20 +1477,12 @@
 				"BowlingCoreMVC\\Controllers\\TeamController.cs"
 			],
 			[
-				"datahelp",
-				"BowlingCoreMVC\\Helpers\\DataHelper.cs"
-			],
-			[
 				"league",
 				"BowlingCoreMVC\\Controllers\\LeaguesController.cs"
 			],
 			[
 				"teamcon",
 				"BowlingCoreMVC\\Controllers\\TeamController.cs"
-			],
-			[
-				"gamemo",
-				"BowlingCoreMVC\\Models\\GameModels.cs"
 			],
 			[
 				"league/inde",

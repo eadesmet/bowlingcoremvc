@@ -45,8 +45,16 @@ namespace BowlingCoreMVC
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            // Session (only for passing Message around for now)
+            services.AddMvc().AddSessionStateTempDataProvider();
+            services.AddSession(options => 
+            {
+                options.Cookie.Name = "BowlingHub.Session";
+                options.IdleTimeout = TimeSpan.FromHours(4);
             });
 
             //services.AddDbContext<ApplicationDbContext>(options =>
@@ -138,6 +146,7 @@ namespace BowlingCoreMVC
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseSession();
             app.UseAuthentication();
 
             app.UseMvc(routes =>
