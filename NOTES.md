@@ -1213,3 +1213,9 @@ because the strike bonus, spare bonus code would be repeated
 
 
 }
+
+
+3-14
+{
+	Finished up the RequestToJoin page
+}

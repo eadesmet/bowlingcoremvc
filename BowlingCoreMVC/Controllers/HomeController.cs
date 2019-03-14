@@ -111,7 +111,7 @@ namespace BowlingCoreMVC.Controllers
             DBOperationResult<Series> DBResult = DataHelper.CreateAndInsertSeries(_db, user.Id, l.ID);
             if (DBResult.IsError) 
             {
-                HttpContext.Session.SetString("Message", DBResult.Message);
+                HttpContext.Session.SetString("ErrorMessage", DBResult.Message);
                 return RedirectToAction("Index", "Home"); //, new { Message = DBResult.Message }
             }
             

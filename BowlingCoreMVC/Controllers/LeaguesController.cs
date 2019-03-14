@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 using BowlingCoreMVC.Data;
 using BowlingCoreMVC.Models;
@@ -28,6 +29,55 @@ namespace BowlingCoreMVC.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
+        #region Request to Join
+        // GET: RequestToJoin
+        public IActionResult RequestToJoin(int id)
+        {
+            // To be ULT Model
+            var ult = new UserLeagueTeam();
+
+            ult.Leagues = DataHelper.GetCurrentLeagues(_db);
+
+            return View(ult);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RequestToJoin(Models.UserLeagueTeam Model)
+        {
+            if (Model.LeagueID == 0)
+            {
+                ModelState.AddModelError("", "Please Select a League");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user =  await GetCurrentUserAsync();
+                // Insert UserLeagueTeam
+                Model.UserID = user.Id;
+                Model.IsActive = true;
+                DataHelper.InsertUserLeagueTeam(Model, _db);
+
+                HttpContext.Session.SetString("SuccessMessage", "You joined the League!");
+
+                return RedirectToAction("Index", "Home");
+                // redirect
+            }
+
+            // If form was invalid, gather the Leagues again
+            Model.Leagues = DataHelper.GetCurrentLeagues(_db);
+            return View(Model);
+        }
+
+        public JsonResult GetTeams(int LeagueID)
+        {
+            List<Team> Teams = _db.Teams.Where(o => o.LeagueID == LeagueID).ToList();
+            //Teams.Insert(0, new Team() {ID = 0, TeamName="No Team"});
+
+            return (Json(new SelectList(Teams, "ID", "TeamName")));
+        }
+
+#endregion
         // GET: Leagues
         public async Task<IActionResult> Index()
         {

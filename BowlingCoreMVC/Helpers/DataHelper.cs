@@ -254,6 +254,13 @@ namespace BowlingCoreMVC.Helpers
             if (q != null) { Result = q.TeamID; }
             return (Result);
         }
+
+        public static void InsertUserLeagueTeam(UserLeagueTeam ult, ApplicationDbContext _db)
+        {
+            _db.UserLeagueTeams.Add(ult);
+            _db.SaveChanges();
+            return;
+        }
         
         public static double UsersLeagueAverage(string UserID, int LeagueID, ApplicationDbContext _db)
         {

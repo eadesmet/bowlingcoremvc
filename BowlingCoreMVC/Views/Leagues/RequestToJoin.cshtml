@@ -1,107 +1,63 @@
-@model BowlingCoreMVC.Models.League
+@model BowlingCoreMVC.Models.UserLeagueTeam
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
+<script>
+    $(document).ready(function () {
+        $("#ddlTeams").html("<option value='0'>No Team</option>");
+        $("#ddlLeagues").change(function () {
+            // Code for binding Teams ddl here
+            //@*var url = '@Url.Content("~/")' + 'Leagues/GetTeams';*@
+            var url = '@Url.Action("GetTeams", "Leagues")';
+            
+            $.getJSON(url, { LeagueID: $('#ddlLeagues').val() }, function (data) {
+                var items = '';
+                $("#ddlTeams").empty();
+                items += "<option value='0'>No Team</option>";
+                $.each(data, function (i, team) {
+                    items += "<option value='" + team.value + "'>" + team.text + "</option";
+                });
+                $("#ddlTeams").html(items);
+            });
+        });
+    });
+</script>
 
-<h4>League</h4>
+<h2>Request to Join a League</h2>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="RequestToJoin">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+            @{ 
+                var x = ViewBag.SelectListLeagues;
 
+            }
+
+            
             <div class="form-group">
-                <label asp-for="LocationID" class="control-label"></label>
-                <select asp-for="LocationID" asp-items="@Model.Locations" class="form-control" id="ddlLocations">
-                    <option value="0">---Location---</option>
+                <label asp-for="LeagueID" class="control-label"></label>
+                <select asp-for="LeagueID" asp-items="@Model.Leagues" class="form-control" id="ddlLeagues" >
+                    <option>Select League</option>
                 </select>
-                <span asp-validation-for="LocationID" class="text-danger"></span>
+
+                @*<span asp-validation-for="LeagueID" class="text-danger"></span>*@
             </div>
 
             <div class="form-group">
-                <label asp-for="NewLocation" class="control-label"></label>
-                <input asp-for="NewLocation" class="" id="chkNewLocation" onchange="NewLocationCheckboxChanged(this);" />
-
+                <label asp-for="TeamID" class="control-label"></label>
+                <select asp-for="TeamID" asp-items="@(new SelectList(string.Empty, "ID", "TeamName"))" class="form-control" id="ddlTeams" />
+                    
+                <span asp-validation-for="TeamID" class="text-danger"></span>
             </div>
 
-            <div class="form-group" id="grpNewLocation">
-                <label asp-for="NewLocationName" class="control-label"></label>
-                <input asp-for="NewLocationName" class="form-control" id="txtLocationName" />
-                <span asp-validation-for="NewLocationName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group" id="grpDefaultNumOfGames">
-                <label asp-for="DefaultNumOfGames" class="control-label"></label>
-                <input asp-for="DefaultNumOfGames" class="form-control" id="NumOfGames" min="2" max="9" value="3" />
-                <span asp-validation-for="DefaultNumOfGames" class="text-danger"></span>
-            </div>
-
+            
             <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" asp-format="{0:MM/dd/yyyy}" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" asp-format="{0:MM/dd/yyyy}" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="LeagueDay" class="control-label"></label>
-                <select asp-for="LeagueDay" asp-items="@Model.Days" class="form-control" id="ddlDays">
-                    @*<option value="10" selected="selected">---League Day---</option>*@
-                </select>
-                <span asp-validation-for="LeagueDay" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Occurance" class="control-label"></label>
-                <select asp-for="Occurance" asp-items="@Model.Occurances" class="form-control" >
-                </select>
-                <span asp-validation-for="Occurance" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Join" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-
-<script>
-    window.onload = function ()
-    {
-        NewLocationCheckboxChanged(document.querySelector("#chkNewLocation"));
-    }
-    
-    function NewLocationCheckboxChanged(e)
-    {
-        if (e.checked)
-        {
-            document.querySelector("#ddlLocations").value = 0;
-            document.querySelector("#ddlLocations").setAttribute("disabled", "");
-            document.querySelector("#txtLocationName").removeAttribute("disabled");
-            document.querySelector("#grpNewLocation").style.display = 'block';
-        }
-        else
-        {
-            document.querySelector("#ddlLocations").removeAttribute("disabled");
-            document.querySelector("#txtLocationName").setAttribute("disabled", "");
-            document.querySelector("#grpNewLocation").style.display = 'none';
-        }
-    }
-</script>

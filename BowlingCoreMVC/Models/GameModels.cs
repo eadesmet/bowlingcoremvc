@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
@@ -340,10 +340,21 @@ namespace BowlingCoreMVC.Models
 
         [StringLength(450)]
         public string UserID { get; set; }
+
+        [Display(Name = "League")]
+        [Required(ErrorMessage = "Please select a League")]
         public int LeagueID { get; set; }
+
+        [Display(Name = "Team")]
         public int TeamID { get; set; }
 
         // TODO(Eric): Consider adding the Average here for less DB queries
+
+        [NotMapped]
+        public List<SelectListItem> Leagues {get;set;}
+
+        [NotMapped]
+        public List<SelectListItem> Teams {get;set;}
 
         // If Today is before the League End date
         public bool IsActive { get; set; }
