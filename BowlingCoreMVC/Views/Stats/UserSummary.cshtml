@@ -1,265 +1,271 @@
-﻿
-
-@{
+﻿@{
     ViewData["Title"] = "Summary for " + ViewData["UserName"];
 }
 
-<h2>@ViewData["Title"]</h2>
-<hr />
-
-<div class="row">
-    <div class="col-lg-12">
-        <h3 class="text-center">Overall Average: @ViewData["OverallAverage"]</h3>
-    </div>
-</div>
-
-<hr />
-
-@*
-<div class="row">
-    <div class="col-lg-6">
-        <h4>Overall Strike Percent: @String.Format("{0:P2}", ViewData["OverallStrikePerc"])</h4>
-    </div>
-    <div class="col-lg-6">
-        <h4>Overall Spare Percent: @String.Format("{0:P2}", ViewData["OverallSparePerc"])</h4>
-    </div>
-</div>
-
-<hr/>
-*@
-
-<div class="row">
-    <div class="col-lg-12">
-        <h4>League Averages</h4>
-        <table class="table table-condensed table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>
-                        League
-                    </th>
-                    <th>
-                        Average
-                    </th>
-                </tr>
-            </thead>
-            @if (((List<League>)ViewData["UsersLeagues"]).Count > 0)
-            {
-                <tbody>
-					@for (var i = 0; i < ((List<League>)ViewData["UsersLeagues"]).Count; i++)
-					{
-						<tr>
-							<td>@Html.DisplayFor(modelItem => ((List<League>)ViewData["UsersLeagues"])[i].Name)
-							</td>
-							<td>@Html.DisplayFor(modelItem => ((List<double>)ViewData["UsersLeaguesAverages"])[i])
-							</td>
-						</tr>
-					}
-@*
-                    @foreach (var ul in ((List<League>)ViewData["UsersLeagues"]))
-                    {
-                        
-                            <td>
-                                @Html.DisplayFor(modelItem => ul.Name)
-                            </td>
-                        </tr>
-                    }
-					@foreach (var ula in ((List<double>)ViewData["UsersLeaguesAverages"]))
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => ula)
-                            </td>
-                        </tr>
-                    }
-*@
-                </tbody>
-            }
-        </table>
-    </div>
-</div>
-
-<hr/>
-
-<div class="row">
-    <div class="col-lg-6">
-        <h4>Top 5 Games</h4>
-        <table class="table table-condensed table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>
-                        Score
-                    </th>
-                    <th>
-                        Date
-                    </th>
-                </tr>
-            </thead>
-            @if (((List<Game>)ViewData["Top5Games"]).Count > 0)
-            {
-                <tbody>
-                    @foreach (var g in ((List<Game>)ViewData["Top5Games"]))
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => g.Score)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => g.CreatedDate)
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            }
-        </table>
-
+@if (ViewData["OverallAverage"] == null && ViewData["Top5Games"] == null)
+{
+    <h3>Welcome!</h3>
+    <p>You don't have any games yet; Start recording your games under <a asp-controller="Game" asp-action="Index">'My Games'</a> to see some information here.</p>
+}
+else
+{
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="text-center">Overall Average: @ViewData["OverallAverage"]</h3>
+        </div>
     </div>
 
-    <div class="col-lg-6">
-        <h4>Top 5 Series</h4>
-        <table class="table table-condensed table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>
-                        Series Score
-                    </th>
-                    <th>
-                        Games
-                    </th>
-                    <th>
-                        League
-                    </th>
-                    <th>
-                        Date
-                    </th>
-                </tr>
-            </thead>
-            @if (((List<Series>)ViewData["Top5Series"]).Count > 0)
-            {
-                <tbody>
-                    @foreach (var s in ((List<Series>)ViewData["Top5Series"]))
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => s.SeriesScore)
-                            </td>
-                            <td>
-                                @{
-                                    var i = 0;
-                                    var count = s.Games.Count();
-                                    @if (s.Games != null)
-                                    {
-                                        @foreach (var g in s.Games)
+    <hr />
+
+    @*
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Overall Strike Percent: @String.Format("{0:P2}", ViewData["OverallStrikePerc"])</h4>
+            </div>
+            <div class="col-lg-6">
+                <h4>Overall Spare Percent: @String.Format("{0:P2}", ViewData["OverallSparePerc"])</h4>
+            </div>
+        </div>
+
+        <hr/>
+    *@
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h4>League Averages</h4>
+            <table class="table table-condensed table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            League
+                        </th>
+                        <th>
+                            Average
+                        </th>
+                    </tr>
+                </thead>
+                @if (((List<League>)ViewData["UsersLeagues"]).Count > 0)
+                {
+                    <tbody>
+                        @for (var i = 0; i < ((List<League>)ViewData["UsersLeagues"]).Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => ((List<League>)ViewData["UsersLeagues"])[i].Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => ((List<double>)ViewData["UsersLeaguesAverages"])[i])
+                                </td>
+                            </tr>
+                        }
+                        @*
+                            @foreach (var ul in ((List<League>)ViewData["UsersLeagues"]))
+                            {
+
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ul.Name)
+                                    </td>
+                                </tr>
+                            }
+                            @foreach (var ula in ((List<double>)ViewData["UsersLeaguesAverages"]))
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ula)
+                                    </td>
+                                </tr>
+                            }
+                        *@
+                    </tbody>
+                }
+            </table>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h4>Top 5 Games</h4>
+            <table class="table table-condensed table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Score
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                    </tr>
+                </thead>
+                @if (((List<Game>)ViewData["Top5Games"]).Count > 0)
+                {
+                    <tbody>
+                        @foreach (var g in ((List<Game>)ViewData["Top5Games"]))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => g.Score)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => g.CreatedDate)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                }
+            </table>
+
+        </div>
+
+        <div class="col-lg-6">
+            <h4>Top 5 Series</h4>
+            <table class="table table-condensed table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Series Score
+                        </th>
+                        <th>
+                            Games
+                        </th>
+                        <th>
+                            League
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                    </tr>
+                </thead>
+                @if (((List<Series>)ViewData["Top5Series"]).Count > 0)
+                {
+                    <tbody>
+                        @foreach (var s in ((List<Series>)ViewData["Top5Series"]))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => s.SeriesScore)
+                                </td>
+                                <td>
+                                    @{
+                                        var i = 0;
+                                        var count = s.Games.Count();
+                                        @if (s.Games != null)
                                         {
-                                            @g.Score
-                                            if (++i != count)
+                                            @foreach (var g in s.Games)
                                             {
-                                                <span>,</span>
+                                                @g.Score
+                                                if (++i != count)
+                                                {
+                                                    <span>,</span>
+
+                                                }
 
                                             }
-
                                         }
                                     }
-                                }
-                            </td>
-                            <td>
-                                @if (s.LeagueID != null && s.LeagueID != 0)
-                                {
-                                    @(((List<League>)ViewData["UsersLeagues"]).Where(o => o.ID == s.LeagueID).SingleOrDefault().Name)
-                                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => s.CreatedDate)
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            }
-        </table>
+                                </td>
+                                <td>
+                                    @if (s.LeagueID != null && s.LeagueID != 0)
+                                    {
+                                        @(((List<League>)ViewData["UsersLeagues"]).Where(o => o.ID == s.LeagueID).SingleOrDefault().Name)
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => s.CreatedDate)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                }
+            </table>
 
+        </div>
     </div>
-</div>
 
-<hr/>
+    <hr />
 
-<div class="row">
-     <div class="col-lg-12">
-          <h4>Statistics</h4>
-          <table class="table table-condensed table-bordered table-striped">
-              <thead>
-                  <tr>
-                      <th>
-                          Stat
-                      </th>
-                      <th>
-                          Conversions
-                      </th>
-                      <th>
-                          Total
-                      </th>
-                      <th>
-                          Percentage
-                      </th>
-                  </tr>
-              </thead>
-              <tbody>
-                  @foreach (var stat in ((List<StatsViewModel>)ViewData["StatsList"]))
-                  {
-                  <tr>
-                  <td>
-                  @Html.DisplayFor(modelItem => stat.StatTitle)
-                  </td>
-                  <td>
-                  @Html.DisplayFor(modelItem => stat.Conversions)
-                  </td>
-                  <td>
-                  @Html.DisplayFor(modelItem => stat.Total)
-                  </td>
-                  <td>
-                  @Html.DisplayFor(modelItem => stat.Percentage)
-                  </td>
-                  </tr>
-                  }
-              </tbody>
-          </table>
-     </div>
-</div>
-
-<hr/>
-
-<div class="row">
-    <div class="col-lg-12">
-        <h4>Recent Games</h4>
-        <table class="table table-condensed table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>
-                        Score
-                    </th>
-                    <th>
-                        Date
-                    </th>
-                </tr>
-            </thead>
-            @if (((List<Game>)ViewData["Last10Games"]).Count > 0)
-            {
+    <div class="row">
+        <div class="col-lg-12">
+            <h4>Statistics</h4>
+            <table class="table table-condensed table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Stat
+                        </th>
+                        <th>
+                            Conversions
+                        </th>
+                        <th>
+                            Total
+                        </th>
+                        <th>
+                            Percentage
+                        </th>
+                    </tr>
+                </thead>
                 <tbody>
-                    @foreach (var g in ((List<Game>)ViewData["Last10Games"]))
+                    @foreach (var stat in ((List<StatsViewModel>)ViewData["StatsList"]))
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => g.Score)
+                                @Html.DisplayFor(modelItem => stat.StatTitle)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => g.CreatedDate)
+                                @Html.DisplayFor(modelItem => stat.Conversions)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => stat.Total)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => stat.Percentage)
                             </td>
                         </tr>
                     }
                 </tbody>
-            }
-        </table>
+            </table>
+        </div>
     </div>
-</div>
 
+    <hr />
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h4>Recent Games</h4>
+            <table class="table table-condensed table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Score
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                    </tr>
+                </thead>
+                @if (((List<Game>)ViewData["Last10Games"]).Count > 0)
+                {
+                    <tbody>
+                        @foreach (var g in ((List<Game>)ViewData["Last10Games"]))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => g.Score)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => g.CreatedDate)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                }
+            </table>
+        </div>
+    </div>
+}
 
 
 

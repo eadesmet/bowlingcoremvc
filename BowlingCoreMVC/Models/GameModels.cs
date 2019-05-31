@@ -139,6 +139,7 @@ namespace BowlingCoreMVC.Models
         [StringLength(450)]
         public string UserID { get; set; }
 
+        [Display(Name = "League")]
         public int? LeagueID { get; set; }
 
         public int? TeamID {get;set;}
@@ -172,7 +173,7 @@ namespace BowlingCoreMVC.Models
         public int NumberOfGames { get; set; }
 
         [NotMapped]
-        [Display(Name = "League")]
+        [Display(Name = "League Name")]
         public string LeagueName { get; set; }
 
         [NotMapped]
@@ -346,7 +347,7 @@ namespace BowlingCoreMVC.Models
         public int LeagueID { get; set; }
 
         [Display(Name = "Team")]
-        public int TeamID { get; set; }
+        public int? TeamID { get; set; }
 
         // TODO(Eric): Consider adding the Average here for less DB queries
 

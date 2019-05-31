@@ -93,13 +93,14 @@ namespace BowlingCoreMVC.Controllers
                 game = Game.Create();
                 game.UserName = user.UserName;
                 game.UserID = user.Id;
+                game.User = user;
 
                 // Save the game immediately, so the Tags on the page are not 0
                 game = DataHelper.SaveGame(game, _db);
             }
             else
             {
-                game = _db.Games.Include(o => o.Frames).Where(g => g.ID == id).SingleOrDefault();
+                game = _db.Games.Include(o => o.Frames).Include(o => o.User).Where(g => g.ID == id).SingleOrDefault();
             }
             
             game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();

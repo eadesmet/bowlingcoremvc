@@ -24,7 +24,8 @@
         </div>
         @*<a role="button" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">*@
         <div class="card-heading bg-dark" role="button" id="GameHeading" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">
-            <h4 class="text-white card-header">
+            <div class="text-white card-header">
+                <h4 class="d-inline-block">
                 @{
                     if (Model.SeriesID != 0 && Model.SeriesID != null)
                     {
@@ -35,8 +36,11 @@
                         @Model.User.UserName
                     }
                 }
+                </h4>
+                <input type="button" class="btn btn-success w-25 float-right" value="Save" onclick="SaveGameClick(@Model.ID)" />
+            </div>
 
-            </h4>
+
         </div>
         @*</a>*@
 
@@ -83,19 +87,21 @@
         <div id="@CollapseGameID" class="card" aria-labelledby="GameHeading">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-xs-2">
+                    <div class="col-xs-4">
                         <button class="btn btn-default btn-lg" onclick="PreviousClickSendGame(@Model.ID)">@*<span class="glyphicon glyphicon-arrow-left" />*@&lt;--</button>
                     </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-4">
                         <button class="btn btn-default btn-lg" onclick="MissedAllClick(@Model.ID)" id="@Model.ID-btnMissedAll" value="false">@*<span class="glyphicon glyphicon-adjust" />*@O</button>
                     </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-4">
                         <button class="btn btn-default btn-lg" onclick="NextClickSendGame(@Model.ID)">@*<span class="glyphicon glyphicon-arrow-right" />*@--&gt;</button>
                     </div>
+@*
                     <div class="col-xs-2"></div>
                     <div class="col-xs-2">
                     </div>
                     <div class="col-xs-2"></div>
+*@
                 </div>
                 <div class="row">
                     <div class="col-sm-2"></div>
@@ -149,9 +155,11 @@
                 </div>
             </div>
         </div>
+@*
         <div class="card-footer">
             <input type="button" class="btn btn-success btn-block" value="Save" onclick="SaveGameClick(@Model.ID)" />
         </div>
+*@        
     </div>
 </div>
 

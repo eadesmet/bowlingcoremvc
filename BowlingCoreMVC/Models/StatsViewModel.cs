@@ -34,6 +34,18 @@ namespace BowlingCoreMVC.Models
         public List<int> Values { get; set; }
     }
 
+    
+    // NOTE(ERIC): I'd like to redo this data structure to be better and more cool.
+    //
+    // I need something like this in the end:
+    //
+    // User
+    //    Users Leagues
+    //        Users Team In That League
+    //            All Users in this Team's Last Week Data
+    // This should actually, probably, be a stored proc
+    // that returns a custom table that I then know how to query myself
+    // so I could narrow it down by league/team afterwards.
     public class TeamLastWeekData
     {
         public TeamLastWeekData()

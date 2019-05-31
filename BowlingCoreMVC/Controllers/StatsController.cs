@@ -197,11 +197,11 @@ namespace BowlingCoreMVC.Controllers
         // TODO: Make this efficient
         public async Task<IActionResult> UserSummary(string id)
         {
-            if (id == null)
+            if (id == null || !_db.Games.Where(o => o.UserID == id).Any())
+            {
                 RedirectToAction("Index");
-
-            if (!_db.Games.Where(o => o.UserID == id).Any())
-                RedirectToAction("Index");
+                return View();
+            }
 
             var user = await _userManager.FindByIdAsync(id);
             ViewData["UserName"] = user.UserName;

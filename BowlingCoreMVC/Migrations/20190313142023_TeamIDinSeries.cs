@@ -6,18 +6,18 @@ namespace BowlingCoreMVC.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateIndex(
-                name: "IX_UserLeagueTeams_TeamID",
-                table: "UserLeagueTeams",
-                column: "TeamID");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_UserLeagueTeams_TeamID",
+            //    table: "UserLeagueTeams",
+            //    column: "TeamID");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_UserLeagueTeams_Teams_TeamID",
-                table: "UserLeagueTeams",
-                column: "TeamID",
-                principalTable: "Teams",
-                principalColumn: "ID",
-                onDelete: ReferentialAction.Cascade);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_UserLeagueTeams_Teams_TeamID",
+            //    table: "UserLeagueTeams",
+            //    column: "TeamID",
+            //    principalTable: "Teams",
+            //    principalColumn: "ID",
+            //    onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

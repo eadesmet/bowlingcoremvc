@@ -3,7 +3,9 @@
 	[
 		{
 			"follow_symlinks": true,
-			"path": "."
+			"path": ".",
+			"folder_exclude_patterns": ["bin", "obj", "images", "v1*", ".hg", "lib"],
+			"file_exclude_patterns": ["*.g.*", "*.map"]
 		}
 	],
 	"solution_file": "./BowlingCoreMVC.sln"

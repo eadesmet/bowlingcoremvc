@@ -69,6 +69,7 @@ namespace BowlingCoreMVC.Controllers
                 .Include(o => o.Games).ThenInclude(g => g.Frames)
                 .Include(o => o.User)
                 .Include(o => o.Games).ThenInclude(g => g.User)
+                .Include(o => o.League)
                 .SingleOrDefault();
 
             //var user = await GetCurrentUserAsync();

@@ -420,7 +420,7 @@ namespace BowlingCoreMVC.Helpers
 
 
                     //Series UserSeries = GetLastUserTeamSeries(ult.UserID, ult.TeamID, ult.LeagueID, _db);
-                    UserTeamWeekData UserWeekData = GetUserTeamWeekData(ult.UserID, ult.TeamID, ult.LeagueID, _db);
+                    UserTeamWeekData UserWeekData = GetUserTeamWeekData(ult.UserID, ult.TeamID.Value, ult.LeagueID, _db);
 
                     string UserName = GetUserNameFromID(ult.UserID, _db);
                     TeamData.UserNames.Add(UserName);

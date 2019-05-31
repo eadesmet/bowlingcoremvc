@@ -43,12 +43,14 @@ namespace BowlingCoreMVC.Controllers
             DayOfWeek Today = DateTime.Today.DayOfWeek;
             int LeagueIndex = -1;
             List<League> UsersLeagues = DataHelper.UserLeagues(user.Id, _db);
+            List<List<TeamLastWeekData>> UsersTeamsLastWeekSummary = new List<List<TeamLastWeekData>>();
             foreach (League l in UsersLeagues)
             {
                 if (l.LeagueDay == Today)
                 {
                     LeagueIndex = UsersLeagues.IndexOf(l);
                 }
+                UsersTeamsLastWeekSummary.Add(DataHelper.GetTeamLastWeekData(l.ID, _db));
             }
 
             if (LeagueIndex != -1)
@@ -70,7 +72,7 @@ namespace BowlingCoreMVC.Controllers
             ViewData["MyLast5Games"] = Last5GamesList;
 
 
-
+            /*
             ViewData["ListSingleValue"] = new ListSingleValue()
             {
                 Title = "Test Title",
@@ -78,8 +80,8 @@ namespace BowlingCoreMVC.Controllers
                 Keys = new List<string>() { "bowler 1", "bowler 2" },
                 Values = new List<int>() { 123, 234 }
             };
-
-            TeamLastWeekData data = new TeamLastWeekData()
+            
+            TamLastWeekData data = new TeamLastWeekData()
             {
                 TeamName = "Team Name",
                 SubTitle = "subtitle",
@@ -89,9 +91,11 @@ namespace BowlingCoreMVC.Controllers
                 TotalPins = new List<int>() { 400, 400 },
                 Series = DataHelper.GetAllSeriesByUserID(user.Id.ToString(), _db).ToList()
             };
+            */
 
-            ViewData["TeamWeekSummary"] = data;
-
+            // All the teams this user is a part of, in all leagues
+            ViewData["AllTeamsWeekSummary"] = UsersTeamsLastWeekSummary;
+            
             return View();
         }
 

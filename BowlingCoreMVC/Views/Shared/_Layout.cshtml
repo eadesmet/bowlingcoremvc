@@ -78,36 +78,16 @@
 
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav mr-auto">
-                @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>*@
-                @*<li class="nav-item"><a asp-area="" asp-controller="Stats" asp-action="Index" class="nav-link">HiScores</a></li>*@
 
-                @*<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
-                <li class="nav-item"><a asp-controller="Game" asp-action="Index" class="nav-link">My Games</a></li>
-<li class="nav-item"><a asp-controller="Stats" asp-action="UserSummary" asp-route-id="@UserManager.GetUserId(User)" class="nav-link">My Statistics</a></li>
-@*
-<li class="nav-item"><a asp-controller="Stats" asp-action="MyStats" class="nav-link">My Statistics</a></li>
-*@
-                @*<li class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Scores<span class="caret"></span></a>
-            <div class="dropdown-menu">
-                <a asp-area="" asp-controller="Game" asp-action="Index" class="dropdown-item">My Games</a>
-                <a asp-area="" asp-controller="Series" asp-action="Index" class="dropdown-item">My Series</a>
-                <a asp-area="" asp-controller="Stats" asp-action="MyStats" class="dropdown-item">My Statistics</a>
-            </div>
-        </li>*@
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <li class="nav-item"><a asp-controller="Game" asp-action="Index" class="nav-link">My Games</a></li>
+                    <li class="nav-item"><a asp-controller="Stats" asp-action="UserSummary" asp-route-id="@UserManager.GetUserId(User)" class="nav-link">My Statistics</a></li>
 
-@*
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Leagues</a>
-                    <div class="dropdown-menu">
-                        <a asp-area="" asp-controller="Leagues" asp-action="Index" class="dropdown-item">Leagues</a>
-                        <a asp-area="" asp-controller="Locations" asp-action="Index" class="dropdown-item">Locations</a>
-                    </div>
-                </li>
-*@
-            <li class="nav-item"><a asp-controller="Leagues" asp-action="Index" class="nav-link">Leagues</a>
-            <li class="nav-item"><a asp-controller="Stats" asp-action="Index" class="nav-link">Sitewide Scores</a>
-            <li class="nav-item"><a asp-controller="Teams" asp-action="Index" class="nav-link">Teams Test</a>
+                    <li class="nav-item"><a asp-controller="Leagues" asp-action="Index" class="nav-link">Leagues</a></li>
+                    <li class="nav-item"><a asp-controller="Stats" asp-action="Index" class="nav-link">Sitewide Scores</a></li>
+                    <li class="nav-item"><a asp-controller="Teams" asp-action="Index" class="nav-link">Teams Test</a></li>
+                }
             </ul>
             
             @await Html.PartialAsync("_LoginPartial")

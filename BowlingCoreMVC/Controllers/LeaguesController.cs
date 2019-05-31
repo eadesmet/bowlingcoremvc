@@ -270,6 +270,16 @@ namespace BowlingCoreMVC.Controllers
 
                 _db.Add(Model);
                 await _db.SaveChangesAsync();
+
+                // Set the current user as an admin of the League they just created
+                UserLeagueTeam ult = new UserLeagueTeam();
+                ult.UserID = user.Id;
+                ult.LeagueID = Model.ID;
+                ult.IsActive = true;
+                ult.IsAdmin = true;
+                _db.Add(ult);
+                await _db.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             else

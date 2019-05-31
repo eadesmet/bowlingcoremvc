@@ -1218,4 +1218,67 @@ because the strike bonus, spare bonus code would be repeated
 3-14
 {
 	Finished up the RequestToJoin page
+
+
+	Notes from class:
+		javascript objects to search it's children
+		and remember we can get multiple things with getElementsByClassName
+		so for a game, we could have it be the container
+		from there, we could do game.getwhatever frame
+		this would simplify a lot
+			frames wouldn't need gameid in the id
+			could use closures to operate only on that game
+			
+}
+
+
+5-8
+{
+	It's been a little while.
+
+	Need to go through the application in it's current state and list out what needs to get done
+
+
+	TODO: Fix stat Spare Percentage - It shouldn't count frames that haven't been thrown yet
+
+	TODO: If a User creates a League, they should automatically be a part of it
+
+	TODO: Request to join logic
+		- When user clicks Request, it should somehow send a notification to the league creator
+			the league creator then approves or denies it
+			should be a setting for 'automatic approvals'
+			approvals should be it's own db table
+			
+
+
+}
+
+5-28
+{
+    Is there a set of things I could do to "finish" this project?
+
+       Clean out all current bugs
+       finish the Teams feature
+           clean up how leagues work in relation to teams
+       look over all TODOs and consider/complete them
+
+    I'd be a lot happier if this project was "finished" and I could just use it when I'm bowling again
+
+    The trouble is, I want a new project, but have this one, and also I don't have time to work on this
+    I'm busy at work, and my current class (moblie) is gearing up to be a lot of work
+    But I kind of need some programming project of my own to stay sane
+
+
+              
+}
+
+5-31
+{
+    Cleaned up a few forms
+
+    was working on getting the Team sumamry on the home page
+
+    Left it unfinished for now, so continue to work on that next!
+
+
 }
