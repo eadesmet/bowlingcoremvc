@@ -103,7 +103,7 @@
                 if (Message.Length > 0)
                 {
                 <div class="alert alert-danger" role="alert">
-                    @System.Text.Encoding.Default.GetString(Message);
+                    @System.Text.Encoding.Default.GetString(Message)
                     @{Context.Session.Set("ErrorMessage", new byte[0]);}
                 </div>
                 }
@@ -113,7 +113,7 @@
                 if (Message.Length > 0)
                 {
                 <div class="alert alert-success" role="alert">
-                    @System.Text.Encoding.Default.GetString(Message);
+                    @System.Text.Encoding.Default.GetString(Message)
                     @{Context.Session.Set("SuccessMessage", new byte[0]);}
                 </div>
                 }

@@ -310,7 +310,9 @@ namespace BowlingCoreMVC.Models
         }
 
         public int ID { get; set; }
+        [Display(Name ="League")]
         public int LeagueID { get; set; }
+        [Display(Name = "Team Name")]
         public string TeamName { get; set; }
 
         [NotMapped]

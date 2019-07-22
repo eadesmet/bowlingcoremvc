@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Data;
@@ -112,12 +113,13 @@ namespace BowlingCoreMVC.Controllers
 
         // Get Create Series page where user selects their League and # of games
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             Series model = new Series(); //hmmm
 
-            //TODO: League list here needs to filter what leagues this user is in
-            model.Leagues = Helpers.DataHelper.GetCurrentLeagues(_db);
+            var user = await GetCurrentUserAsync();
+
+            model.Leagues = Helpers.DataHelper.GetUsersRunningLeagues(_db, user.Id);
             return View(model);
         }
 
@@ -126,14 +128,42 @@ namespace BowlingCoreMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                // TODO(ERIC): Let them select the Team on the page/in the model here?
-                // Then pass it into Series.Create ?
-                Series s = Series.Create(model.NumberOfGames, model.LeagueID ?? 0);
                 var user = await GetCurrentUserAsync();
-                // s.UserName = user.UserName;
-                if (s.LeagueID != null)
-                    s.TeamID = Helpers.DataHelper.GetTeamIfExists((int)model.LeagueID, user.Id, _db);
 
+                Series s = Series.Create(model.NumberOfGames, model.LeagueID ?? 0);
+
+                int LeagueID = 0;
+                if (model.LeagueID != null && model.LeagueID != 0)
+                {
+                    LeagueID = model.LeagueID ?? 0;
+
+                    // @Fetch: Get the league (for use on the edit league page)
+                    League l = _db.Leagues.Single(o => o.ID == LeagueID);
+                    s.League = l;
+
+                    // @Fetch: Check if the Series exists before inserting it to DB
+                    DateTime LeagueNight = Helpers.DataHelper.GetNextLeagueNight(l);
+
+                    // Don't let them create a League Series when it isn't a league night
+                    if (DateTime.Today != LeagueNight)
+                    {
+                        HttpContext.Session.SetString("ErrorMessage", $"'{l.Name}' isn't occuring today! Next league night is on {LeagueNight.Date.ToShortDateString()}");
+                        return RedirectToAction("Error", "Home");
+                    }
+
+
+                    if (_db.Series.Where(o => o.CreatedDate.Date == LeagueNight && o.UserID == user.Id).Any())
+                    {
+                        // User already created a series this league night, so exit with an error
+                        HttpContext.Session.SetString("ErrorMessage", "Series already exists for this date! Only one series per League-Night is allowed!");
+                        return RedirectToAction("Error", "Home");
+                    }
+
+                    // @Fetch: Infer the Team they are on, if a team exists
+                    s.TeamID = Helpers.DataHelper.GetTeamIfExists((int)model.LeagueID, user.Id, _db);
+                }
+
+                s.UserName = user.UserName;
                 s = Helpers.DataHelper.InsertSeries(s, _db, user.Id);
 
                 return View("Edit", s);
@@ -171,9 +201,13 @@ namespace BowlingCoreMVC.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var s = await _db.Series.Include(o => o.Games).SingleOrDefaultAsync(m => m.ID == id);
+            foreach(var g in s.Games)
+            {
+                _db.Games.Remove(g);
+            }
             _db.Series.Remove(s);
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Game");
         }
     }
 }

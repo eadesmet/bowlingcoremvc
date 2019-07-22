@@ -36,7 +36,7 @@ namespace BowlingCoreMVC.Controllers
             // To be ULT Model
             var ult = new UserLeagueTeam();
 
-            ult.Leagues = DataHelper.GetCurrentLeagues(_db);
+            ult.Leagues = DataHelper.GetAllRunningLeagues(_db);
 
             return View(ult);
         }
@@ -52,10 +52,18 @@ namespace BowlingCoreMVC.Controllers
 
             if (ModelState.IsValid)
             {
-                var user =  await GetCurrentUserAsync();
+                var user = await GetCurrentUserAsync();
+
+                if (_db.UserLeagueTeams.Where(o => o.UserID == user.Id && o.LeagueID == Model.LeagueID).Any())
+                {
+                    // User is already a part of the team, return.
+                    ModelState.AddModelError("", "You are already a part of a Team in this league");
+                    Model.Leagues = DataHelper.GetAllRunningLeagues(_db);
+                    return View(Model);
+                }
+
                 // Insert UserLeagueTeam
                 Model.UserID = user.Id;
-                Model.IsActive = true;
                 DataHelper.InsertUserLeagueTeam(Model, _db);
 
                 HttpContext.Session.SetString("SuccessMessage", "You joined the League!");
@@ -65,7 +73,7 @@ namespace BowlingCoreMVC.Controllers
             }
 
             // If form was invalid, gather the Leagues again
-            Model.Leagues = DataHelper.GetCurrentLeagues(_db);
+            Model.Leagues = DataHelper.GetAllRunningLeagues(_db);
             return View(Model);
         }
 
@@ -75,6 +83,30 @@ namespace BowlingCoreMVC.Controllers
             //Teams.Insert(0, new Team() {ID = 0, TeamName="No Team"});
 
             return (Json(new SelectList(Teams, "ID", "TeamName")));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RequestToLeave(int id)
+        {
+            var user = await GetCurrentUserAsync();
+
+            if (id != 0)
+            {
+                var ult = _db.UserLeagueTeams.Where(o => o.UserID == user.Id && o.TeamID == id).SingleOrDefault();
+                if (ult != null)
+                {
+                    _db.UserLeagueTeams.Remove(ult);
+                    _db.SaveChanges();
+                    HttpContext.Session.SetString("SuccessMessage", "You left the Team");
+                }
+                else
+                    HttpContext.Session.SetString("ErrorMessage", "Bad Request");
+            }
+            else
+                HttpContext.Session.SetString("ErrorMessage", "Bad Request");
+
+
+            return RedirectToAction("Index");
         }
 
 #endregion
@@ -134,6 +166,8 @@ namespace BowlingCoreMVC.Controllers
                 return NotFound();
             }
 
+            var user = await GetCurrentUserAsync();
+
             // TODO: Populate the ViewData with League information for the League summary
 
             // Since we don't have teams yet, let's narrow this down a bit
@@ -149,9 +183,9 @@ namespace BowlingCoreMVC.Controllers
             
             if (LeagueSeries.Count == 0)
             {
-                //return RedirectToAction("Error", "Home", new { Message = "League contains no Games!" });
-                ErrorViewModel ErrorModel = new ErrorViewModel() { Message = "Bowl some games first to see your league sheet" };
-                return View("Error", ErrorModel);
+                //ErrorViewModel ErrorModel = new ErrorViewModel() { Message = "Bowl some games first to see your league sheet" };
+                //return View("Error", ErrorModel);
+                HttpContext.Session.SetString("ErrorMessage", "Bowl some games first to see your league sheet");
             }
             
             foreach (Series s in LeagueSeries)
@@ -220,7 +254,7 @@ namespace BowlingCoreMVC.Controllers
             // Team Data (to be final later)
             // TODO: Clean this whole Action up
 
-            ViewData["TeamWeekData"] = DataHelper.GetTeamLastWeekData(league.ID, _db);
+            ViewData["TeamWeekData"] = DataHelper.GetTeamLastWeekData(league.ID, _db, user.Id);
 
 
             return View(league);

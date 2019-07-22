@@ -51,8 +51,7 @@
                     @Html.DisplayFor(modelItem => item.EndDate)
                 </td>
                 <td>
-                    @{ 
-                        <a asp-action="RequestToJoin" asp-route-id="@item.ID" class="btn btn-outline-secondary">Request to Join</a>
+                    @{
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a>
                         if (ViewData["CurrentUserID"].ToString() == item.CreatedByID)
                         {
@@ -61,6 +60,11 @@
                                 <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</a>
                             </div>
                         }
+						else
+						{
+							@* Also check if they are in the league, don't show this *@
+							<a asp-action="RequestToJoin" asp-route-id="@item.ID" class="btn btn-outline-secondary">Request to Join</a>
+						}
                     }
                     
                 </td>

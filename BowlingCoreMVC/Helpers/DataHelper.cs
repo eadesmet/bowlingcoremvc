@@ -182,7 +182,7 @@ namespace BowlingCoreMVC.Helpers
 #endregion
         
         
-        public static List<SelectListItem> GetCurrentLeagues(ApplicationDbContext _db)
+        public static List<SelectListItem> GetAllRunningLeagues(ApplicationDbContext _db)
         {
             var result = new List<SelectListItem>();
             var leagues = _db.Leagues.Where(o => o.EndDate >= DateTime.Today).ToList();
@@ -193,7 +193,40 @@ namespace BowlingCoreMVC.Helpers
             
             return (result);
         }
-        
+
+        public static List<SelectListItem> GetUsersRunningLeagues(ApplicationDbContext _db, string UserID)
+        {
+            var result = new List<SelectListItem>();
+            //var leagues = (from l in _db.Leagues
+            //             join ult in _db.UserLeagueTeams on l.ID equals ult.LeagueID into leftjoin
+            //             from ult2 in leftjoin.DefaultIfEmpty()
+            //             where ult2.UserID == UserID
+            //             && l.EndDate >= DateTime.Today
+            //             select l).ToList();
+
+            var ls = _db.Leagues.ToList();
+            var ults = _db.UserLeagueTeams.Where(o => o.UserID == UserID).ToList();
+            foreach(var l in ls)
+            {
+                foreach(var ult in ults)
+                {
+                    if (l.ID == ult.LeagueID)
+                    {
+                        // hooray..
+                        result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });
+                        break;
+                    }
+                }
+            }
+
+            //foreach (var l in leagues)
+            //{
+            //    result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });
+            //}
+
+            return (result);
+        }
+
         public static List<SelectListItem> GetAllLocations(ApplicationDbContext _db)
         {
             var result = new List<SelectListItem>();
@@ -257,6 +290,7 @@ namespace BowlingCoreMVC.Helpers
 
         public static void InsertUserLeagueTeam(UserLeagueTeam ult, ApplicationDbContext _db)
         {
+            ult.IsActive = true;
             _db.UserLeagueTeams.Add(ult);
             _db.SaveChanges();
             return;
@@ -382,17 +416,22 @@ namespace BowlingCoreMVC.Helpers
         }
 
         #region Teams
-        public static List<TeamLastWeekData> GetTeamLastWeekData(int LeagueID, ApplicationDbContext _db)
+        public static List<TeamLastWeekData> GetTeamLastWeekData(int LeagueID, ApplicationDbContext _db, string UserID)
         {
             List<TeamLastWeekData> Result = new List<TeamLastWeekData>();
 
-            var LeagueTeams = _db.Teams.Where(o => o.LeagueID == LeagueID).Include(o => o.UserLeagueTeams).ToList();
+            var LeagueTeams = _db.Teams.Where(o => o.LeagueID == LeagueID).Include(o => o.UserLeagueTeams).AsNoTracking().ToList();
 
             foreach (var Team in LeagueTeams)
             {
                 TeamLastWeekData TeamData = new TeamLastWeekData();
                 TeamData.TeamName = Team.TeamName;
+                TeamData.TeamID = Team.ID;
                 // Get all users in the team
+
+                // Check if the User is on the Team
+                if (_db.UserLeagueTeams.Where(o => o.UserID == UserID && o.TeamID == Team.ID && o.LeagueID == LeagueID).AsNoTracking().Any())
+                    TeamData.IsCurrentUserOnTeam = true;
 
                 // Can I get this result from Team.TeamMembers instead of another db call?
                 //var UserLeagueTeam = _db.UserLeagueTeams.Where(o => o.TeamID == Team.ID).ToList();
@@ -429,8 +468,9 @@ namespace BowlingCoreMVC.Helpers
                     TeamData.TotalGames.Add(UserWeekData.TotalGames);
                     TeamData.TotalPins.Add(UserWeekData.TotalPins);
 
-                    Result.Add(TeamData);
+                    //Result.Add(TeamData);
                 }
+                Result.Add(TeamData);
             }
 
 

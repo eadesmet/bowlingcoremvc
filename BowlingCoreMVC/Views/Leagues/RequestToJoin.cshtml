@@ -17,7 +17,7 @@
                 $("#ddlTeams").empty();
                 items += "<option value='0'>No Team</option>";
                 $.each(data, function (i, team) {
-                    items += "<option value='" + team.value + "'>" + team.text + "</option";
+                    items += "<option value='" + team.value + "'>" + team.text + "</option>";
                 });
                 $("#ddlTeams").html(items);
             });

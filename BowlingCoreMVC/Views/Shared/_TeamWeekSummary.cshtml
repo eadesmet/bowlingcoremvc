@@ -25,29 +25,36 @@
                     @for (var i = 0; i <= Model.UserNames.Count - 1; i++)
                     {
                         @*TODO(ERIC): Have the Pill be contextual. i.e. Higher than average, green, lower, red.*@
-                    <tr class="text-black-50">
-                        <td scope="col" class="text-sm-center">@Model.UserNames[i]</td>
-                        <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.Averages[i]</span></td>
-                        <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.TotalPins[i]</span></td>
-                        <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.TotalGames[i]</span></td>
-                        @if (Model.Series[i] != null)
-                        {
-                            <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.Series[i].Games.Where(o => o.SeriesIndex == 1).Single().Score</span></td>
-                            <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.Series[i].Games.Where(o => o.SeriesIndex == 2).Single().Score</span></td>
-                            <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.Series[i].Games.Where(o => o.SeriesIndex == 3).Single().Score</span></td>
-                            <td scope="col" class="text-center"><span class="badge badge-info badge-pill">@Model.Series[i].SeriesScore</span></td>
-                        }
-                    </tr>
+                        <tr class="text-black-50">
+                            <td scope="col" class="text-sm-center">@Model.UserNames[i]</td>
+                            <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.Averages[i]</span></td>
+                            <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.TotalPins[i]</span></td>
+                            <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.TotalGames[i]</span></td>
+                            @if (Model.Series[i] != null)
+                            {
+                                <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.Series[i].Games.Where(o => o.SeriesIndex == 1).Single().Score</span></td>
+                                <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.Series[i].Games.Where(o => o.SeriesIndex == 2).Single().Score</span></td>
+                                <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@Model.Series[i].Games.Where(o => o.SeriesIndex == 3).Single().Score</span></td>
+                                <td scope="col" class="text-center"><span class="badge badge-info badge-pill">@Model.Series[i].SeriesScore</span></td>
+                            }
+                        </tr>
                     }
                 }
             </tbody>
         </table>
     </div>
-    <div class="card-footer">
-        @* IF CURRENT USER IS NOT ON ANY TEAM*@
-        <a asp-action="RequestToJoin" asp-controller="Leagues" class="btn btn-outline-light btn-secondary">Request to Join</a>
-        @*<button type="button" class="btn btn-outline-light btn-secondary">Request to Join</button>*@
-    </div>
+    @if (!Model.IsCurrentUserOnTeam)
+    {
+        <div class="card-footer">
+            <a asp-action="RequestToJoin" asp-controller="Leagues" class="btn btn-outline-light btn-secondary">Request to Join</a>
+        </div>
+    }
+    else
+    {
+        <div class="card-footer">
+            <a asp-action="RequestToLeave" asp-controller="Leagues" asp-route-id="@Model.TeamID" class="btn btn-outline-light btn-danger">Request to Leave</a>
+        </div>
+    }
 </div>
 
 

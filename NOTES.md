@@ -1282,3 +1282,68 @@ because the strike bonus, spare bonus code would be repeated
 
 
 }
+
+6-4
+{
+    Just thinking about some things during a meeting.
+
+    So, if a user wants to have their team, but not everyone on the team wants to use the app
+    I should create a type of Fake User that can have games
+    and the one user enters their scores
+    the fake user would then be under their team
+
+
+    Life, man.. what do I do.
+    I still don't know what I want, but at the same time
+    I shouldn't be trying to answer that question, I should just be enjoying the journey.
+    right?
+    so what about my journey would change, if I could change it?
+    and that leads back to my first issue, I don't know what I want
+    Maybe that's also the wrong question??
+    like.. my 'journey' should naturally be what I'm wanting to do
+    so if I stop thinking, and just do. would that work?
+    I should probably set goals, and do what i can to attain them
+    but I hate setting goals, especially because I don't know what they are
+    I need a private blog/journal to think through these things..
+    I feel like I have before, and even thought a lot of these same things, but didn't get anywhere
+    I'm still thinking those things, still not satisfied
+    
+}
+
+7-15
+{
+	Just a note I'd like to track, not related to this project:
+		When you feel like a failure, looking back just reinforces that
+		it's easy to say, "there's no point in trying, because I already suck"
+		instead, you need to look forward and plan for the future
+
+
+	Also, with regard to Envy:
+		ask yourself; why do you want this thing in your life?
+		step back and break it down into small pieces to see if you can incorporate those into your life
+
+}
+
+
+7-22
+{
+	Hoo boy, look at all that life stuff
+
+	anyway
+	trying to finish this release up before the next season starts
+
+
+	Oh man, there's so many issues...
+
+	
+	The leagues page should have a list of teams under each one
+		like a collapseable sub-table
+
+
+    So I'd like there to be some process that deletes new games that were created after an error
+       Example:
+            Clicked create series, it creates the series, but the edit page errors out
+            I would think this should delete the created series
+
+
+}

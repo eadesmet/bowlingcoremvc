@@ -62,7 +62,7 @@ namespace BowlingCoreMVC.Controllers
             Team team = new Team();
             team.LeagueID = LeagueID;
 
-            team.Leagues = BowlingCoreMVC.Helpers.DataHelper.GetCurrentLeagues(_db);
+            team.Leagues = Helpers.DataHelper.GetAllRunningLeagues(_db);
 
             int index = team.Leagues.FindIndex(o => o.Value == LeagueID.ToString());
 
@@ -86,8 +86,18 @@ namespace BowlingCoreMVC.Controllers
                 team.CreatedByID = user.Id;
                 
                 _db.Add(team);
-                await _db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _db.SaveChanges();
+
+                // Insert the user that's creating the team into the team when they create it.
+                // NOTE(ERIC): Maybe wouldn't want this? if a league admin is created all the teams?
+                UserLeagueTeam ult = new UserLeagueTeam();
+                ult.IsAdmin = true;
+                ult.TeamID = team.ID;
+                ult.LeagueID = team.LeagueID;
+                ult.UserID = team.CreatedByID;
+                Helpers.DataHelper.InsertUserLeagueTeam(ult, _db);
+
+                return RedirectToAction("Details", "League", team.LeagueID);
             }
             ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);
             return View(team);

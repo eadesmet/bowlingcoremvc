@@ -64,7 +64,9 @@ namespace BowlingCoreMVC.Models
         public List<int> TotalPins { get; set; }
         public List<int> TotalGames { get; set; }
         public List<Series> Series { get; set; }
-        // From the Series I can get Series total.
+        
+        public bool IsCurrentUserOnTeam { get; set; }
+        public int TeamID { get; set; }
     }
 
 }

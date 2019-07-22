@@ -61,7 +61,10 @@
             {
                 foreach (var TWS_List in ((List<List<TeamLastWeekData>>)ViewData["AllTeamsWeekSummary"]))
                 {
-                    <partial name="_TeamWeekSummary" model='@TWS_List' />
+					foreach (var TWS in TWS_List)
+					{
+                    	<partial name="_TeamWeekSummary" model='@TWS' />
+					}
                 }
             }
             </div>

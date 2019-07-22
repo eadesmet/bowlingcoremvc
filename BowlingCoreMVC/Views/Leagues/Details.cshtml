@@ -4,7 +4,8 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>@Html.DisplayFor(model => model.Name)</h2>
+<h2 class="text-center">@Html.DisplayFor(model => model.Name)</h2>
+<hr /><br />
 @* TODO: Create a local LEague sheet here with weekly scores, league high scores, etc.
 
     What's on an actual league sheet:
@@ -28,136 +29,150 @@
 *@
 
 <div>
-    <h4>Last Week Scores</h4>
-    <table class="table">
-        <tr>
-            <td>User</td>
-            <td>Game 1</td>
-            <td>Game 2</td>
-            <td>Game 3</td>
-            <td>Total</td>
-        </tr>
-        @foreach (Series s in (List<Series>)ViewData["LastWeekSeries"])
-        {
+    @if (ViewData["LastWeekSeries"] != null && ((List<Series>)ViewData["LastWeekSeries"]).Count > 0)
+    {
+        <h4>Last Week Scores</h4>
+        <table class="table">
             <tr>
-                <td>
-                    <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@s.UserID">@s.UserName</a>
-                </td>
-                @foreach (Game g in (ICollection<Game>)s.Games)
-                {
+                <td>User</td>
+                <td>Game 1</td>
+                <td>Game 2</td>
+                <td>Game 3</td>
+                <td>Total</td>
+            </tr>
+            @foreach (Series s in (List<Series>)ViewData["LastWeekSeries"])
+            {
+                <tr>
                     <td>
-                        <a asp-action="Details" asp-controller="Game" asp-route-id="@g.ID">@g.Score</a>
+                        <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@s.UserID">@s.UserName</a>
                     </td>
-                }
-                <td>
-                    <a asp-action="Details" asp-controller="Series" asp-route-id="@s.ID">@Html.DisplayFor(modelItem => s.SeriesScore)</a>
-                </td>
+                    @foreach (Game g in (ICollection<Game>)s.Games)
+                    {
+                        <td>
+                            <a asp-action="Details" asp-controller="Game" asp-route-id="@g.ID">@g.Score</a>
+                        </td>
+                    }
+                    <td>
+                        <a asp-action="Details" asp-controller="Series" asp-route-id="@s.ID">@Html.DisplayFor(modelItem => s.SeriesScore)</a>
+                    </td>
 
+                </tr>
+            }
+        </table>
+    }
+
+    @if (ViewData["LeagueAverages"] != null && ((List<ResultItem>)ViewData["LeagueAverages"]).Count > 0)
+    {
+        <h4>High Average</h4>
+        <table class="table">
+            <tr>
+                <td>User</td>
+                <td>Average</td>
             </tr>
-        }
-    </table>
+            @foreach (var a in (List<ResultItem>)ViewData["LeagueAverages"])
+            {
+                <tr>
+                    <td>
+                        <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@a.UserID">@a.UserName</a>
+                    </td>
 
-    <h4>High Average</h4>
-    <table class="table">
-        <tr>
-            <td>User</td>
-            <td>Average</td>
-        </tr>
-        @foreach (var a in (List<ResultItem>)ViewData["LeagueAverages"])
-        {
+                    <td>
+                        @a.Average
+                    </td>
+
+                </tr>
+            }
+        </table>
+    }
+
+    @if (ViewData["HighestLeagueGame"] != null)
+    {
+        <h4>Game</h4>
+        <table class="table">
+            <tr>
+                <td>User</td>
+                <td>High Game</td>
+            </tr>
             <tr>
                 <td>
-                    <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@a.UserID">@a.UserName</a>
+                    <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@(((Game)ViewData["HighestLeagueGame"]).UserID)">@(((Game)ViewData["HighestLeagueGame"]).UserName)</a>
                 </td>
 
                 <td>
-                    @a.Average
+                    <a asp-action="Details" asp-controller="Game" asp-route-id="@(((Game)ViewData["HighestLeagueGame"]).ID)">@(((Game)ViewData["HighestLeagueGame"]).Score)</a>
                 </td>
 
             </tr>
-        }
-    </table>
 
-    <h4>Game</h4>
-    <table class="table">
-        <tr>
-            <td>User</td>
-            <td>High Game</td>
-        </tr>
-        <tr>
-            <td>
-                <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@(((Game)ViewData["HighestLeagueGame"]).UserID)">@(((Game)ViewData["HighestLeagueGame"]).UserName)</a>
-            </td>
+        </table>
+    }
 
-            <td>
-                <a asp-action="Details" asp-controller="Game" asp-route-id="@(((Game)ViewData["HighestLeagueGame"]).ID)">@(((Game)ViewData["HighestLeagueGame"]).Score)</a>
-            </td>
+    @if (ViewData["HighestLeagueSeries"] != null)
+    {
+        <h4>Series</h4>
+        <table class="table">
+            <tr>
+                <td>User</td>
+                <td>High Series</td>
+            </tr>
 
-        </tr>
+            <tr>
+                <td>
+                    <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@(((Series)ViewData["HighestLeagueSeries"]).UserID)">@(((Series)ViewData["HighestLeagueSeries"]).UserName)</a>
+                </td>
 
-    </table>
+                <td>
+                    <a asp-action="Details" asp-controller="Series" asp-route-id="@(((Series)ViewData["HighestLeagueSeries"]).ID)">@(((Series)ViewData["HighestLeagueSeries"]).SeriesScore)</a>
+                </td>
 
-    <h4>Series</h4>
-    <table class="table">
-        <tr>
-            <td>User</td>
-            <td>High Series</td>
-        </tr>
+            </tr>
 
-        <tr>
-            <td>
-                <a asp-action="UserSummary" asp-controller="Stats" asp-route-id="@(((Series)ViewData["HighestLeagueSeries"]).UserID)">@(((Series)ViewData["HighestLeagueSeries"]).UserName)</a>
-            </td>
-
-            <td>
-                <a asp-action="Details" asp-controller="Series" asp-route-id="@(((Series)ViewData["HighestLeagueSeries"]).ID)">@(((Series)ViewData["HighestLeagueSeries"]).SeriesScore)</a>
-            </td>
-
-        </tr>
-
-    </table>
+        </table>
+    }
 </div>
 
 
 <hr />
 
-<h1>Teams</h1>
+@if (ViewData["TeamWeekData"] != null)
+{
+    <h1>Teams</h1>
 
-<a class="btn btn-primary" asp-action="Create" asp-controller="Teams" asp-route-LeagueID="@Model.ID" asp->New Team</a>
-<br /><br />
+    <a class="btn btn-primary" asp-action="Create" asp-controller="Teams" asp-route-LeagueID="@Model.ID" asp->New Team</a>
+    <br /><br />
 
-@* This teams list should also reflect what a league sheet looks like:
+    @* This teams list should also reflect what a league sheet looks like:
 
-    Team Name
-        Member 1 ______  Avg ______ last week game 1, 2, 3, total
-        Member 2 ______  Avg ______ last week game 1, 2, 3, total
-        Member 3 ______  Avg ______ last week game 1, 2, 3, total
-        Member 4 ______  Avg ______ last week game 1, 2, 3, total
-        Member 5 ______  Avg ______ last week game 1, 2, 3, total
+        Team Name
+            Member 1 ______  Avg ______ last week game 1, 2, 3, total
+            Member 2 ______  Avg ______ last week game 1, 2, 3, total
+            Member 3 ______  Avg ______ last week game 1, 2, 3, total
+            Member 4 ______  Avg ______ last week game 1, 2, 3, total
+            Member 5 ______  Avg ______ last week game 1, 2, 3, total
 
-*@
+    *@
 
-<div class="card-deck">
-    @*@foreach (Team t in (List<Team>)ViewData["Teams"])
-    {
-        @*this worked for an a tag: href="@Url.Action("Edit", "Teams", new { ID = t.ID })"@
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">@t.TeamName</h5>
-                <p class="card-text">Team members and their averages/scores go here.</p>
-                <div class="card-footer">
-                    @* IF CURRENT USER IS NOT ON ANY TEAM@
-                    <button type="button" class="btn btn-secondary">Request to Join</button>
+    <div class="card-deck">
+        @*@foreach (Team t in (List<Team>)ViewData["Teams"])
+            {
+                @*this worked for an a tag: href="@Url.Action("Edit", "Teams", new { ID = t.ID })"@
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@t.TeamName</h5>
+                        <p class="card-text">Team members and their averages/scores go here.</p>
+                        <div class="card-footer">
+                            @* IF CURRENT USER IS NOT ON ANY TEAM@
+                            <button type="button" class="btn btn-secondary">Request to Join</button>
+                        </div>
+                    </div>
+
+
                 </div>
-            </div>
+            }*@
 
-
-        </div>
-    }*@
-
-    @foreach (TeamLastWeekData TeamWeekData in (List<TeamLastWeekData>)ViewData["TeamWeekData"])
-    {
-        <partial name="_TeamWeekSummary" model="TeamWeekData" />
-    }
-</div>
-
+        @foreach (TeamLastWeekData TeamWeekData in (List<TeamLastWeekData>)ViewData["TeamWeekData"])
+        {
+            <partial name="_TeamWeekSummary" model="TeamWeekData" />
+        }
+    </div>
+}
