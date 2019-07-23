@@ -783,6 +783,7 @@ function SaveGameClick(GameID)
                 $("#SavedAlert").slideUp(500);
             });
             
+            
 
         },
         error: function (xhr)

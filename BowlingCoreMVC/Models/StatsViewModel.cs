@@ -19,6 +19,7 @@ namespace BowlingCoreMVC.Models
 
     }
 
+    // To be used with "_CardListSingleValue"
     public class ListSingleValue
     {
         public ListSingleValue()
@@ -34,7 +35,23 @@ namespace BowlingCoreMVC.Models
         public List<int> Values { get; set; }
     }
 
-    
+    // To be used with "_CardListMultipleValue"
+    public class ListMultipleValue
+    {
+        public ListMultipleValue()
+        {
+            this.ColKeys = new List<List<string>>();
+            this.Values = new List<int>();
+        }
+
+        public string Title { get; set; }
+        public string SubTitle { get; set; }
+
+        public List<List<string>> ColKeys { get; set; }
+        public List<int> Values { get; set; }
+    }
+
+
     // NOTE(ERIC): I'd like to redo this data structure to be better and more cool.
     //
     // I need something like this in the end:

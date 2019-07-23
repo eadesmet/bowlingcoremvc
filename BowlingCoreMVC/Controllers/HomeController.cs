@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Data;
@@ -55,7 +56,26 @@ namespace BowlingCoreMVC.Controllers
 
             if (LeagueIndex != -1)
             {
-                ViewData["TodaysLeague"] = UsersLeagues[LeagueIndex];
+                // Have we bowled it already?
+                if (!_db.Series.Where(o => o.UserID == user.Id && o.LeagueID == UsersLeagues[LeagueIndex].ID && o.CreatedDate.Date == DateTime.Today).AsNoTracking().Any())
+                {
+                    ViewData["TodaysLeague"] = UsersLeagues[LeagueIndex];
+                }
+                
+            }
+
+            ListSingleValue MyGamesBowledToday = new ListSingleValue();
+            MyGamesBowledToday.Title = "My Games Today";
+            MyGamesBowledToday.SubTitle = DateTime.Today.ToShortDateString();
+            List<Game> MyGamesToday = _db.Games.Where(o => o.UserID == user.Id && o.CreatedDate.Date == DateTime.Today).ToList();
+            if (MyGamesToday != null && MyGamesToday.Count > 0)
+            {
+                foreach (Game g in MyGamesToday)
+                {
+                    MyGamesBowledToday.Keys.Add(user.UserName);
+                    MyGamesBowledToday.Values.Add(g.Score);
+                }
+                ViewData["MyGamesBowledToday"] = MyGamesBowledToday;
             }
 
 
@@ -63,7 +83,6 @@ namespace BowlingCoreMVC.Controllers
             List<Game> Last5Games = _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.CreatedDate).Take(5).ToList();
             ListSingleValue Last5GamesList = new ListSingleValue();
             Last5GamesList.Title = "My Last 5 Games";
-
             foreach (var g in Last5Games)
             {
                 Last5GamesList.Keys.Add(g.CreatedDate.ToShortDateString());
@@ -71,27 +90,28 @@ namespace BowlingCoreMVC.Controllers
             }
             ViewData["MyLast5Games"] = Last5GamesList;
 
+            // My High Games
+            List<Game> MyHighGames = _db.Games.Where(o => o.UserID == user.Id).OrderByDescending(o => o.Score).Take(5).ToList();
+            ListSingleValue MyHighGamesList = new ListSingleValue();
+            MyHighGamesList.Title = "My High Games";
+            foreach (var g in MyHighGames)
+            {
+                MyHighGamesList.Keys.Add(g.CreatedDate.ToShortDateString());
+                MyHighGamesList.Values.Add(g.Score);
+            }
+            ViewData["MyHighGames"] = MyHighGamesList;
 
-            /*
-            ViewData["ListSingleValue"] = new ListSingleValue()
+            // My High Series
+            List<Series> MyHighSeries = _db.Series.Where(o => o.UserID == user.Id).OrderByDescending(o => o.SeriesScore).Take(5).ToList();
+            ListSingleValue MyHighSeriesList = new ListSingleValue();
+            MyHighSeriesList.Title = "My High Series";
+            foreach (var s in MyHighSeries)
             {
-                Title = "Test Title",
-                SubTitle = "Subtitle here",
-                Keys = new List<string>() { "bowler 1", "bowler 2" },
-                Values = new List<int>() { 123, 234 }
-            };
-            
-            TamLastWeekData data = new TeamLastWeekData()
-            {
-                TeamName = "Team Name",
-                SubTitle = "subtitle",
-                UserNames = new List<string>() { "user 1", "user 2" },
-                Averages = new List<double>() { 123, 234 },
-                TotalGames = new List<int>() { 12, 12 },
-                TotalPins = new List<int>() { 400, 400 },
-                Series = DataHelper.GetAllSeriesByUserID(user.Id.ToString(), _db).ToList()
-            };
-            */
+                MyHighSeriesList.Keys.Add(s.CreatedDate.ToShortDateString());
+                MyHighSeriesList.Values.Add(s.SeriesScore);
+            }
+            ViewData["MyHighSeries"] = MyHighSeriesList;
+
 
             // All the teams this user is a part of, in all leagues
             ViewData["AllTeamsWeekSummary"] = UsersTeamsLastWeekSummary;

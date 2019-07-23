@@ -26,11 +26,16 @@ namespace BowlingCoreMVC.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-        // GET: Teams
-        public async Task<IActionResult> Index()
+        // GET: Teams/Index/5 (LeagueID)
+        public async Task<IActionResult> Index(int? id)
         {
-            var applicationDbContext = _db.Teams.Include(t => t.League);
-            return View(await applicationDbContext.ToListAsync());
+            // NOTE(ERIC): id == LeagueID here! Showing Teams for that one League
+            if (id == 0 || id == null)
+                return NotFound();
+
+
+            var LeagueTeams = _db.Teams.AsNoTracking().Where(o => o.LeagueID == id);
+            return View(await LeagueTeams.ToListAsync());
         }
 
         // GET: Teams/Details/5
@@ -48,6 +53,21 @@ namespace BowlingCoreMVC.Controllers
             {
                 return NotFound();
             }
+
+            List<UserLeagueTeam> ULTs = _db.UserLeagueTeams.AsNoTracking().Where(o => o.TeamID == id).ToList();
+            ListMultipleValue TeamMembers = new ListMultipleValue();
+            TeamMembers.Title = "Team Members";
+            int count = 0;
+            foreach(var ult in ULTs)
+            {
+                TeamMembers.ColKeys.Add(new List<string>());
+                TeamMembers.ColKeys[count].Add(Helpers.DataHelper.GetUserNameFromID(ult.UserID, _db));
+                TeamMembers.ColKeys[count].Add("Sample");
+                TeamMembers.Values.Add(123);
+                count++;
+            }
+
+            ViewData["TeamMembers"] = TeamMembers;
 
             return View(team);
         }
@@ -88,44 +108,48 @@ namespace BowlingCoreMVC.Controllers
                 _db.Add(team);
                 _db.SaveChanges();
 
-                // Insert the user that's creating the team into the team when they create it.
-                // NOTE(ERIC): Maybe wouldn't want this? if a league admin is created all the teams?
-                UserLeagueTeam ult = new UserLeagueTeam();
-                ult.IsAdmin = true;
-                ult.TeamID = team.ID;
-                ult.LeagueID = team.LeagueID;
-                ult.UserID = team.CreatedByID;
-                Helpers.DataHelper.InsertUserLeagueTeam(ult, _db);
+                // If the user isn't already a part of another team
+                if (!_db.UserLeagueTeams.Where(o => o.UserID == user.Id && o.LeagueID == team.LeagueID).Any())
+                {
+                    // Insert the user that's creating the team into the team when they create it.
+                    // NOTE(ERIC): Maybe wouldn't want this? if a league admin is created all the teams?
+                    UserLeagueTeam ult = new UserLeagueTeam();
+                    ult.IsAdmin = true;
+                    ult.TeamID = team.ID;
+                    ult.LeagueID = team.LeagueID;
+                    ult.UserID = team.CreatedByID;
+                    Helpers.DataHelper.InsertUserLeagueTeam(ult, _db);
+                }
 
-                return RedirectToAction("Details", "League", team.LeagueID);
+                return RedirectToAction("Details", "Leagues", new { id = team.LeagueID });
             }
             ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);
             return View(team);
         }
 
         // GET: Teams/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var team = await _db.Teams.FindAsync(id);
-            if (team == null)
-            {
-                return NotFound();
-            }
-            ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);
-            return View(team);
-        }
+        //    var team = await _db.Teams.FindAsync(id);
+        //    if (team == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);
+        //    return View(team);
+        //}
 
         // POST: Teams/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,LeagueID,TeamName,CreatedByID,CreatedDate,ModifiedDate")] Team team)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,TeamName")] Team team)
         {
             if (id != team.ID)
             {
@@ -136,6 +160,7 @@ namespace BowlingCoreMVC.Controllers
             {
                 try
                 {
+                    team.ModifiedDate = DateTime.Now;
                     _db.Update(team);
                     await _db.SaveChangesAsync();
                 }
@@ -153,7 +178,7 @@ namespace BowlingCoreMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);
-            return View(team);
+            return View("Details", team);
         }
 
         // GET: Teams/Delete/5

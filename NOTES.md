@@ -1347,3 +1347,47 @@ because the strike bonus, spare bonus code would be repeated
 
 
 }
+
+7-23
+{
+    I got a bunch done yesterday, continuing today.
+    However, I forgot where I left off..
+
+    So one thing to note..
+    Since my user created all of the leagues, I'm essentially a part of them all
+    creating a league creates an admin record in UserLeagueTeams
+    Maybe I should rethink this a bit, but for now I'm leaving it.
+          It's like.. If I create a league, I probably shouldn't be in it
+          But that might mess with being in a league, but not on a team.
+          it might be too messy having users on teams vs some users not on teams
+
+   Before today, I didn't realize 'CreateAndInsertSeries' was there
+   I think it was a recent addition before I stopped working on it
+   TODO(ERIC): Update the CreateSeries button to use CreateAndInsertSeries
+               Currently, it's only using it from the QuickCreate
+               that's why from my last test, it didn't get the TeamID properly
+               TODO: TeamID from this! Get it from the League, because
+               i've now enforced that users can only be a part of 1 team
+
+
+    TODO(ERIC): Similar to ListSingleValue, create a ListTwoValue
+    TODO(ERIC): Convert 'SiteWide Scores' page to use ListTwoValue
+                Convert 'MyStatistics' (usersummary) page to use card Lists
+    TODO(ERIC): Make all of the scores available as links in the cards
+                Maybe have the row be clickable instead?
+                
+
+    TODO(ERIC): Manage Teams button on the League page
+                this will pass in a League ID
+                only show teams in that league
+                only show edit/delete buttons if the user is an Admin of that team
+                Remove TeamsTest from the navbar
+
+    TODO(ERIC): LEague Details - Order last week scores by high series
+
+    TODO(ERIC): If a User tries to join a different team when they are on one
+                it should Ask them if they want to leave their current team and update the record
+
+                If an Admin of a team wants off the team, make a 'Make Admin' button for them
+                this will only switch the Admin to that user and off of his
+}

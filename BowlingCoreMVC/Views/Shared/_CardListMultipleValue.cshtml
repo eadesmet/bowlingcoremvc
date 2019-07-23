@@ -1,0 +1,23 @@
+﻿@model BowlingCoreMVC.Models.ListMultipleValue
+
+
+<div class="card text-white bg-secondary w-50 card-inline">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Title</h5>
+        <h6 class="card-subtitle mb-2">@Model.SubTitle</h6>
+        <ul class="list-group w-100 border-primary">
+            @for (var i = 0; i <= Model.ColKeys.Count - 1; i++)
+            {
+                <li class="list-group-item text-black-50">
+                    @for (var j = 0; j <= Model.ColKeys[i].Count - 1; j++)
+                    {
+                        <div class="d-inline-block w-25">@Model.ColKeys[i][j]</div>
+                    }
+
+                    <span class="badge badge-primary badge-pill float-right">@Model.Values[i]</span>
+                </li>
+            }
+
+        </ul>
+    </div>
+</div>

@@ -139,6 +139,7 @@
     <h1>Teams</h1>
 
     <a class="btn btn-primary" asp-action="Create" asp-controller="Teams" asp-route-LeagueID="@Model.ID" asp->New Team</a>
+    <a class="btn btn-warning" asp-action="Index" asp-controller="Teams" asp-route-LeagueID="@Model.ID" asp->Manage Teams</a>
     <br /><br />
 
     @* This teams list should also reflect what a league sheet looks like:
@@ -152,27 +153,27 @@
 
     *@
 
-    <div class="card-deck">
-        @*@foreach (Team t in (List<Team>)ViewData["Teams"])
-            {
-                @*this worked for an a tag: href="@Url.Action("Edit", "Teams", new { ID = t.ID })"@
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@t.TeamName</h5>
-                        <p class="card-text">Team members and their averages/scores go here.</p>
-                        <div class="card-footer">
-                            @* IF CURRENT USER IS NOT ON ANY TEAM@
-                            <button type="button" class="btn btn-secondary">Request to Join</button>
-                        </div>
-                    </div>
-
-
-                </div>
-            }*@
-
-        @foreach (TeamLastWeekData TeamWeekData in (List<TeamLastWeekData>)ViewData["TeamWeekData"])
+    @*<div class="card-deck">*@
+    @*@foreach (Team t in (List<Team>)ViewData["Teams"])
         {
-            <partial name="_TeamWeekSummary" model="TeamWeekData" />
-        }
-    </div>
+            @*this worked for an a tag: href="@Url.Action("Edit", "Teams", new { ID = t.ID })"@
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@t.TeamName</h5>
+                    <p class="card-text">Team members and their averages/scores go here.</p>
+                    <div class="card-footer">
+                        @* IF CURRENT USER IS NOT ON ANY TEAM@
+                        <button type="button" class="btn btn-secondary">Request to Join</button>
+                    </div>
+                </div>
+
+
+            </div>
+        }*@
+
+    @foreach (TeamLastWeekData TeamWeekData in (List<TeamLastWeekData>)ViewData["TeamWeekData"])
+    {
+        <partial name="_TeamWeekSummary" model="TeamWeekData" />
+    }
+    @*</div>*@
 }

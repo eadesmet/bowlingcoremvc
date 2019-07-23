@@ -8,22 +8,25 @@
 
 @{
     string CollapseGameID = "CollapseGame_" + Model.ID;
+    string SavedAlertID = "SavedAlert_" + Model.ID;
 }
 
 <input type="hidden" class="hidGameID" value="@Model.ID" />
+
+<div class="alert alert-success alert-dismissible" role="alert" id="SavedAlert" style="display: none; position: fixed; width:40%; z-index: 99999">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    Game Saved!
+</div>
 
 
 
 <div class="card-group" id="accordion" role="tablist" aria-multiselectable="true" style="min-width:480px;">
     <div class="card" style="width: 100%">
-        <div class="alert alert-success alert-dismissible" role="alert" id="SavedAlert" style="display: none; position: fixed; width:80%;">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-            Game Saved!
-        </div>
+        
         @*<a role="button" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">*@
-        <div class="card-heading bg-dark" role="button" id="GameHeading" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">
+        <div class="card-heading bg-dark" role="button" id="GameHeading">@*data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">*@
             <div class="text-white card-header">
                 <h4 class="d-inline-block">
                 @{

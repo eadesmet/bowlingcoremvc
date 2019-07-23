@@ -112,20 +112,26 @@ namespace BowlingCoreMVC.Helpers
                 if (l.DefaultNumOfGames > 0)
                     NumOfGames = l.DefaultNumOfGames;
 
-                if (!ValidateCanCreateSeries(db, UserID, l))
+                ValidationResult IsSeriesValid = ValidateCanCreateSeries(db, UserID, l);
+                if (IsSeriesValid.IsError)
                 {
-                    Result.IsError = true;
-                    Result.Message = "Cannot create a Series - Either you already have one for this week, or it's the end of the league";
+                    Result.IsError = IsSeriesValid.IsError;
+                    Result.Message = IsSeriesValid.Message;
                     Result.Item = null;
                     return (Result);
                 }
             }
 
+            if (TeamID == null)
+            {
+                TeamID = db.UserLeagueTeams.AsNoTracking().Single(o => o.UserID == UserID && o.LeagueID == LeagueID).TeamID;
+            }
+
             Series s = Series.Create(NumOfGames, LeagueID, TeamID);
             s.UserID = UserID;
             s.UserName = GetUserNameFromID(UserID, db);
-
             s.TeamID = TeamID;
+            
 
             db.Attach(s);
             db.Entry(s).State = EntityState.Added;
@@ -144,26 +150,43 @@ namespace BowlingCoreMVC.Helpers
             return (Result);
         }
 
-        private static bool
+        private struct ValidationResult
+        {
+            public bool IsError;
+            public string Message;
+        }
+        private static ValidationResult
         ValidateCanCreateSeries(ApplicationDbContext db, 
             string UserID, League l)
         {
+            ValidationResult Result = new ValidationResult();
             // Can't create a Series if its not on the same day
             if (DateTime.Today.DayOfWeek != l.LeagueDay)
-                return (false);
+            {
+                Result.IsError = true;
+                Result.Message = $"You can only create a Series for '{l.Name}' on {l.LeagueDay.ToString()}";
+                return (Result);
+            }
 
             DateTime NextLeagueNight = GetNextLeagueNight(l);
             // Can't create a Series if its after the end of the league
             if (NextLeagueNight > l.EndDate)
-                return (false);
+            {
+                Result.IsError = true;
+                Result.Message = $"'{l.Name}' has ended on {l.EndDate.ToShortDateString()}, you cannot create another Series for it";
+                return (Result);
+            }
 
             // Can't create a Series if they already have for for that day
             if (db.Series.Where(o => o.UserID == UserID && o.CreatedDate.Date == DateTime.Today && o.LeagueID == l.ID).Any())
-                return (false);
+            {
+                Result.IsError = true;
+                Result.Message = $"You can only have 1 Series per league night for '{l.Name}'. Please edit the existing one.";
+                return (Result);
+            }
 
-
-
-            return (true);
+            Result.IsError = false;
+            return (Result);
         }
         
         public static void UpdateSeries(int SeriesID, ApplicationDbContext db)
@@ -311,7 +334,8 @@ namespace BowlingCoreMVC.Helpers
                 }
             }
             
-            result = total / count;
+            if (count != 0)
+                result = total / count;
             
             return (result);
         }
@@ -430,12 +454,9 @@ namespace BowlingCoreMVC.Helpers
                 // Get all users in the team
 
                 // Check if the User is on the Team
-                if (_db.UserLeagueTeams.Where(o => o.UserID == UserID && o.TeamID == Team.ID && o.LeagueID == LeagueID).AsNoTracking().Any())
+                if (Team.UserLeagueTeams.Where(o => o.UserID == UserID).Any())
                     TeamData.IsCurrentUserOnTeam = true;
 
-                // Can I get this result from Team.TeamMembers instead of another db call?
-                //var UserLeagueTeam = _db.UserLeagueTeams.Where(o => o.TeamID == Team.ID).ToList();
-                //foreach (var ult in UserLeagueTeam)
                 foreach (var ult in Team.UserLeagueTeams)
                 {
                     // UserLeagueTeam - Has UserIDs and the Team, and the League
@@ -467,6 +488,12 @@ namespace BowlingCoreMVC.Helpers
                     TeamData.Series.Add(UserWeekData.Series);
                     TeamData.TotalGames.Add(UserWeekData.TotalGames);
                     TeamData.TotalPins.Add(UserWeekData.TotalPins);
+                    
+                    if (string.IsNullOrEmpty(TeamData.SubTitle))
+                    {
+                        if (TeamData.Series.First() != null)
+                            TeamData.SubTitle = TeamData.Series.First().CreatedDate.ToShortDateString();
+                    }
 
                     //Result.Add(TeamData);
                 }
@@ -534,5 +561,16 @@ namespace BowlingCoreMVC.Helpers
 
         
         #endregion
+
+
+
+
+        public static void InitColKeys(List<List<string>> ColKeys, string[] Params)
+        {
+            foreach (string col in Params)
+            {
+
+            }
+        }
     }
 }

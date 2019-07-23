@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 using BowlingCoreMVC.Models;
 using BowlingCoreMVC.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using BowlingCoreMVC.Helpers;
+
 
 namespace BowlingCoreMVC.Controllers
 {
@@ -119,7 +121,7 @@ namespace BowlingCoreMVC.Controllers
 
             var user = await GetCurrentUserAsync();
 
-            model.Leagues = Helpers.DataHelper.GetUsersRunningLeagues(_db, user.Id);
+            model.Leagues = DataHelper.GetUsersRunningLeagues(_db, user.Id);
             return View(model);
         }
 
@@ -129,44 +131,21 @@ namespace BowlingCoreMVC.Controllers
             if (ModelState.IsValid)
             {
                 var user = await GetCurrentUserAsync();
-
-                Series s = Series.Create(model.NumberOfGames, model.LeagueID ?? 0);
-
                 int LeagueID = 0;
                 if (model.LeagueID != null && model.LeagueID != 0)
                 {
                     LeagueID = model.LeagueID ?? 0;
-
-                    // @Fetch: Get the league (for use on the edit league page)
                     League l = _db.Leagues.Single(o => o.ID == LeagueID);
-                    s.League = l;
 
-                    // @Fetch: Check if the Series exists before inserting it to DB
-                    DateTime LeagueNight = Helpers.DataHelper.GetNextLeagueNight(l);
-
-                    // Don't let them create a League Series when it isn't a league night
-                    if (DateTime.Today != LeagueNight)
+                    DBOperationResult<Series> DBResult = DataHelper.CreateAndInsertSeries(_db, user.Id, l.ID);
+                    if (DBResult.IsError)
                     {
-                        HttpContext.Session.SetString("ErrorMessage", $"'{l.Name}' isn't occuring today! Next league night is on {LeagueNight.Date.ToShortDateString()}");
-                        return RedirectToAction("Error", "Home");
+                        HttpContext.Session.SetString("ErrorMessage", DBResult.Message);
+                        return RedirectToAction("Index", "Home");
                     }
-
-
-                    if (_db.Series.Where(o => o.CreatedDate.Date == LeagueNight && o.UserID == user.Id).Any())
-                    {
-                        // User already created a series this league night, so exit with an error
-                        HttpContext.Session.SetString("ErrorMessage", "Series already exists for this date! Only one series per League-Night is allowed!");
-                        return RedirectToAction("Error", "Home");
-                    }
-
-                    // @Fetch: Infer the Team they are on, if a team exists
-                    s.TeamID = Helpers.DataHelper.GetTeamIfExists((int)model.LeagueID, user.Id, _db);
+                    return View("Edit", DBResult.Item); // NOTE(ERIC): Do I need to pass the whole model, or just the ID?
                 }
 
-                s.UserName = user.UserName;
-                s = Helpers.DataHelper.InsertSeries(s, _db, user.Id);
-
-                return View("Edit", s);
             }
             return View(model);
         }
