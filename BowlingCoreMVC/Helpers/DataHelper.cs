@@ -440,11 +440,31 @@ namespace BowlingCoreMVC.Helpers
         }
 
         #region Teams
-        public static List<TeamLastWeekData> GetTeamLastWeekData(int LeagueID, ApplicationDbContext _db, string UserID)
+        public static List<TeamLastWeekData> GetTeamLastWeekData(League l, ApplicationDbContext _db, string UserID)
         {
             List<TeamLastWeekData> Result = new List<TeamLastWeekData>();
 
-            var LeagueTeams = _db.Teams.Where(o => o.LeagueID == LeagueID).Include(o => o.UserLeagueTeams).AsNoTracking().ToList();
+            List<Team> LeagueTeams;
+            //if (string.IsNullOrEmpty(UserID))
+            //{
+            //    //LeagueTeams = _db.Teams.Where(o => o.LeagueID == LeagueID).Include(o => o.UserLeagueTeams).AsNoTracking().ToList();
+            //    LeagueTeams = (from l in _db.Leagues.AsNoTracking()
+            //                   join t in _db.Teams.AsNoTracking().Include(o => o.UserLeagueTeams) on l.ID equals t.LeagueID
+            //                   where l.EndDate >= DateTime.Today
+            //                   select t).ToList();
+            //}
+            //else
+            //{
+            //    LeagueTeams = (from l in _db.Leagues.AsNoTracking()
+            //            join ult in _db.UserLeagueTeams.AsNoTracking().Include(o => o.Teams) on l.ID equals ult.LeagueID into leftjoin
+            //            from ult2 in leftjoin.DefaultIfEmpty()
+            //            join t in _db.Teams.AsNoTracking().Include(o => o.UserLeagueTeams) on ult2.TeamID equals t.ID
+            //            where ult2.UserID == UserID
+            //            && l.EndDate >= DateTime.Today
+            //            select t).ToList();
+            //}
+            LeagueTeams = _db.Teams.Where(o => o.LeagueID == l.ID).Include(o => o.UserLeagueTeams).AsNoTracking().ToList();
+
 
             foreach (var Team in LeagueTeams)
             {
@@ -553,12 +573,39 @@ namespace BowlingCoreMVC.Helpers
             return (Result);
         }
 
+        /*
         public static Series GetLastUserTeamSeries(string UserID, int TeamID, int LeagueID, ApplicationDbContext _db)
         {
             // TODO(ERIC): Get the Range of dates, not just now - 7
             return _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID && o.CreatedDate >= DateTime.Now.AddDays(-7)).Include(o => o.Games).SingleOrDefault();
         }
+        */
 
+
+
+
+
+        public static List<TeamLastWeekData> GetUsersTeamsLastWeekData(ApplicationDbContext _db, int LeagueID, int TeamID, int UserID)
+        {
+            // This is to return a Single Teams data for a Team that the User is a part of
+            List<TeamLastWeekData> Result = new List<TeamLastWeekData>();
+
+            var UsersInTeam = _db.UserLeagueTeams.AsNoTracking().Where(o => o.TeamID == TeamID).ToList();
+
+            DateTime LastLeagueNight = GetNextLeagueNight(DateTime.Now).AddDays(-7);
+
+            foreach (var ULT in UsersInTeam)
+            {
+                
+                var series = _db.Series.AsNoTracking().Include(o => o.Games).Where(o => o.TeamID == TeamID && o.UserID == ULT.UserID && o.CreatedDate.Date == LastLeagueNight).SingleOrDefault();
+            }
+            
+
+
+
+
+            return (Result);
+        }
         
         #endregion
 

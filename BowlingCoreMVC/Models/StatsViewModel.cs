@@ -51,6 +51,13 @@ namespace BowlingCoreMVC.Models
         public List<int> Values { get; set; }
     }
 
+    public class TeamMember
+    {
+        public string UserID { get; set; }
+        public string UserName { get; set; }
+        public bool IsAdmin { get; set; }
+    }
+
 
     // NOTE(ERIC): I'd like to redo this data structure to be better and more cool.
     //

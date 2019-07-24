@@ -211,7 +211,7 @@ namespace BowlingCoreMVC.Controllers
                         {
                             UserID = lsGroup.Key,
                             UserName = DataHelper.GetUserNameFromID(lsGroup.Key, _db),
-                            Average = lsGroup.SelectMany(o => o.Games).Average(o => o.Score),
+                            Average = (int)lsGroup.SelectMany(o => o.Games).Average(o => o.Score),
                             // Could put the other queries here too.
                         };
 
@@ -224,7 +224,7 @@ namespace BowlingCoreMVC.Controllers
 
             foreach (Series s in LeagueSeries)
             {
-                s.UserName = Helpers.DataHelper.GetUserNameFromID(s.UserID, _db);
+                s.UserName = DataHelper.GetUserNameFromID(s.UserID, _db);
 
                 // Now + days up to the next league night
                 DateTime NextLeagueNight = Helpers.DataHelper.GetNextLeagueNight(DateTime.Today);
@@ -254,7 +254,7 @@ namespace BowlingCoreMVC.Controllers
             // Team Data (to be final later)
             // TODO: Clean this whole Action up
 
-            ViewData["TeamWeekData"] = DataHelper.GetTeamLastWeekData(league.ID, _db, user.Id);
+            ViewData["TeamWeekData"] = DataHelper.GetTeamLastWeekData(league, _db, user.Id);
 
 
             return View(league);

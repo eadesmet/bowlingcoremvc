@@ -15,7 +15,7 @@ namespace BowlingCoreMVC.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -126,13 +126,11 @@ namespace BowlingCoreMVC.Migrations
                     b.Property<int>("SeriesIndex");
 
                     b.Property<string>("UserID")
-                        .HasMaxLength(450);
+                        .HasMaxLength(128);
 
                     b.HasKey("ID");
 
                     b.HasIndex("SeriesID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Games");
                 });
@@ -144,13 +142,9 @@ namespace BowlingCoreMVC.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByID")
-                        .HasMaxLength(450);
+                        .HasMaxLength(128);
 
                     b.Property<DateTime>("CreatedDate");
-
-                    b.Property<int>("DefaultNumOfGames")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(3);
 
                     b.Property<DateTime>("EndDate");
 
@@ -158,16 +152,9 @@ namespace BowlingCoreMVC.Migrations
 
                     b.Property<int?>("LocationID");
 
-                    b.Property<string>("Message");
-
                     b.Property<DateTime>("ModifiedDate");
 
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<int>("Occurance")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(1);
+                    b.Property<string>("Name");
 
                     b.Property<DateTime>("StartDate");
 
@@ -185,7 +172,7 @@ namespace BowlingCoreMVC.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByID")
-                        .HasMaxLength(450);
+                        .HasMaxLength(128);
 
                     b.Property<DateTime>("CreatedDate");
 
@@ -212,68 +199,12 @@ namespace BowlingCoreMVC.Migrations
 
                     b.Property<int>("SeriesScore");
 
-                    b.Property<int?>("TeamID");
-
                     b.Property<string>("UserID")
-                        .HasMaxLength(450);
+                        .HasMaxLength(128);
 
                     b.HasKey("ID");
-
-                    b.HasIndex("LeagueID");
-
-                    b.HasIndex("TeamID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Series");
-                });
-
-            modelBuilder.Entity("BowlingCoreMVC.Models.Team", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedByID")
-                        .HasMaxLength(450);
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<int>("LeagueID");
-
-                    b.Property<DateTime>("ModifiedDate");
-
-                    b.Property<string>("TeamName");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("LeagueID");
-
-                    b.ToTable("Teams");
-                });
-
-            modelBuilder.Entity("BowlingCoreMVC.Models.UserLeagueTeam", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("IsActive");
-
-                    b.Property<bool>("IsAdmin");
-
-                    b.Property<int>("LeagueID");
-
-                    b.Property<int?>("TeamID");
-
-                    b.Property<string>("UserID")
-                        .HasMaxLength(450);
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("TeamID");
-
-                    b.ToTable("UserLeagueTeams");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -399,10 +330,6 @@ namespace BowlingCoreMVC.Migrations
                     b.HasOne("BowlingCoreMVC.Models.Series")
                         .WithMany("Games")
                         .HasForeignKey("SeriesID");
-
-                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("BowlingCoreMVC.Models.League", b =>
@@ -410,36 +337,6 @@ namespace BowlingCoreMVC.Migrations
                     b.HasOne("BowlingCoreMVC.Models.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationID");
-                });
-
-            modelBuilder.Entity("BowlingCoreMVC.Models.Series", b =>
-                {
-                    b.HasOne("BowlingCoreMVC.Models.League", "League")
-                        .WithMany()
-                        .HasForeignKey("LeagueID");
-
-                    b.HasOne("BowlingCoreMVC.Models.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamID");
-
-                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID");
-                });
-
-            modelBuilder.Entity("BowlingCoreMVC.Models.Team", b =>
-                {
-                    b.HasOne("BowlingCoreMVC.Models.League", "League")
-                        .WithMany()
-                        .HasForeignKey("LeagueID")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("BowlingCoreMVC.Models.UserLeagueTeam", b =>
-                {
-                    b.HasOne("BowlingCoreMVC.Models.Team")
-                        .WithMany("UserLeagueTeams")
-                        .HasForeignKey("TeamID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

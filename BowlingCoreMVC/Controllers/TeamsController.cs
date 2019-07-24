@@ -33,9 +33,22 @@ namespace BowlingCoreMVC.Controllers
             if (id == 0 || id == null)
                 return NotFound();
 
+            ViewData["League"] = _db.Leagues.Single(o => o.ID == id);
 
-            var LeagueTeams = _db.Teams.AsNoTracking().Where(o => o.LeagueID == id);
-            return View(await LeagueTeams.ToListAsync());
+            var user = await GetCurrentUserAsync();
+            ViewData["CurrentUserID"] = user.Id;
+
+            // These need to be the same size, AND line up!
+            var LeagueTeams = _db.Teams.AsNoTracking().Include(o => o.League).Include(o => o.UserLeagueTeams).Where(o => o.LeagueID == id).ToList();
+            //var ULTs = _db.UserLeagueTeams.AsNoTracking().Where(o => o.LeagueID == id).ToList();
+
+            //if (LeagueTeams.Count != ULTs.Count) return NotFound();
+
+            //ViewData["TeamsAndULTs"] = LeagueTeams.Zip(ULTs, (t, u) => new { Team = t, ULT = u });
+
+            //ViewData["ULTs"] = ULTs;
+
+            return View(LeagueTeams);
         }
 
         // GET: Teams/Details/5
@@ -53,7 +66,9 @@ namespace BowlingCoreMVC.Controllers
             {
                 return NotFound();
             }
-
+            var user = await GetCurrentUserAsync();
+            // Sample use of the new ListMultipleValue
+            /*
             List<UserLeagueTeam> ULTs = _db.UserLeagueTeams.AsNoTracking().Where(o => o.TeamID == id).ToList();
             ListMultipleValue TeamMembers = new ListMultipleValue();
             TeamMembers.Title = "Team Members";
@@ -66,8 +81,25 @@ namespace BowlingCoreMVC.Controllers
                 TeamMembers.Values.Add(123);
                 count++;
             }
-
             ViewData["TeamMembers"] = TeamMembers;
+            */
+
+            List<UserLeagueTeam> ULTs = _db.UserLeagueTeams.AsNoTracking().Where(o => o.TeamID == id).ToList();
+            List<TeamMember> TeamMembers = new List<TeamMember>();
+            foreach(var ult in ULTs)
+            {
+                TeamMember member = new TeamMember();
+                member.IsAdmin = ult.IsAdmin;
+                member.UserName = Helpers.DataHelper.GetUserNameFromID(ult.UserID, _db);
+                member.UserID = ult.UserID;
+                TeamMembers.Add(member);
+
+                if (ult.IsAdmin && ult.UserID == user.Id)
+                    ViewData["IsCurrentUserAdmin"] = true;
+            }
+            ViewData["TeamMembers"] = TeamMembers;
+
+            
 
             return View(team);
         }
@@ -160,6 +192,9 @@ namespace BowlingCoreMVC.Controllers
             {
                 try
                 {
+                    string NewName = team.TeamName;
+                    team = _db.Teams.Single(o => o.ID == team.ID);
+                    team.TeamName = NewName;
                     team.ModifiedDate = DateTime.Now;
                     _db.Update(team);
                     await _db.SaveChangesAsync();
@@ -175,7 +210,7 @@ namespace BowlingCoreMVC.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { id = team.LeagueID });
             }
             ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);
             return View("Details", team);

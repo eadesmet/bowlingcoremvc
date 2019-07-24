@@ -5,11 +5,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1 class="text-center">@(((League)ViewData["League"]).Name)</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>*@
 <table class="table">
     <thead>
         <tr>
@@ -18,9 +18,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.League)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedByID)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreatedDate)
@@ -41,18 +38,24 @@
                 @Html.DisplayFor(modelItem => item.League.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatedByID)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.CreatedDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ModifiedDate)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                
+                @{
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a>
+                    if (((HashSet<UserLeagueTeam>)item.UserLeagueTeams).Where(o => o.IsAdmin && o.UserID == ViewData["CurrentUserID"].ToString()).Any())
+                    {
+                        <div class="btn-group">
+                            <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</a>
+                        </div>
+                    }
+                }
+
+
             </td>
         </tr>
 }

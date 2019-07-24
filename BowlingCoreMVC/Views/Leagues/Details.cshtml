@@ -139,7 +139,7 @@
     <h1>Teams</h1>
 
     <a class="btn btn-primary" asp-action="Create" asp-controller="Teams" asp-route-LeagueID="@Model.ID" asp->New Team</a>
-    <a class="btn btn-warning" asp-action="Index" asp-controller="Teams" asp-route-LeagueID="@Model.ID" asp->Manage Teams</a>
+    <a class="btn btn-warning" asp-action="Index" asp-controller="Teams" asp-route-id="@Model.ID" asp->Manage Teams</a>
     <br /><br />
 
     @* This teams list should also reflect what a league sheet looks like:

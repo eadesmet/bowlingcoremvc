@@ -41,32 +41,32 @@
                     <br />
 
                 }
-            <div class="card-deck">
-                @if (ViewData["MyGamesBowledToday"] != null && ((ListSingleValue)ViewData["MyGamesBowledToday"]).Keys.Count != 0)
-                {
-                    <partial name="_CardListSingleValue" model='@ViewData["MyGamesBowledToday"]' />
-                }
+                <div class="card-deck">
+                    @if (ViewData["MyGamesBowledToday"] != null && ((ListSingleValue)ViewData["MyGamesBowledToday"]).Keys.Count != 0)
+                    {
+                        <partial name="_CardListSingleValue" model='@ViewData["MyGamesBowledToday"]' />
+                    }
 
-                @if (ViewData["MyLast5Games"] != null && ((ListSingleValue)ViewData["MyLast5Games"]).Keys.Count != 0)
-                {
-                    <partial name="_CardListSingleValue" model='@ViewData["MyLast5Games"]' />
-                }
-                else
-                {
-                    <h3>Welcome!</h3>
-                    <p>You don't have any games yet; Start recording your games under <a asp-controller="Game" asp-action="Index">'My Games'</a> to see some information here.</p>
-                }
+                    @if (ViewData["MyLast5Games"] != null && ((ListSingleValue)ViewData["MyLast5Games"]).Keys.Count != 0)
+                    {
+                        <partial name="_CardListSingleValue" model='@ViewData["MyLast5Games"]' />
+                    }
+                    else
+                    {
+                        <h3>Welcome!</h3>
+                        <p>You don't have any games yet; Start recording your games under <a asp-controller="Game" asp-action="Index">'My Games'</a> to see some information here.</p>
+                    }
 
-                @if (ViewData["MyHighGames"] != null && ((ListSingleValue)ViewData["MyHighGames"]).Keys.Count != 0)
-                {
-                    <partial name="_CardListSingleValue" model='@ViewData["MyHighGames"]' />
-                }
+                    @if (ViewData["MyHighGames"] != null && ((ListSingleValue)ViewData["MyHighGames"]).Keys.Count != 0)
+                    {
+                        <partial name="_CardListSingleValue" model='@ViewData["MyHighGames"]' />
+                    }
 
-                @if (ViewData["MyHighSeries"] != null && ((ListSingleValue)ViewData["MyHighSeries"]).Keys.Count != 0)
-                {
-                    <partial name="_CardListSingleValue" model='@ViewData["MyHighSeries"]' />
-                }
-            </div>
+                    @if (ViewData["MyHighSeries"] != null && ((ListSingleValue)ViewData["MyHighSeries"]).Keys.Count != 0)
+                    {
+                        <partial name="_CardListSingleValue" model='@ViewData["MyHighSeries"]' />
+                    }
+                </div>
                 <br /><br />
                 <h2 class="text-center">My Leagues and Teams Summary</h2>
                 <hr />
@@ -77,7 +77,11 @@
                     {
                         foreach (var TWS in TWS_List)
                         {
-                            <partial name="_TeamWeekSummary" model='@TWS' />
+                            @if (TWS.IsCurrentUserOnTeam)
+                            {
+                                <partial name="_TeamWeekSummary" model='@TWS' />
+                            }
+
                         }
                     }
                 }
