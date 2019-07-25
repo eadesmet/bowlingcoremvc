@@ -122,6 +122,8 @@ namespace BowlingCoreMVC.Controllers
 
             game.UserName = user.UserName;
 
+            ViewData["CurrentUserID"] = user.Id;
+
             return View(game);
         }
 

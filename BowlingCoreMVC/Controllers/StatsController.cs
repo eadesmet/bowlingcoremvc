@@ -232,34 +232,34 @@ namespace BowlingCoreMVC.Controllers
             ViewData["UsersLeaguesAverages"] = UsersLeaguesAverages;
 
             //TODO: These stats need to account for the 10th frame.... :(
-            double TotalFrames = 0.0, TotalSpares = 0.0, TotalStrikes = 0.0, TotalSpareFrames = 0.0;
-            foreach (Game g in AllUsersGames)
-            {
-                foreach (var f in g.Frames)
-                {
-                    TotalFrames++;
-                    if ((f.ThrowOneScore + f.ThrowTwoScore == 10) && (f.ThrowOneScore != 10))
-                    {
-                        TotalSpares++;
-                    }
+            //double TotalFrames = 0.0, TotalSpares = 0.0, TotalStrikes = 0.0, TotalSpareFrames = 0.0;
+            //foreach (Game g in AllUsersGames)
+            //{
+            //    foreach (var f in g.Frames)
+            //    {
+            //        TotalFrames++;
+            //        if ((f.ThrowOneScore + f.ThrowTwoScore == 10) && (f.ThrowOneScore != 10))
+            //        {
+            //            TotalSpares++;
+            //        }
 
-                    if (f.ThrowOneScore != 10)
-                    {
-                        TotalSpareFrames++;
-                    }
+            //        if (f.ThrowOneScore != 10)
+            //        {
+            //            TotalSpareFrames++;
+            //        }
 
-                    if (f.ThrowOneScore == 10)
-                    {
-                        TotalStrikes++;
-                    }
-                }
-            }
+            //        if (f.ThrowOneScore == 10)
+            //        {
+            //            TotalStrikes++;
+            //        }
+            //    }
+            //}
 
-            ViewData["OverallStrikePerc"] = TotalStrikes / TotalFrames;
-            ViewData["OverallSparePerc"] = TotalSpares / TotalSpareFrames;
+            //ViewData["OverallStrikePerc"] = TotalStrikes / TotalFrames;
+            //ViewData["OverallSparePerc"] = TotalSpares / TotalSpareFrames;
 
 
-
+            double TotalFrames = 0.0, TotalStrikes = 0.0;
             int SinglePinsTotal = 0;
             int SinglePinsSpares = 0;
 //            int TotalStrikes = 0;
@@ -313,6 +313,13 @@ namespace BowlingCoreMVC.Controllers
                             // but it might be from the second + third throw
                             PossibleSpares++;
                         }
+                        else if (f.FrameNum == 10 && f.ThrowTwoScore == 10)
+                        {
+                            // 10th frame strikes
+                            TotalStrikes++;
+                            if (f.ThrowThreeScore == 10)
+                                TotalStrikes++;
+                        }
                     }
 
                     if (f.ThrowOneScore != 10)
@@ -324,6 +331,7 @@ namespace BowlingCoreMVC.Controllers
                             SpareConversions++;
                         }
                     }
+
                 }
             }
 

@@ -9,8 +9,12 @@
 @await Component.InvokeAsync("GameDetails", new { GameID = Model.ID })
 
 <div>
-    <a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-danger">Delete</a> |
-    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    @*@if (ViewData["CurrentUserID"] != null && ViewData["CurrentUserID"].ToString() == Model.UserID)
+    {
+        <a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-danger">Delete</a>
+    }
+
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>*@
 </div>
 
 

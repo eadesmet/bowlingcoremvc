@@ -145,6 +145,17 @@ namespace BowlingCoreMVC.Controllers
                     }
                     return View("Edit", DBResult.Item); // NOTE(ERIC): Do I need to pass the whole model, or just the ID?
                 }
+                else
+                {
+                    // Series without a League
+                    DBOperationResult<Series> DBResult = DataHelper.CreateAndInsertSeries(_db, user.Id);
+                    if (DBResult.IsError)
+                    {
+                        HttpContext.Session.SetString("ErrorMessage", DBResult.Message);
+                        return RedirectToAction("Index", "Home");
+                    }
+                    return View("Edit", DBResult.Item);
+                }
 
             }
             return View(model);

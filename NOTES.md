@@ -1368,6 +1368,7 @@ because the strike bonus, spare bonus code would be repeated
                that's why from my last test, it didn't get the TeamID properly
                TODO: TeamID from this! Get it from the League, because
                i've now enforced that users can only be a part of 1 team
+                    DONE
 
 
     TODO(ERIC): Similar to ListSingleValue, create a ListTwoValue
@@ -1382,12 +1383,32 @@ because the strike bonus, spare bonus code would be repeated
                 only show teams in that league
                 only show edit/delete buttons if the user is an Admin of that team
                 Remove TeamsTest from the navbar
+                    DONE
 
     TODO(ERIC): LEague Details - Order last week scores by high series
+                    DONE
 
     TODO(ERIC): If a User tries to join a different team when they are on one
                 it should Ask them if they want to leave their current team and update the record
 
                 If an Admin of a team wants off the team, make a 'Make Admin' button for them
                 this will only switch the Admin to that user and off of his
+}
+
+7-25
+{
+    Bowl with PBA50 today, yay!
+
+
+    TODO(ERIC): I need more Team data sheets and league sheets in the future
+                What if a user wants to know their team scores from 5 weeks ago?
+
+    TODO(ERIC): Fix sending Emails (I think it's just a config setting is gone?)
+
+    I might have to work through how admins work a bit more
+        Is the user an Admin of the Team, or the League? (right now, it's based on team only)
+            this might cause issues when a team has no members, etc.
+        Can there really be more than one admin on a single team?
+        
+
 }

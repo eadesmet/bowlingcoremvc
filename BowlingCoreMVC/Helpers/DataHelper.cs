@@ -122,7 +122,7 @@ namespace BowlingCoreMVC.Helpers
                 }
             }
 
-            if (TeamID == null)
+            if (TeamID == null && LeagueID != null)
             {
                 TeamID = db.UserLeagueTeams.AsNoTracking().Single(o => o.UserID == UserID && o.LeagueID == LeagueID).TeamID;
             }

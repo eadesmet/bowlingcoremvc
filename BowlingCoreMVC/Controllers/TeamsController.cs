@@ -26,6 +26,69 @@ namespace BowlingCoreMVC.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
+        #region Buttons
+        public IActionResult RemoveFromTeam(int TeamID, string UserID)
+        {
+            if (TeamID == 0 || string.IsNullOrEmpty(UserID))
+                return NotFound();
+
+            var ult = _db.UserLeagueTeams.Single(o => o.TeamID == TeamID && o.UserID == UserID);
+            int LeagueID = ult.LeagueID;
+
+            // TODO(ERIC): Check if the user is the only Admin on the team, and if they are make someone else the admin
+            if (ult.IsAdmin)
+            {
+                var otheradmin = _db.UserLeagueTeams.Where(o => o.TeamID == TeamID && o.IsAdmin).ToList();
+                if (otheradmin == null) // If there is another admin, we are fine to just continue
+                {
+                    // If they get here, and they didn't make someone else an admin, assign it to the next person on the team
+                    var newadmin = _db.UserLeagueTeams.Where(o => o.TeamID == TeamID).FirstOrDefault();
+                    if (newadmin != null)
+                    {
+                        newadmin.IsAdmin = true;
+                        _db.SaveChanges();
+                    }
+                    
+                }
+            }
+
+            _db.UserLeagueTeams.Remove(ult);
+            _db.SaveChanges();
+
+            return View("Index", new { id = LeagueID });
+        }
+
+        public IActionResult MakeAdmin(int TeamID, string UserID)
+        {
+            if (TeamID == 0 || string.IsNullOrEmpty(UserID))
+                return NotFound();
+
+            var ult = _db.UserLeagueTeams.Single(o => o.TeamID == TeamID && o.UserID == UserID);
+            int LeagueID = ult.LeagueID;
+
+            // NOTE(ERIC): Not currently enforcing that there is only 1 admin
+            ult.IsAdmin = true;
+            _db.SaveChanges();
+
+            return View("Index", new { id = LeagueID });
+        }
+
+        public IActionResult RemoveAdmin(int TeamID, string UserID)
+        {
+            if (TeamID == 0 || string.IsNullOrEmpty(UserID))
+                return NotFound();
+
+            var ult = _db.UserLeagueTeams.Single(o => o.TeamID == TeamID && o.UserID == UserID);
+            int LeagueID = ult.LeagueID;
+
+            // NOTE(ERIC): Not currently enforcing that there is only 1 admin
+            ult.IsAdmin = false;
+            _db.SaveChanges();
+
+            return View("Index", new { id = LeagueID });
+        }
+        #endregion
+
         // GET: Teams/Index/5 (LeagueID)
         public async Task<IActionResult> Index(int? id)
         {
@@ -99,7 +162,9 @@ namespace BowlingCoreMVC.Controllers
             }
             ViewData["TeamMembers"] = TeamMembers;
 
-            
+            if (ULTs == null || ULTs.Count == 0)
+                ViewData["IsCurrentUserAdmin"] = false;
+
 
             return View(team);
         }
@@ -140,8 +205,12 @@ namespace BowlingCoreMVC.Controllers
                 _db.Add(team);
                 _db.SaveChanges();
 
+
+                // NOTE(ERIC): We need a ULT record always, otherwise it would be an empty team without an Admin
+                // if that happens, it can't be deleted
+
                 // If the user isn't already a part of another team
-                if (!_db.UserLeagueTeams.Where(o => o.UserID == user.Id && o.LeagueID == team.LeagueID).Any())
+                //if (!_db.UserLeagueTeams.Where(o => o.UserID == user.Id && o.LeagueID == team.LeagueID).Any())
                 {
                     // Insert the user that's creating the team into the team when they create it.
                     // NOTE(ERIC): Maybe wouldn't want this? if a league admin is created all the teams?

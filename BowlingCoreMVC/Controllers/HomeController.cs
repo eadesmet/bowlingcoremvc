@@ -51,7 +51,9 @@ namespace BowlingCoreMVC.Controllers
                 {
                     LeagueIndex = UsersLeagues.IndexOf(l);
                 }
-                UsersTeamsLastWeekSummary.Add(DataHelper.GetTeamLastWeekData(l, _db, user.Id));
+                List<TeamLastWeekData> data = DataHelper.GetTeamLastWeekData(l, _db, user.Id);
+                if (data.Count > 0)
+                    UsersTeamsLastWeekSummary.Add(data);
             }
 
             if (LeagueIndex != -1)

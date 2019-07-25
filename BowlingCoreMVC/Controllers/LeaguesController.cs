@@ -239,9 +239,8 @@ namespace BowlingCoreMVC.Controllers
                     LastWeekSeries.Add(s);
                 }
 
-
-
             }
+            LastWeekSeries.OrderBy(o => o.SeriesScore);
 
             ViewData["LastWeekSeries"] = LastWeekSeries;
 

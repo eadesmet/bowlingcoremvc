@@ -53,7 +53,6 @@
                     }
                     else
                     {
-                        <h3>Welcome!</h3>
                         <p>You don't have any games yet; Start recording your games under <a asp-controller="Game" asp-action="Index">'My Games'</a> to see some information here.</p>
                     }
 
@@ -68,11 +67,12 @@
                     }
                 </div>
                 <br /><br />
-                <h2 class="text-center">My Leagues and Teams Summary</h2>
-                <hr />
+
 
                 @if (ViewData["AllTeamsWeekSummary"] != null && ((List<List<TeamLastWeekData>>)ViewData["AllTeamsWeekSummary"]).Count > 0)
                 {
+                    <h2 class="text-center">My Leagues and Teams Summary</h2>
+                    <hr />
                     @foreach (var TWS_List in ((List<List<TeamLastWeekData>>)ViewData["AllTeamsWeekSummary"]))
                     {
                         foreach (var TWS in TWS_List)
