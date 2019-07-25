@@ -69,6 +69,8 @@ namespace BowlingCoreMVC.Data
             context.Database.EnsureCreated();
 
             // Apply migrations if any are available
+            // NOTE: This call will fail if called after EnsureCreated, because microsoft:
+            // https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/#apply-migrations-at-runtime
             //context.Database.Migrate();
 
             if (context.Games.Any())

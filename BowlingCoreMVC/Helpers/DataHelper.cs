@@ -227,7 +227,7 @@ namespace BowlingCoreMVC.Helpers
             //             && l.EndDate >= DateTime.Today
             //             select l).ToList();
 
-            var ls = _db.Leagues.ToList();
+            var ls = _db.Leagues.Where(o => o.EndDate >= DateTime.Today).ToList();
             var ults = _db.UserLeagueTeams.Where(o => o.UserID == UserID).ToList();
             foreach(var l in ls)
             {
