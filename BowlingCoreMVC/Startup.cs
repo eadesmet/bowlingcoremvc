@@ -131,8 +131,8 @@ namespace BowlingCoreMVC
             {
                 //TEMPORARY
                 //app.UseBrowserLink();
-                //app.UseDeveloperExceptionPage();
-                //app.UseDatabaseErrorPage();
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
 
                 //DEFAULT
                 app.UseExceptionHandler("/Home/Error");

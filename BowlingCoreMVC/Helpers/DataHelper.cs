@@ -124,6 +124,7 @@ namespace BowlingCoreMVC.Helpers
 
             if (TeamID == null && LeagueID != null)
             {
+                // TODO(ERIC): Fix this line!
                 TeamID = db.UserLeagueTeams.AsNoTracking().Single(o => o.UserID == UserID && o.LeagueID == LeagueID).TeamID;
             }
 

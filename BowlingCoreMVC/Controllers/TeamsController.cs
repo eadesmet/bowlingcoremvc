@@ -209,6 +209,10 @@ namespace BowlingCoreMVC.Controllers
                 // NOTE(ERIC): We need a ULT record always, otherwise it would be an empty team without an Admin
                 // if that happens, it can't be deleted
 
+                // TODO(ERIC): Check if this record (ULT) exists already?
+                // This should be created automatically earlier when the league is created
+                // So it would need to update the ULT instead of creating another
+
                 // If the user isn't already a part of another team
                 //if (!_db.UserLeagueTeams.Where(o => o.UserID == user.Id && o.LeagueID == team.LeagueID).Any())
                 {
