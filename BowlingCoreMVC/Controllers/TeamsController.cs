@@ -206,15 +206,17 @@ namespace BowlingCoreMVC.Controllers
                 _db.SaveChanges();
 
 
-                // NOTE(ERIC): We need a ULT record always, otherwise it would be an empty team without an Admin
-                // if that happens, it can't be deleted
-
-                // TODO(ERIC): Check if this record (ULT) exists already?
-                // This should be created automatically earlier when the league is created
-                // So it would need to update the ULT instead of creating another
+                // NOTE(ERIC): The Creation of the League already happened in League Create!
+                // So this just needs to get that Record.
+                // For now, I think we will let users be a part of multiple teams?
+                var ult = _db.UserLeagueTeams.Where(o => o.LeagueID == team.LeagueID && o.UserID == user.Id).SingleOrDefault();
+                ult.TeamID = team.ID;
+                _db.Update(ult);
+                _db.SaveChanges();
 
                 // If the user isn't already a part of another team
                 //if (!_db.UserLeagueTeams.Where(o => o.UserID == user.Id && o.LeagueID == team.LeagueID).Any())
+#if (false)
                 {
                     // Insert the user that's creating the team into the team when they create it.
                     // NOTE(ERIC): Maybe wouldn't want this? if a league admin is created all the teams?
@@ -225,7 +227,7 @@ namespace BowlingCoreMVC.Controllers
                     ult.UserID = team.CreatedByID;
                     Helpers.DataHelper.InsertUserLeagueTeam(ult, _db);
                 }
-
+#endif
                 return RedirectToAction("Details", "Leagues", new { id = team.LeagueID });
             }
             ViewData["LeagueID"] = new SelectList(_db.Leagues, "ID", "Name", team.LeagueID);

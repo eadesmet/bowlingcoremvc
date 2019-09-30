@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 using Microsoft.Extensions.DependencyInjection;
 using BowlingCoreMVC.Data;
+using Microsoft.Extensions.Hosting;
 
 namespace BowlingCoreMVC
 {
@@ -40,5 +41,11 @@ namespace BowlingCoreMVC
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
+        //public static IHostBuilder CreateWebHostBuilder(string[] args) =>
+            //Host.CreateDefaultBuilder(args)
+            //.ConfigureWebHostDefaults(webBuilder =>
+            //{
+            //    webBuilder.UseStartup<Startup>();
+            //});
     }
 }

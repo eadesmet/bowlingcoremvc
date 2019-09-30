@@ -124,14 +124,15 @@ namespace BowlingCoreMVC.Helpers
 
             if (TeamID == null && LeagueID != null)
             {
-                // TODO(ERIC): Fix this line!
-                TeamID = db.UserLeagueTeams.AsNoTracking().Single(o => o.UserID == UserID && o.LeagueID == LeagueID).TeamID;
+                var Team = db.UserLeagueTeams.AsNoTracking().SingleOrDefault(o => o.UserID == UserID && o.LeagueID == LeagueID);
+                if (Team != null)
+                    TeamID = Team.ID;
             }
 
             Series s = Series.Create(NumOfGames, LeagueID, TeamID);
             s.UserID = UserID;
             s.UserName = GetUserNameFromID(UserID, db);
-            s.TeamID = TeamID;
+            //s.TeamID = TeamID;
             
 
             db.Attach(s);
