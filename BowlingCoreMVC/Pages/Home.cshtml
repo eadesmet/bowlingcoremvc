@@ -1,0 +1,102 @@
+﻿@page
+@model BowlingCoreMVC.Pages.HomeModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+@*
+@using BowlingCoreMVC.Data;
+@inject BowlingCoreMVC.Data.ApplicationDbContext _db 
+*@
+
+
+<h1>Home from Razor Pages!!!!!!!!</h1>
+
+
+@using BowlingCoreMVC.Models;
+
+<div class="body-content">
+    <div class="container">
+        @if (ViewData["User"] == null)
+        {
+
+            <div class="row">
+                <div class="col-lg-2"></div>
+                @*<h3>Environment test:</h3>
+                    <h3>@ViewData["EnvironmentTest"]</h3>*@
+                <div class="col-lg-8">
+                    <h2 class="text-info">Welcome to BowlingHub!</h2>
+                    <p>BowlingHub is the place to log all of your bowling scores and view your progress. You will be able to create leagues, log your series/games, see your statistics, and compete on the highscores! Click the Register button above to get started.</p>
+                </div>
+                <div class="col-lg-2"></div>
+            </div>
+        }
+        @* User is signed in *@
+        else
+        {
+            <div class="col-lg-12">
+                <h2 class="text-center">Welcome Back to BowlingHub!</h2>
+                <hr />
+
+                @if (ViewData["TodaysLeague"] != null)
+                {
+                    League l = (League)ViewData["TodaysLeague"];
+                    <div class="card w-50 text-center">
+                        <div class="card-header">Your league "@l.Name" is today!</div>
+                        <div class="card-body">
+                            <a asp-action="QuickCreateSeries" asp-controller="Home" asp-route-LeagueID="@l.ID" class="btn btn-primary btn-block">Start bowling a New Series for @l.Name</a>
+                        </div>
+                    </div>
+                    <br />
+
+                }
+                <div class="card-deck">
+                    @if (ViewData["MyGamesBowledToday"] != null && ((ListSingleValue)ViewData["MyGamesBowledToday"]).Keys.Count != 0)
+                    {
+                        <partial name="_CardListSingleValue" model='@ViewData["MyGamesBowledToday"]' />
+                    }
+
+                    @if (ViewData["MyLast5Games"] != null && ((ListSingleValue)ViewData["MyLast5Games"]).Keys.Count != 0)
+                    {
+                        <partial name="_CardListSingleValue" model='@ViewData["MyLast5Games"]' />
+                    }
+                    else
+                    {
+                        <p>You don't have any games yet; Start recording your games under <a asp-controller="Game" asp-action="Index">'My Games'</a> to see some information here.</p>
+                    }
+
+                    @if (ViewData["MyHighGames"] != null && ((ListSingleValue)ViewData["MyHighGames"]).Keys.Count != 0)
+                    {
+                        <partial name="_CardListSingleValue" model='@ViewData["MyHighGames"]' />
+                    }
+
+                    @if (ViewData["MyHighSeries"] != null && ((ListSingleValue)ViewData["MyHighSeries"]).Keys.Count != 0)
+                    {
+                        <partial name="_CardListSingleValue" model='@ViewData["MyHighSeries"]' />
+                    }
+                </div>
+                <br /><br />
+
+
+                @if (ViewData["AllTeamsWeekSummary"] != null && ((List<List<TeamLastWeekData>>)ViewData["AllTeamsWeekSummary"]).Count > 0)
+                {
+                    <h2 class="text-center">My Leagues and Teams Summary</h2>
+                    <hr />
+                    @foreach (var TWS_List in ((List<List<TeamLastWeekData>>)ViewData["AllTeamsWeekSummary"]))
+                    {
+                        foreach (var TWS in TWS_List)
+                        {
+                            @if (TWS.IsCurrentUserOnTeam)
+                            {
+                                <partial name="_TeamWeekSummary" model='@TWS' />
+                            }
+
+                        }
+                    }
+                }
+
+            </div>
+        }
+
+    </div>
+</div>
