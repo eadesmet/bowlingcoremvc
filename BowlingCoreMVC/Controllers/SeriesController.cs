@@ -137,6 +137,8 @@ namespace BowlingCoreMVC.Controllers
                     LeagueID = model.LeagueID ?? 0;
                     League l = _db.Leagues.Single(o => o.ID == LeagueID);
 
+                    // TODO(ERIC): PAss in the League here, don't double fetch it!
+                    // Or even better, just pass in the default num of games!
                     DBOperationResult<Series> DBResult = DataHelper.CreateAndInsertSeries(_db, user.Id, l.ID);
                     if (DBResult.IsError)
                     {

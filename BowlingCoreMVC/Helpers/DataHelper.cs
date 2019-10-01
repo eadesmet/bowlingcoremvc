@@ -124,9 +124,9 @@ namespace BowlingCoreMVC.Helpers
 
             if (TeamID == null && LeagueID != null)
             {
-                var Team = db.UserLeagueTeams.AsNoTracking().SingleOrDefault(o => o.UserID == UserID && o.LeagueID == LeagueID);
-                if (Team != null)
-                    TeamID = Team.ID;
+                var ult = db.UserLeagueTeams.AsNoTracking().SingleOrDefault(o => o.UserID == UserID && o.LeagueID == LeagueID);
+                if (ult.TeamID != null)
+                    TeamID = ult.TeamID;
             }
 
             Series s = Series.Create(NumOfGames, LeagueID, TeamID);
@@ -465,7 +465,7 @@ namespace BowlingCoreMVC.Helpers
             //            && l.EndDate >= DateTime.Today
             //            select t).ToList();
             //}
-            LeagueTeams = _db.Teams.Where(o => o.LeagueID == l.ID).Include(o => o.UserLeagueTeams).AsNoTracking().ToList();
+            LeagueTeams = _db.Teams.Where(o => o.LeagueID == l.ID).AsNoTracking().ToList();
 
 
             foreach (var Team in LeagueTeams)
@@ -474,6 +474,7 @@ namespace BowlingCoreMVC.Helpers
                 TeamData.TeamName = Team.TeamName;
                 TeamData.TeamID = Team.ID;
                 // Get all users in the team
+                Team.UserLeagueTeams = _db.UserLeagueTeams.Where(o => o.LeagueID == l.ID).AsNoTracking().ToList();
 
                 // Check if the User is on the Team
                 if (Team.UserLeagueTeams.Where(o => o.UserID == UserID).Any())
@@ -502,7 +503,7 @@ namespace BowlingCoreMVC.Helpers
 
 
                     //Series UserSeries = GetLastUserTeamSeries(ult.UserID, ult.TeamID, ult.LeagueID, _db);
-                    UserTeamWeekData UserWeekData = GetUserTeamWeekData(ult.UserID, ult.TeamID.Value, ult.LeagueID, _db);
+                    UserTeamWeekData UserWeekData = GetUserTeamWeekData(ult.UserID, ult.LeagueID, _db, ult.TeamID);
 
                     string UserName = GetUserNameFromID(ult.UserID, _db);
                     TeamData.UserNames.Add(UserName);
@@ -534,7 +535,7 @@ namespace BowlingCoreMVC.Helpers
             public Series Series;
         }
 
-        public static UserTeamWeekData GetUserTeamWeekData(string UserID, int TeamID, int LeagueID, ApplicationDbContext _db)
+        public static UserTeamWeekData GetUserTeamWeekData(string UserID, int LeagueID, ApplicationDbContext _db, int? TeamID)
         {
             //
             // NOTE(ERic): I wonder how I can narrow this down..
@@ -547,8 +548,12 @@ namespace BowlingCoreMVC.Helpers
             // All series of League + Team + User
             // so THIS is why i'm doing this..
             // To calculate their average and total pins for the Team+League, I need to get All their series from it
-            var UserTeamSeries = _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID).Include(o => o.Games);
-            
+            List<Series> UserTeamSeries;
+            if (TeamID != null)
+                UserTeamSeries = _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID.Value).Include(o => o.Games).ToList();
+            else
+                UserTeamSeries = _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID).Include(o => o.Games).ToList();
+
 
             List<Game> Games = new List<Game>();
             foreach (var s in UserTeamSeries)

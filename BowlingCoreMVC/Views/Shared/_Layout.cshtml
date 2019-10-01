@@ -18,8 +18,8 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
         @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />*@
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />*@
     </environment>
 
     @*Scripts (for jQuery reference)*@
@@ -32,57 +32,66 @@
         <script src="~/lib/jquery/dist/jquery-3.3.1.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         @*<script src="~/lib/jquery/dist/jquery-3.3.1.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-        </script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>*@
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+            </script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+            </script>*@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
+
+    @* SIDEBAR *@
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    @using Microsoft.AspNetCore.Identity
+    @using BowlingCoreMVC.Models
 
-        <div class="navbar-brand">
-            @using Microsoft.AspNetCore.Identity
-            @using BowlingCoreMVC.Models
+    @inject SignInManager<ApplicationUser> SignInManager
+    @inject UserManager<ApplicationUser> UserManager
+    
 
-            @inject SignInManager<ApplicationUser> SignInManager
-            @inject UserManager<ApplicationUser> UserManager
+    <div class="wrapper">
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>@ViewData["AppName"]</h3>
+            </div>
 
-            @if (!SignInManager.IsSignedIn(User))
-            {
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["AppName"]</a>
-            }
-            else
-            {
-                @* Showing Home page in either case now, this used to be Stats *@
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["AppName"]</a>
-            }
-        </div>
-
-        @*<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarNavDropdown">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>*@
-
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav mr-auto">
-
+            <ul class="list-unstyled components">
+                @*<p>Dummy Heading</p>*@
+                @*
+                    TODO(ERIC): Figure out how to switch the 'Active' li item
+                    <li class="active">*@
+                <li class="">
+                    <a href="/">Home</a>
+                    @*<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                        <ul class="collapse list-unstyled" id="homeSubmenu">
+                            <li>
+                                <a href="#">Home 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Home 2</a>
+                            </li>
+                            <li>
+                                <a href="#">Home 3</a>
+                            </li>
+                        </ul>*@
+                </li>
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <li class="nav-item"><a asp-controller="Game" asp-action="Index" class="nav-link">My Games</a></li>
-                    <li class="nav-item"><a asp-controller="Stats" asp-action="UserSummary" asp-route-id="@UserManager.GetUserId(User)" class="nav-link">My Statistics</a></li>
+                    <li class="nav-item"><a asp-controller="Game" asp-action="Index" class="nav-link">Scores</a></li>
+                    <li class="nav-item"><a asp-controller="Stats" asp-action="UserSummary" asp-route-id="@UserManager.GetUserId(User)" class="nav-link">Statistics</a></li>
 
                     <li class="nav-item"><a asp-controller="Leagues" asp-action="Index" class="nav-link">Leagues</a></li>
                     <li class="nav-item"><a asp-controller="Stats" asp-action="Index" class="nav-link">Sitewide Scores</a></li>
@@ -90,42 +99,68 @@
                 }
             </ul>
             
-            @await Html.PartialAsync("_LoginPartial")
+        </nav>
+
+        <div id="content">
+            @* Content Nav Bar *@
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                    </button>
+                    @*<span class="text-white">aa</span>
+
+
+                </div>*@
+                    <div class="col-4"></div>
+                    <div class="col-1 navbar-brand">@ViewData["Title"]</div>
+                    <div class="col-3"></div>
+                    @await Html.PartialAsync("_LoginPartial")
+                </div>
+
+            </nav>
+
+            @* Global Alert *@
+            <div class="">
+                @{
+                    byte[] Message;
+                    @if (Context.Session.TryGetValue("ErrorMessage", out Message))
+                    {
+                        if (Message.Length > 0)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @System.Text.Encoding.Default.GetString(Message)
+                                @{Context.Session.Set("ErrorMessage", new byte[0]);}
+                            </div>
+                        }
+                    }
+                    else if (Context.Session.TryGetValue("SuccessMessage", out Message))
+                    {
+                        if (Message.Length > 0)
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @System.Text.Encoding.Default.GetString(Message)
+                                @{Context.Session.Set("SuccessMessage", new byte[0]);}
+                            </div>
+                        }
+                    }
+                }
+            </div>
+
+            @RenderBody()
+
+            <hr />
+            <footer>
+                <p class="text-center">&copy; 2019 - @ViewData["AppName"] by Eric DeSmet</p>
+            </footer>
         </div>
 
-    </nav>
-    <div class="container body-content">
-        <br />
-        @{
-            byte[] Message;
-            @if (Context.Session.TryGetValue("ErrorMessage", out Message))
-            {
-                if (Message.Length > 0)
-                {
-                <div class="alert alert-danger" role="alert">
-                    @System.Text.Encoding.Default.GetString(Message)
-                    @{Context.Session.Set("ErrorMessage", new byte[0]);}
-                </div>
-                }
-            }
-            else if (Context.Session.TryGetValue("SuccessMessage", out Message))
-            {
-                if (Message.Length > 0)
-                {
-                <div class="alert alert-success" role="alert">
-                    @System.Text.Encoding.Default.GetString(Message)
-                    @{Context.Session.Set("SuccessMessage", new byte[0]);}
-                </div>
-                }
-            }
-        }
-        <br />
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2019 - @ViewData["AppName"] by Eric DeSmet</p>
-        </footer>
     </div>
+
+
+
+
+
 
 
 

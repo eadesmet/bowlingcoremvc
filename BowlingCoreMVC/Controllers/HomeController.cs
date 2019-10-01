@@ -37,7 +37,13 @@ namespace BowlingCoreMVC.Controllers
             //else
             //    ViewData["EnvironmentTest"] = "nahh :(";
             var user = await GetCurrentUserAsync();
-            if (user == null) { return View(); }
+            if (user == null) 
+            {
+                ViewData["ContentTitle"] = "Welcome to BowlingHub! Create an Account to get started";
+                return View(); 
+            }
+
+            ViewData["ContentTitle"] = "Welcome to BowlingHub!";
 
             // Check if there are any leagues today
             // THAT THE USER IS IN!
