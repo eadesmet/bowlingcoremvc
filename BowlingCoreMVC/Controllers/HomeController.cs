@@ -37,23 +37,44 @@ namespace BowlingCoreMVC.Controllers
             //else
             //    ViewData["EnvironmentTest"] = "nahh :(";
             var user = await GetCurrentUserAsync();
-            if (user == null) { return View(); }
+            if (user == null) 
+            {
+                ViewData["Title"] = "Welcome to BowlingHub! Create an Account to get started";
+                return View(); 
+            }
+
+            ViewData["Title"] = "Welcome to BowlingHub!";
 
             // Check if there are any leagues today
             // THAT THE USER IS IN!
             DayOfWeek Today = DateTime.Today.DayOfWeek;
             int LeagueIndex = -1;
             List<League> UsersLeagues = DataHelper.UserLeagues(user.Id, _db);
-            List<List<TeamLastWeekData>> UsersTeamsLastWeekSummary = new List<List<TeamLastWeekData>>();
+            List<TeamLastWeekData> UsersTeamsLastWeekSummary = new List<TeamLastWeekData>();
             foreach (League l in UsersLeagues)
             {
                 if (l.LeagueDay == Today)
                 {
                     LeagueIndex = UsersLeagues.IndexOf(l);
                 }
-                List<TeamLastWeekData> data = DataHelper.GetTeamLastWeekData(l, _db, user.Id);
-                if (data.Count > 0)
-                    UsersTeamsLastWeekSummary.Add(data);
+                int? TeamID = DataHelper.GetTeamIfExists(l.ID, user.Id, _db);
+                if (TeamID != null)
+                {
+                    TeamLastWeekData data = new TeamLastWeekData();
+                    Team t = _db.Teams.Where(o => o.ID == TeamID.Value).SingleOrDefault();
+                    if (t != null)
+                    {
+                        data.TeamName = t.TeamName;
+                        //data.SubTitle = ;
+                        data.TeamID = t.ID;
+                        data.IsCurrentUserOnTeam = true;
+                        data.UserData = DataHelper.GetTeamData(_db, l.ID, TeamID.Value);
+                        if (data.UserData != null && data.UserData.Count > 0)
+                            UsersTeamsLastWeekSummary.Add(data);
+                    }
+                    
+                }
+                
             }
 
             if (LeagueIndex != -1)

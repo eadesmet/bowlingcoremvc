@@ -1,0 +1,188 @@
+﻿@using BowlingCoreMVC.Models;
+
+<h3>GameComponent</h3>
+
+
+<input type="hidden" class="hidGameID" value="@g.ID" />
+
+<div class="alert alert-success alert-dismissible" role="alert" id="SavedAlert" style="display: none; position: fixed; width:40%; z-index: 99999">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    Game Saved!
+</div>
+
+
+
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true" style="min-width:480px;">
+    <div class="card" style="width: 100%">
+
+        @*<a role="button" data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">*@
+        <div class="card-heading bg-dark" role="button" id="GameHeading">
+            @*data-toggle="collapse" data-parent="#accordion" href="#@CollapseGameID" aria-expanded="true" aria-controls="@CollapseGameID">*@
+            <div class="text-white card-header">
+                <h4 class="d-inline-block">
+                    @{
+                        if (g.SeriesID != 0 && g.SeriesID != null)
+                        {
+                            @g.User.UserName @: - Game @g.SeriesIndex of Series
+                        }
+                        else
+                        {
+                            @g.User.UserName
+                        }
+                    }
+                </h4>
+                <input type="button" class="btn btn-success w-25 float-right" value="Save" onclick="SaveGameClick(@g.ID)" />
+            </div>
+
+
+        </div>
+        @*</a>*@
+
+
+
+        <div id="scoreboard" class="card-body">
+
+            <div class="d-inline-flex flex-row scoreboard">
+                @foreach (var f in g.Frames)
+                {
+                    <div class="flex-column scoreboard-frame">
+                        <div class="d-flex flex-row scoreboard-framenum bg-dark">
+                            <div class="">@f.FrameNum</div>
+                        </div>
+
+
+
+                        <div class="d-flex flex-row scoreboard-row">
+                            <div class="flex-fill"><frame-throw frame="@f" throw-num="1"></frame-throw></div>
+
+                            <div class="flex-fill"><frame-throw frame="@f" throw-num="2"></frame-throw></div>
+
+
+
+                            @if (f.FrameNum == 10)
+                            {
+                                <div class="flex-fill"><frame-throw frame="@f" throw-num="3"></frame-throw></div>
+                            }
+
+
+                        </div>
+
+
+
+                        <div class="d-flex flex-row scoreboard-framescore">
+                            <frame-score frame="@f"></frame-score>
+                        </div>
+                    </div>
+
+                }
+            </div>
+
+        </div>
+        <div id="@g.ID" class="card" aria-labelledby="GameHeading">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <button class="btn btn-default btn-lg" onclick="PreviousClickSendGame(@g.ID)">@*<span class="glyphicon glyphicon-arrow-left" />*@&lt;--</button>
+                    </div>
+                    <div class="col-xs-4">
+                        <button class="btn btn-default btn-lg" onclick="MissedAllClick(@g.ID)" id="@g.ID-btnMissedAll" value="false">@*<span class="glyphicon glyphicon-adjust" />*@O</button>
+                    </div>
+                    <div class="col-xs-4">
+                        <button class="btn btn-default btn-lg" onclick="NextClickSendGame(@g.ID)">@*<span class="glyphicon glyphicon-arrow-right" />*@--&gt;</button>
+                    </div>
+                    @*
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-2">
+                        </div>
+                        <div class="col-xs-2"></div>
+                    *@
+                </div>
+                <div class="row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-2"></div>
+                    <div class="col-xs-4">
+                        <table class="table table-condensed" id="PinsTable">
+                            <tr>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_7" class="pins-checkbox pins-checkbox-7 sr-only" /><label for="@g.ID-Missed_7"></label></div></td>
+                                <td></td>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_8" class="pins-checkbox pins-checkbox-8 sr-only" /><label for="@g.ID-Missed_8"></label></div></td>
+                                <td></td>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_9" class="pins-checkbox pins-checkbox-9 sr-only" /><label for="@g.ID-Missed_9"></label></div></td>
+                                <td></td>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_10" class="pins-checkbox pins-checkbox-10 sr-only" /><label for="@g.ID-Missed_10"></label></div></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_4" class="pins-checkbox pins-checkbox-4 sr-only" /><label for="@g.ID-Missed_4"></label></div></td>
+                                <td></td>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_5" class="pins-checkbox pins-checkbox-5 sr-only" /><label for="@g.ID-Missed_5"></label></div></td>
+                                <td></td>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_6" class="pins-checkbox pins-checkbox-6 sr-only" /><label for="@g.ID-Missed_6"></label></div></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_2" class="pins-checkbox pins-checkbox-2 sr-only" /><label for="@g.ID-Missed_2"></label></div></td>
+                                <td></td>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_3" class="pins-checkbox pins-checkbox-3 sr-only" /><label for="@g.ID-Missed_3"></label></div></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><div><input type="checkbox" id="@g.ID-Missed_1" class="pins-checkbox pins-checkbox-1 sr-only" /><label for="@g.ID-Missed_1"></label></div></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-xs-2">
+                        @*<button class="btn btn-default btn-lg" onclick="MissedAllClick(@g.ID)"><span class="glyphicon glyphicon-adjust" /></button>*@
+                    </div>
+                    <div class="col-xs-2">
+                        @*<button class="btn btn-default btn-lg" onclick="MissedNoneClick(@g.ID)"><span class="glyphicon glyphicon-king" /></button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*
+            <div class="card-footer">
+                <input type="button" class="btn btn-success btn-block" value="Save" onclick="SaveGameClick(@g.ID)" />
+            </div>
+        *@
+    </div>
+</div>
+
+<br />
+
+
+
+
+
+
+
+
+@code {
+
+
+    // Shouldn't try to use Blazor yet, it's just not supported yet and we'd have to get preview version of everytihng
+    // When we do try it, I want to use Blazor WebAssembly, NOT Blazor Server.
+    // And only for the Edit game page, so we can replace all the JS to score games with webasm
+
+    [Parameter]
+    public Game g { get; set; }
+
+}
+
+@*
+
+    @{
+        string CollapseGameID = "CollapseGame_" + g.ID;
+        string SavedAlertID = "SavedAlert_" + g.ID;
+    }*@

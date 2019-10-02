@@ -9,69 +9,71 @@
 }
 
 <div class="row">
-<div class="col-lg-6">
-@if (Model.LeagueID == 0 || Model.League == null)
-{
-    <table class="table table-condensed table-bordered">
-        <th>
-            <td colspan=2>Editing Series</td>
-        </th>
-        <tr>
-            <td>Created On</td>
-            <td>@Model.CreatedDate.ToShortDateString()</td>
-        </tr>
-        <tr>
-            <td>Modified On</td>
-            <td>@Model.ModifiedDate.ToShortDateString()</td>
-        </tr>
-    </table>
-}
-else
-{
-    <table class="table table-responsive table-sm">
-        <thead>
-            <tr><th colspan="2" class="text-center">Editing Series</th></tr>
-        </thead>
-        <tr>
-            <td>League</td>
-            <td>@Model.League.Name</td>
-        </tr>
-        <tr>
-            <td>Created On</td>
-            <td>@Model.CreatedDate.ToShortDateString()</td>
-        </tr>
-        <tr>
-            <td>Modified On</td>
-            <td>@Model.ModifiedDate.ToShortDateString()</td>
-        </tr>
-    </table>
-}
-</div> @* Col-6 *@
+    <div class="col-6 text-center">
+        @if (Model.LeagueID == 0 || Model.League == null)
+        {
+            <table class="table table-condensed table-bordered">
+                <tr>
+                    <th colspan=2>Editing Series</th>
+                </tr>
+                <tr>
+                    <td>Created On</td>
+                    <td>@Model.CreatedDate.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td>Modified On</td>
+                    <td>@Model.ModifiedDate.ToShortDateString()</td>
+                </tr>
+            </table>
+        }
+        else
+        {
+            <table class="table table-responsive table-sm">
+                <thead>
+                    <tr><th colspan="2" class="text-center">Editing Series</th></tr>
+                </thead>
+                <tr>
+                    <td>League</td>
+                    <td>@Model.League.Name</td>
+                </tr>
+                <tr>
+                    <td>Created On</td>
+                    <td>@Model.CreatedDate.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td>Modified On</td>
+                    <td>@Model.ModifiedDate.ToShortDateString()</td>
+                </tr>
+            </table>
+        }
+    </div> @* Col-6 *@
 
-<div class="col-lg-6">
-<table class="table table-responsive table-sm d-inline-block">
-<thead><tr><th colspan="2" class="text-center">Series Summary</th></tr></thead>
-@foreach (var g in Model.Games)
-{
-    <tr>
-        <td>Game @g.SeriesIndex</td>
-        <td>@g.Score</td>
-    </tr>
-}
-<tr>
-    <td>Total</td>
-    <td>@Model.SeriesScore</td>
-</tr>
-</table>
-</div> @* Col-6 *@
+    <div class="col-6">
+        <table class="table table-responsive table-sm d-inline-block">
+            <thead><tr><th colspan="2" class="text-center">Series Summary</th></tr></thead>
+            @foreach (var g in Model.Games)
+            {
+                <tr>
+                    <td>Game @g.SeriesIndex</td>
+                    <td>@g.Score</td>
+                </tr>
+            }
+            <tr>
+                <td>Total</td>
+                <td>@Model.SeriesScore</td>
+            </tr>
+        </table>
+    </div> @* Col-6 *@
 
 </div> @* Row *@
 
 <div class="row">
-    <div class="col-lg-6">
-        <input type="button" class="btn btn-success btn-block" value="Save Series" onclick="SaveAllClick()" />
+    <div class="col-2"></div>
+    <div class="col-8">
+        <input type="button" class="btn btn-success btn-block" value="Save All" onclick="SaveAllClick()" />
         <br />
     </div>
+    <div class="col-2"></div>
 </div>
 
 @foreach (var g in Model.Games)

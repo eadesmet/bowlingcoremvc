@@ -253,7 +253,8 @@ namespace BowlingCoreMVC.Controllers
             // Team Data (to be final later)
             // TODO: Clean this whole Action up
 
-            ViewData["TeamWeekData"] = DataHelper.GetTeamLastWeekData(league, _db, user.Id);
+            
+            ViewData["TeamWeekData"] = DataHelper.GetLeagueAllTeamData(_db, league.ID, user.Id);
 
 
             return View(league);

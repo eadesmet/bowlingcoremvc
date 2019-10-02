@@ -1,11 +1,11 @@
 ﻿@model  BowlingCoreMVC.Models.ListSingleValue
 
 
-<div class="card text-white bg-secondary w-25 card-inline">
+<div class="card text-white bg-secondary card-inline" id="cardsinglevalue">
     <div class="card-body">
         <h5 class="card-title">@Model.Title</h5>
         <h6 class="card-subtitle mb-2">@Model.SubTitle</h6>
-        <ul class="list-group w-100 border-primary">
+        <ul class="list-group w-100 border-primary list-group-flush">
             @for (var i = 0; i <= Model.Keys.Count - 1; i++)
             {
                 <li class="list-group-item text-black-50">@Model.Keys[i]<span class="badge badge-primary badge-pill float-right">@Model.Values[i]</span></li>

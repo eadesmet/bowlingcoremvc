@@ -7,8 +7,8 @@
 @inject UserManager<ApplicationUser> UserManager
 @*TODO: Revamped home page for logged in user*@
 
-<div class="body-content">
-    <div class="container">
+<div class="body-content col-lg-12 container">
+    <div class="">
         @if (!SignInManager.IsSignedIn(User))
         {
 
@@ -26,14 +26,14 @@
         @* User is signed in *@
         else
         {
-            <div class="col-lg-12">
+            <div class="">
                 <h2 class="text-center">Welcome Back to BowlingHub!</h2>
                 <hr />
 
                 @if (ViewData["TodaysLeague"] != null)
                 {
                     League l = (League)ViewData["TodaysLeague"];
-                    <div class="card w-50 text-center">
+                    <div class="card w-100 text-center">
                         <div class="card-header">Your league "@l.Name" is today!</div>
                         <div class="card-body">
                             <a asp-action="QuickCreateSeries" asp-controller="Home" asp-route-LeagueID="@l.ID" class="btn btn-primary btn-block">Start bowling a New Series for @l.Name</a>
@@ -70,20 +70,18 @@
                 <br /><br />
 
 
-                @if (ViewData["AllTeamsWeekSummary"] != null && ((List<List<TeamLastWeekData>>)ViewData["AllTeamsWeekSummary"]).Count > 0)
+                @if (ViewData["AllTeamsWeekSummary"] != null && ((List<TeamLastWeekData>)ViewData["AllTeamsWeekSummary"]).Count > 0)
                 {
                     <h2 class="text-center">My Leagues and Teams Summary</h2>
                     <hr />
-                    @foreach (var TWS_List in ((List<List<TeamLastWeekData>>)ViewData["AllTeamsWeekSummary"]))
+                    @foreach (var TWS in ((List<TeamLastWeekData>)ViewData["AllTeamsWeekSummary"]))
                     {
-                        foreach (var TWS in TWS_List)
+                        @if (TWS.IsCurrentUserOnTeam)
                         {
-                            @if (TWS.IsCurrentUserOnTeam)
-                            {
-                                <partial name="_TeamWeekSummary" model='@TWS' />
-                            }
-
+                            <partial name="_TeamWeekSummary" model='@TWS' />
                         }
+
+
                     }
                 }
 

@@ -124,9 +124,9 @@ namespace BowlingCoreMVC.Helpers
 
             if (TeamID == null && LeagueID != null)
             {
-                var Team = db.UserLeagueTeams.AsNoTracking().SingleOrDefault(o => o.UserID == UserID && o.LeagueID == LeagueID);
-                if (Team != null)
-                    TeamID = Team.ID;
+                var ult = db.UserLeagueTeams.AsNoTracking().SingleOrDefault(o => o.UserID == UserID && o.LeagueID == LeagueID);
+                if (ult.TeamID != null)
+                    TeamID = ult.TeamID;
             }
 
             Series s = Series.Create(NumOfGames, LeagueID, TeamID);
@@ -442,6 +442,7 @@ namespace BowlingCoreMVC.Helpers
         }
 
         #region Teams
+#if (false)
         public static List<TeamLastWeekData> GetTeamLastWeekData(League l, ApplicationDbContext _db, string UserID)
         {
             List<TeamLastWeekData> Result = new List<TeamLastWeekData>();
@@ -465,7 +466,7 @@ namespace BowlingCoreMVC.Helpers
             //            && l.EndDate >= DateTime.Today
             //            select t).ToList();
             //}
-            LeagueTeams = _db.Teams.Where(o => o.LeagueID == l.ID).Include(o => o.UserLeagueTeams).AsNoTracking().ToList();
+            LeagueTeams = _db.Teams.Where(o => o.LeagueID == l.ID).AsNoTracking().ToList();
 
 
             foreach (var Team in LeagueTeams)
@@ -474,6 +475,7 @@ namespace BowlingCoreMVC.Helpers
                 TeamData.TeamName = Team.TeamName;
                 TeamData.TeamID = Team.ID;
                 // Get all users in the team
+                Team.UserLeagueTeams = _db.UserLeagueTeams.Where(o => o.LeagueID == l.ID).AsNoTracking().ToList();
 
                 // Check if the User is on the Team
                 if (Team.UserLeagueTeams.Where(o => o.UserID == UserID).Any())
@@ -502,7 +504,7 @@ namespace BowlingCoreMVC.Helpers
 
 
                     //Series UserSeries = GetLastUserTeamSeries(ult.UserID, ult.TeamID, ult.LeagueID, _db);
-                    UserTeamWeekData UserWeekData = GetUserTeamWeekData(ult.UserID, ult.TeamID.Value, ult.LeagueID, _db);
+                    UserTeamWeekData UserWeekData = GetUserTeamWeekData(ult.UserID, ult.LeagueID, _db, ult.TeamID);
 
                     string UserName = GetUserNameFromID(ult.UserID, _db);
                     TeamData.UserNames.Add(UserName);
@@ -526,15 +528,7 @@ namespace BowlingCoreMVC.Helpers
             return (Result);
         }
 
-        public struct UserTeamWeekData
-        {
-            public double Average;
-            public int TotalPins;
-            public int TotalGames;
-            public Series Series;
-        }
-
-        public static UserTeamWeekData GetUserTeamWeekData(string UserID, int TeamID, int LeagueID, ApplicationDbContext _db)
+        public static UserTeamWeekData GetUserTeamWeekData(string UserID, int LeagueID, ApplicationDbContext _db, int? TeamID)
         {
             //
             // NOTE(ERic): I wonder how I can narrow this down..
@@ -547,8 +541,12 @@ namespace BowlingCoreMVC.Helpers
             // All series of League + Team + User
             // so THIS is why i'm doing this..
             // To calculate their average and total pins for the Team+League, I need to get All their series from it
-            var UserTeamSeries = _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID).Include(o => o.Games);
-            
+            List<Series> UserTeamSeries;
+            if (TeamID != null)
+                UserTeamSeries = _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID.Value).Include(o => o.Games).ToList();
+            else
+                UserTeamSeries = _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID).Include(o => o.Games).ToList();
+
 
             List<Game> Games = new List<Game>();
             foreach (var s in UserTeamSeries)
@@ -608,7 +606,71 @@ namespace BowlingCoreMVC.Helpers
 
             return (Result);
         }
-        
+
+#endif
+
+
+        // 10/2/2019: Redoing the above two functions to try to fix them
+
+        public static List<UserTeamWeekData> GetTeamData(ApplicationDbContext _db, int LeagueID, int TeamID)
+        {
+            List<UserTeamWeekData> Result = new List<UserTeamWeekData>();
+
+            // so, the data I want:
+            // Username, League Average, League Total Pins, Total Games Count, Last bowled series
+
+            // TEemID is required, because it's for a TEAM
+
+            List<UserLeagueTeam> TeamMembers = _db.UserLeagueTeams.Where(o => o.TeamID == TeamID && o.LeagueID == LeagueID).AsNoTracking().ToList();
+
+            foreach(UserLeagueTeam Member in TeamMembers)
+            {
+                UserTeamWeekData data = new UserTeamWeekData();
+                data.Username = GetUserNameFromID(Member.UserID, _db);
+
+                // All Series for this User in this League
+                List<Series> AllMembersSeries = _db.Series.Where(o => o.UserID == Member.UserID && o.LeagueID == LeagueID).Include(o => o.Games).AsNoTracking().ToList();
+                
+                if (AllMembersSeries == null || AllMembersSeries.Count == 0)
+                    return null;
+
+                foreach(Series s in AllMembersSeries)
+                {
+                    data.TotalPins += s.SeriesScore;
+                    data.TotalGames += s.Games.Count;
+                }
+                data.Average = data.TotalPins / data.TotalGames; // NOTE(ERIC): Integer division chewing off any rounding
+                data.Series = AllMembersSeries.OrderBy(o => o.CreatedDate).Take(1).SingleOrDefault();
+
+                Result.Add(data);
+            }
+
+            return (Result);
+        }
+
+        // NOTE(ERIC): THe Passed in UserID is ONLY the Currently Logged in User, to see if they are on a Team or not
+        public static List<TeamLastWeekData> GetLeagueAllTeamData(ApplicationDbContext _db, int LeagueID, string UserID)
+        {
+            List<TeamLastWeekData> Result = new List<TeamLastWeekData>();
+
+            List<Team> LeagueTeams = _db.Teams.Where(o => o.LeagueID == LeagueID).AsNoTracking().ToList();
+            if (LeagueTeams == null || LeagueTeams.Count == 0)
+                return null;
+
+            foreach (Team t in LeagueTeams)
+            {
+                TeamLastWeekData TeamData = new TeamLastWeekData();
+
+                TeamData.TeamName = t.TeamName;
+                TeamData.IsCurrentUserOnTeam = _db.UserLeagueTeams.Where(o => o.LeagueID == LeagueID && o.TeamID == t.ID && o.UserID == UserID).Any();
+                //LastWeekData.SubTitle = "";
+
+                TeamData.UserData = GetTeamData(_db, LeagueID, t.ID);
+                Result.Add(TeamData);
+            }
+            return (Result);
+        }
+
         #endregion
 
 

@@ -1,0 +1,17 @@
+﻿@page
+@model BowlingCoreMVC.Pages.HomeModel
+@using BowlingCoreMVC.Models;
+@{
+    ViewData["Title"] = "Home";
+}
+
+@*
+@using BowlingCoreMVC.Data;
+@inject BowlingCoreMVC.Data.ApplicationDbContext _db 
+*@
+
+
+<h1>Home from Razor Pages!!!!!!!!</h1>
+
+
+<GameComponent Game="@((Game)ViewData["Game"])" />
