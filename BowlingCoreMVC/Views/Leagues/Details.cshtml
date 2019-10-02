@@ -5,7 +5,8 @@
 }
 
 <h2 class="text-center">@Html.DisplayFor(model => model.Name)</h2>
-<hr /><br />
+<hr />
+<br />
 @* TODO: Create a local LEague sheet here with weekly scores, league high scores, etc.
 
     What's on an actual league sheet:
@@ -134,13 +135,15 @@
 
 <hr />
 
+<h1>Teams</h1>
+
+<a class="btn btn-primary" asp-action="Create" asp-controller="Teams" asp-route-LeagueID="@Model.ID" asp->New Team</a>
+<a class="btn btn-warning" asp-action="Index" asp-controller="Teams" asp-route-id="@Model.ID" asp->Manage Teams</a>
+<br />
+<br />
 @if (ViewData["TeamWeekData"] != null)
 {
-    <h1>Teams</h1>
 
-    <a class="btn btn-primary" asp-action="Create" asp-controller="Teams" asp-route-LeagueID="@Model.ID" asp->New Team</a>
-    <a class="btn btn-warning" asp-action="Index" asp-controller="Teams" asp-route-id="@Model.ID" asp->Manage Teams</a>
-    <br /><br />
 
     @* This teams list should also reflect what a league sheet looks like:
 

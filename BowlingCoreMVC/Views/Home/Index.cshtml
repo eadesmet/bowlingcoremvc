@@ -69,20 +69,18 @@
                 <br /><br />
 
 
-                @if (ViewData["AllTeamsWeekSummary"] != null && ((List<List<TeamLastWeekData>>)ViewData["AllTeamsWeekSummary"]).Count > 0)
+                @if (ViewData["AllTeamsWeekSummary"] != null && ((List<TeamLastWeekData>)ViewData["AllTeamsWeekSummary"]).Count > 0)
                 {
                     <h2 class="text-center">My Leagues and Teams Summary</h2>
                     <hr />
-                    @foreach (var TWS_List in ((List<List<TeamLastWeekData>>)ViewData["AllTeamsWeekSummary"]))
+                    @foreach (var TWS in ((List<TeamLastWeekData>)ViewData["AllTeamsWeekSummary"]))
                     {
-                        foreach (var TWS in TWS_List)
+                        @if (TWS.IsCurrentUserOnTeam)
                         {
-                            @if (TWS.IsCurrentUserOnTeam)
-                            {
-                                <partial name="_TeamWeekSummary" model='@TWS' />
-                            }
-
+                            <partial name="_TeamWeekSummary" model='@TWS' />
                         }
+
+
                     }
                 }
 

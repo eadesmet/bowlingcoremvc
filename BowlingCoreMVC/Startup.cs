@@ -158,6 +158,7 @@ namespace BowlingCoreMVC
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
 
+            // 2.2:
             //app.UseMvc(routes =>
             //{
             //    routes.MapRoute(
