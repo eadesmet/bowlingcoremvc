@@ -1412,3 +1412,12 @@ because the strike bonus, spare bonus code would be repeated
         
 
 }
+
+10-7
+{
+	oh boy, forgot this file existed
+
+	I've done a lot of UI updates and fixed a few bugs since the last update here
+
+
+}

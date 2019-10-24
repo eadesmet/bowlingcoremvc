@@ -8,5 +8,15 @@
 			"file_exclude_patterns": ["*.g.*", "*.map"]
 		}
 	],
-	"solution_file": "./BowlingCoreMVC.sln"
+	"solution_file": "./BowlingCoreMVC.sln",
+	"build_systems":
+    [
+        {
+            "name": "Build",
+            "quiet": true,
+            "shell": true,
+            "working_dir": "C:/_Eric/Code/BowlingCoreMVC/BowlingCoreMVC",
+            "cmd": "dotnet build"
+        }
+    ]
 }

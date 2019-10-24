@@ -83,24 +83,27 @@
                 </tr>
             </thead>
             <tbody class="table-light">
-                @if (Model.UserData.Count >= 1)
+                @if (Model.UserData != null)
                 {
-                    @foreach (UserTeamWeekData userdata in Model.UserData)
+                    @if (Model.UserData.Count >= 1)
                     {
-                        @*TODO(ERIC): Have the Pill be contextual. i.e. Higher than average, green, lower, red.*@
-                        <tr class="text-black-50">
-                            <td scope="col" class="text-sm-center">@userdata.Username</td>
-                            <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.Average</span></td>
-                            <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.TotalPins</span></td>
-                            <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.TotalGames</span></td>
-                            @if (userdata.Series != null)
-                            {
-                                <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.Series.Games.Where(o => o.SeriesIndex == 1).Single().Score</span></td>
-                                <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.Series.Games.Where(o => o.SeriesIndex == 2).Single().Score</span></td>
-                                <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.Series.Games.Where(o => o.SeriesIndex == 3).Single().Score</span></td>
-                                <td scope="col" class="text-center"><span class="badge badge-info badge-pill">@userdata.Series.SeriesScore</span></td>
-                            }
-                        </tr>
+                        @foreach (UserTeamWeekData userdata in Model.UserData)
+                        {
+                            @*TODO(ERIC): Have the Pill be contextual. i.e. Higher than average, green, lower, red.*@
+                            <tr class="text-black-50">
+                                <td scope="col" class="text-sm-center">@userdata.Username</td>
+                                <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.Average</span></td>
+                                <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.TotalPins</span></td>
+                                <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.TotalGames</span></td>
+                                @if (userdata.Series != null)
+                                {
+                                    <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.Series.Games.Where(o => o.SeriesIndex == 1).Single().Score</span></td>
+                                    <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.Series.Games.Where(o => o.SeriesIndex == 2).Single().Score</span></td>
+                                    <td scope="col" class="text-sm-center"><span class="badge badge-info badge-pill">@userdata.Series.Games.Where(o => o.SeriesIndex == 3).Single().Score</span></td>
+                                    <td scope="col" class="text-center"><span class="badge badge-info badge-pill">@userdata.Series.SeriesScore</span></td>
+                                }
+                            </tr>
+                        }
                     }
                 }
             </tbody>

@@ -20,7 +20,7 @@ namespace BowlingCoreMVC.Controllers
     {
         private ApplicationDbContext _db { get; set; }
         private readonly UserManager<ApplicationUser> _userManager;
-        
+
 
         public GameController(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
@@ -35,7 +35,7 @@ namespace BowlingCoreMVC.Controllers
         public async Task<IActionResult> Index(int? SeriesPage, int? GamePage)
         {
             var user = await GetCurrentUserAsync();
-            int PageSize = 12;
+            int PageSize = 5;
 
             // NOTE(ERIC): All Games vs NonSeries Games? DataHelper.GetNonSeriesGamesByUserID(user.Id, _db);
 
@@ -50,7 +50,7 @@ namespace BowlingCoreMVC.Controllers
             //*************
 
 
-            ViewData["UserSeries"] = 
+            ViewData["UserSeries"] =
                 await PaginatedList<Series>.CreateAsync(series, SeriesPage ?? 1, PageSize);
             //ViewData["UserSeries"] = pagSeries;
 
@@ -59,11 +59,11 @@ namespace BowlingCoreMVC.Controllers
                 .Include(o => o.Frames)
                 .OrderByDescending(o => o.CreatedDate).AsNoTracking();
 
-            
+
 
 
             ViewData["UserGames"] = await PaginatedList<Game>.
-                CreateAsync(games, 
+                CreateAsync(games,
                 GamePage ?? 1, PageSize);
 
 
@@ -87,7 +87,7 @@ namespace BowlingCoreMVC.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null) { return RedirectToAction("Login", "Account"); }
 
-            
+
             if (id == 0)
             {
                 game = Game.Create();
@@ -102,10 +102,10 @@ namespace BowlingCoreMVC.Controllers
             {
                 game = _db.Games.Include(o => o.Frames).Include(o => o.User).Where(g => g.ID == id).SingleOrDefault();
             }
-            
+
             game.Frames = game.Frames.OrderBy(f => f.FrameNum).ToList();
 
-            
+
 
             return View(game);
         }
@@ -166,7 +166,7 @@ namespace BowlingCoreMVC.Controllers
         public JsonResult NextThrowClick(string JSONGame, int[] GameIDs)
         {
             Game g = JsonConvert.DeserializeObject<Game>(JSONGame);
-            
+
             g = ScoreHelper.ThrowCurrent(g);
 
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g) });
@@ -190,7 +190,7 @@ namespace BowlingCoreMVC.Controllers
             Game g = JsonConvert.DeserializeObject<Game>(JSONGame);
 
             bool IsNewGame = (g.ID == 0);
-            
+
             g = ScoreHelper.ScoreGame(g);
 
             g.UserID = _userManager.GetUserId(User);
@@ -201,7 +201,7 @@ namespace BowlingCoreMVC.Controllers
                 // Update series (to recalculate series score)
                 DataHelper.UpdateSeries(Convert.ToInt32(g.SeriesID), _db);
             }
-            
+
             return Json(new { jsonGameReturned = JsonConvert.SerializeObject(g)/*, redirect = IsNewGame*/ });
         }
 #endregion

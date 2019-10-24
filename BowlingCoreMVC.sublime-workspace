@@ -51,8 +51,17 @@
 			"file": "BowlingCoreMVC/Controllers/LeaguesController.cs",
 			"settings":
 			{
-				"buffer_size": 13497,
+				"buffer_size": 14870,
 				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Views/Leagues/Details.cshtml",
+			"settings":
+			{
+				"buffer_size": 5813,
+				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
 		},
@@ -60,7 +69,7 @@
 			"file": "BowlingCoreMVC/Views/Stats/UserSummary.cshtml",
 			"settings":
 			{
-				"buffer_size": 9494,
+				"buffer_size": 9514,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -69,19 +78,16 @@
 			"file": "BowlingCoreMVC/Views/Shared/_TeamWeekSummary.cshtml",
 			"settings":
 			{
-				"buffer_size": 2979,
+				"buffer_size": 6545,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\nusing System.Threading.Tasks;\n\nusing BowlingCoreMVC.Data;\nusing BowlingCoreMVC.Models;\nusing Microsoft.AspNetCore.Mvc.Rendering;\nusing Microsoft.EntityFrameworkCore;\n\nnamespace BowlingCoreMVC.Helpers\n{\n    // Trying this out\n    public struct DBOperationResult<T>\n    {\n        public bool IsError;\n        public string Message;\n        public T Item;\n    }\n\n    public static class DataHelper\n    {\n        public static readonly ApplicationDbContext db;\n\n#region Games\n        public static Game SaveGame(Game PageGame, ApplicationDbContext db)\n        {\n            Game DBGame;\n            if (PageGame.ID != 0)\n            {\n                //Update existing game\n                DBGame = db.Games.Include(o => o.Frames).Where(o => o.ID == PageGame.ID).SingleOrDefault();\n                //DBGame.Frames = DBGame.Frames.OrderBy(f => f.FrameNum).ToList();\n                \n                //update DBgame with updated fields from PageGame\n                DBGame.CurrentFrame = PageGame.CurrentFrame;\n                DBGame.CurrentThrow = PageGame.CurrentThrow;\n                DBGame.Frames = PageGame.Frames;\n                DBGame.Score = PageGame.Score;\n                DBGame.ScoreUpToFrame = PageGame.ScoreUpToFrame;\n                \n                DBGame.ModifiedDate = DateTime.Now;\n\n                db.SaveChanges();\n\n            }\n            else\n            {\n                //create new game\n                DBGame = PageGame;\n                DBGame.CreatedDate = DateTime.Now;\n                DBGame.ModifiedDate = DateTime.Now;\n                DBGame.UserID = PageGame.UserID;\n                //Other fields??\n                \n                //NOTE: Maybe db.Games.Add(DBGame); here\n                db.Attach(DBGame);\n                db.Entry(DBGame).State = EntityState.Added;\n                db.SaveChanges();\n                \n                \n                foreach (var f in DBGame.Frames)\n                {\n                    f.GameID = DBGame.ID;\n                }\n                \n                //TODO: Confirm State is picked up automatically on Frame update\n                //db.Entry(DBGame).State = EntityState.Modified;\n                db.SaveChanges();\n            }\n\n            return (DBGame);\n        }\n#endregion\n\n#region Series/leagues\n        public static Series InsertSeries(Series s, ApplicationDbContext db, string UserID)\n        {\n            s.UserID = UserID;\n            db.Attach(s);\n            db.Entry(s).State = EntityState.Added;\n            db.SaveChanges();\n\n            //string UserName = GetUserNameFromID(UserID, db);\n            \n            foreach (var g in s.Games)\n            {\n                g.SeriesID = s.ID;\n                g.UserID = UserID;\n                g.UserName = s.User.UserName;// UserName;\n            }\n            \n            db.SaveChanges();\n\n            //s.UserName = UserName;\n            \n            return (s);\n        }\n        \n        public static DBOperationResult<Series>\n        CreateAndInsertSeries(ApplicationDbContext db, \n            string UserID, int? LeagueID = null, int? TeamID = null)\n        {\n            DBOperationResult<Series> Result = new DBOperationResult<Series>();\n\n            int NumOfGames = 3;\n            if (LeagueID != null)\n            {\n                League l = db.Leagues.Where(o => o.ID == LeagueID).SingleOrDefault();\n                if (l.DefaultNumOfGames > 0)\n                    NumOfGames = l.DefaultNumOfGames;\n\n                if (!ValidateCanCreateSeries(db, UserID, l))\n                {\n                    Result.IsError = true;\n                    Result.Message = \"Cannot create a Series - Either you already have one for this week, or it's the end of the league\";\n                    Result.Item = null;\n                    return (Result);\n                }\n            }\n\n            Series s = Series.Create(NumOfGames, LeagueID, TeamID);\n            s.UserID = UserID;\n            s.UserName = GetUserNameFromID(UserID, db);\n\n            s.TeamID = TeamID;\n\n            db.Attach(s);\n            db.Entry(s).State = EntityState.Added;\n            db.SaveChanges();\n\n            foreach (var g in s.Games)\n            {\n                g.SeriesID = s.ID;\n                g.UserID = UserID;\n                g.UserName = s.User.UserName;// UserName;\n            }\n            \n            db.SaveChanges();\n\n            Result.Item = s;\n            return (Result);\n        }\n\n        private static bool\n        ValidateCanCreateSeries(ApplicationDbContext db, \n            string UserID, League l)\n        {\n            // Can't create a Series if its not on the same day\n            if (DateTime.Today.DayOfWeek != l.LeagueDay)\n                return (false);\n\n            DateTime NextLeagueNight = GetNextLeagueNight(l);\n            // Can't create a Series if its after the end of the league\n            if (NextLeagueNight > l.EndDate)\n                return (false);\n\n            // Can't create a Series if they already have for for that day\n            if (db.Series.Where(o => o.UserID == UserID && o.CreatedDate.Date == DateTime.Today && o.LeagueID == l.ID).Any())\n                return (false);\n\n\n\n            return (true);\n        }\n        \n        public static void UpdateSeries(int SeriesID, ApplicationDbContext db)\n        {\n            var series = db.Series.Where(o => o.ID == SeriesID).Include(o => o.Games).SingleOrDefault();\n            series.SeriesScore = 0;\n            series.ModifiedDate = DateTime.Now;\n            \n            foreach (var g in series.Games)\n            {\n                series.SeriesScore += g.Score;\n            }\n            \n            db.SaveChanges();\n        }\n#endregion\n        \n        \n        public static List<SelectListItem> GetCurrentLeagues(ApplicationDbContext _db)\n        {\n            var result = new List<SelectListItem>();\n            var leagues = _db.Leagues.Where(o => o.EndDate >= DateTime.Today).ToList();\n            foreach (var l in leagues)\n            {\n                result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });\n            }\n            \n            return (result);\n        }\n        \n        public static List<SelectListItem> GetAllLocations(ApplicationDbContext _db)\n        {\n            var result = new List<SelectListItem>();\n            var locations = _db.Locations.ToList();\n            foreach (var l in locations)\n            {\n                result.Add(new SelectListItem() { Value = l.ID.ToString(), Text = l.Name });\n            }\n            \n            return (result);\n        }\n\n        public static List<SelectListItem> GetAllDays()\n        {\n            List<SelectListItem> Result = new List<SelectListItem>();\n            foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList())\n            {\n                Result.Add(new SelectListItem() { Value = ((int)day).ToString(), Text = day.ToString() });\n            }\n            return (Result);\n        }\n\n        public static List<SelectListItem> GetAllOccurances()\n        {\n            List<SelectListItem> Result = new List<SelectListItem>();\n            foreach (var occ in Enum.GetValues(typeof(LeagueOccurance)).Cast<LeagueOccurance>().ToList())\n            {\n                Result.Add(new SelectListItem() { Value = ((int)occ).ToString(), Text = occ.ToString() });\n            }\n            return (Result);\n        }\n\n\n        public static List<League> UserLeagues(string UserID, ApplicationDbContext _db)\n        {\n            //user is in a league if they have a series in that league\n            var result = new List<League>();\n            var UserLeagueTeams = _db.UserLeagueTeams.Where(o => o.UserID == UserID).ToList();\n            foreach (var ult in UserLeagueTeams)\n            {\n                //Do not add duplicates (legacy - was from series search. only needed if multiple teams for same league)\n                if (result.Find(o => o.ID == ult.LeagueID) == null)\n                {\n                    result.Add(_db.Leagues.Where(o => o.ID == ult.LeagueID).SingleOrDefault());\n                }\n            \n            }\n            \n            return (result);\n        }\n\n        public static int? GetTeamIfExists(int LeagueID, string UserID, ApplicationDbContext _db)\n        {\n            int? Result = null;\n\n            // TODO(ERIC): Handle multiple teams? Only allow one??\n            var q = _db.UserLeagueTeams.Where(o => o.UserID == UserID && o.LeagueID == LeagueID).FirstOrDefault();\n            if (q != null) { Result = q.TeamID; }\n            return (Result);\n        }\n\n        public static void InsertUserLeagueTeam(UserLeagueTeam ult, ApplicationDbContext _db)\n        {\n            _db.UserLeagueTeams.Add(ult);\n            _db.SaveChanges();\n            return;\n        }\n        \n        public static double UsersLeagueAverage(string UserID, int LeagueID, ApplicationDbContext _db)\n        {\n            double result = 0.0;\n            int total = 0;\n            int count = 0;\n            var LeaguesSeries = _db.Series.Include(o => o.Games).Where(o => o.LeagueID == LeagueID && o.UserID == UserID).ToList();\n            foreach (var s in LeaguesSeries)\n            {\n                foreach (var g in s.Games)\n                {\n                    total += g.Score;\n                    count++;\n                }\n            }\n            \n            result = total / count;\n            \n            return (result);\n        }\n        \n        public static List<Game> GetAllGamesByUserID(string UserID, ApplicationDbContext _db)\n        {\n            return (_db.Games.Include(o => o.Frames).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).ToList());\n        }\n        \n        public static List<Game> GetNonSeriesGamesByUserID(string UserID, ApplicationDbContext _db)\n        {\n            return (_db.Games.Include(o => o.Frames).Where(o => o.UserID == UserID).Where(o => o.SeriesID == 0 || o.SeriesID == null).OrderByDescending(o => o.CreatedDate).ToList());\n        }\n        \n        public static List<Series> GetAllSeriesByUserID(string UserID, ApplicationDbContext _db)\n        {\n            // TODO(ERIC): Clean this up. Minimize DB calls, it's crazy now.\n            List<Series> Result = (_db.Series.Include(o => o.Games).Where(o => o.UserID == UserID).OrderByDescending(o => o.CreatedDate).AsNoTracking().ToList());\n            //string UserName = GetUserNameFromID(UserID, _db);\n            foreach (var s in Result)\n            {\n                //s.LeagueName = GetLeagueNameByID(s.LeagueID ?? 0, _db);\n                //s.UserName = UserName;\n            }\n            return (Result);\n        }\n\n        public class SeriesQueryResult\n        {\n            public int ID;\n            public int SeriesScore;\n            public string LeagueName;\n            public DateTime CreatedDate;\n            public List<Game> Games;\n        }\n\n        public static IQueryable<Series> GetAllSeriesByUserIDQueryable(string UserID, ApplicationDbContext _db)\n        {\n            IQueryable<Series> Result = (IQueryable<Series>)_db.Series\n                .Include(o => o.Games).ThenInclude(x => x.Frames)\n                .Include(o => o.League)\n                .Where(o => o.UserID == UserID)\n                .OrderByDescending(o => o.CreatedDate)\n                .AsNoTracking();\n\n            return (Result);\n        }\n\n        //public static string GetLeagueNameByID(int LeagueID, ApplicationDbContext _db)\n        //{\n        //    League Result = _db.Leagues.Where(o => o.ID == LeagueID).SingleOrDefault();\n        //    return (Result != null) ? Result.Name : \"\";\n        //}\n\n        public static DateTime GetNextLeagueNight(DateTime StartDate)\n        {\n            // Not confirming if it's before the EndDate here.\n            DayOfWeek LeagueNight = StartDate.DayOfWeek;\n            int DaysUntil = ((int)LeagueNight - (int)DateTime.Today.DayOfWeek + 7) % 7;\n\n            return (DateTime.Today.AddDays(DaysUntil));\n        }\n\n        public static DateTime GetNextLeagueNight(League l)\n        {\n            int DaysUntil = -1;\n            DayOfWeek LeagueDayOfWeek = l.LeagueDay;\n            if (l.Occurance == LeagueOccurance.EveryWeek)\n            {\n                DaysUntil = ((int)LeagueDayOfWeek - (int)DateTime.Today.DayOfWeek + 7) % 7;\n            }\n            else if (l.Occurance == LeagueOccurance.EveryOtherWeek)\n            {\n                DaysUntil = ((int)LeagueDayOfWeek - (int)DateTime.Today.DayOfWeek + 14) % 14;\n            }\n            else if (l.Occurance == LeagueOccurance.EveryMonth)\n            {\n                DaysUntil = ((int)LeagueDayOfWeek - (int)DateTime.Today.DayOfWeek + 28) % 28;\n            }\n\n            // Scenerio 1:\n            //      It is Wednesday, League night is Tuesday\n            //      I want to get the Next Tuesday\n\n\n            \n            DateTime Result = DateTime.Today.AddDays(DaysUntil);\n\n            // Confirm that it is before the end date (maybe not needed?)\n            if (Result > l.EndDate)\n            {\n                 // What would we even return here? Today? null? Last league night?\n                Result = DateTime.Today.AddYears(-50);\n            }\n\n            return (Result);\n        }\n\n        public static string GetUserNameFromID(string UserID, ApplicationDbContext _db)\n        {\n            return (_db.Users.Where(o => o.Id == UserID).SingleOrDefault().UserName);\n        }\n\n        #region Teams\n        public static List<TeamLastWeekData> GetTeamLastWeekData(int LeagueID, ApplicationDbContext _db)\n        {\n            List<TeamLastWeekData> Result = new List<TeamLastWeekData>();\n\n            var LeagueTeams = _db.Teams.Where(o => o.LeagueID == LeagueID).Include(o => o.UserLeagueTeams).ToList();\n\n            foreach (var Team in LeagueTeams)\n            {\n                TeamLastWeekData TeamData = new TeamLastWeekData();\n                TeamData.TeamName = Team.TeamName;\n                // Get all users in the team\n\n                // Can I get this result from Team.TeamMembers instead of another db call?\n                //var UserLeagueTeam = _db.UserLeagueTeams.Where(o => o.TeamID == Team.ID).ToList();\n                //foreach (var ult in UserLeagueTeam)\n                foreach (var ult in Team.UserLeagueTeams)\n                {\n                    // UserLeagueTeam - Has UserIDs and the Team, and the League\n                    // Need to get their Average, their Last Series, Games Count and Games Total\n                    \n                    // TODO(ERIC): FIRST THING ACTUALLY!!!\n                    // REDO ALL OF THESE QUERIES AND OBJECTS, HOLY CRAP\n                    // CAN MINIMIZE QUERIES SUBSTANTIALLY AND GATHER THEM MUCH MORE NICELY\n                    // ALSO, REMEMBER NULL CHECKS HERE AND IN THE VIEW\n\n                    // NOTE(ERIC) 3-12-19: I'm not sure.. This all seems reasonable..\n                    //\n                    // I have one database call for all the Teams in this League\n                    // Then in GetUserTEamWeekData I have one database call to get all of that users games.\n                    //    well, so in reality, for every team......\n                    //    let's say a league has 5 teams, each with 5 members\n                    //    I'll then have 1 + (5 * 5) database calls (26)\n                    //\n                    // Then would creating one big query (teams.include(Series).include(games)) etc. be faster?\n                    // \n\n\n                    //Series UserSeries = GetLastUserTeamSeries(ult.UserID, ult.TeamID, ult.LeagueID, _db);\n                    UserTeamWeekData UserWeekData = GetUserTeamWeekData(ult.UserID, ult.TeamID.Value, ult.LeagueID, _db);\n\n                    string UserName = GetUserNameFromID(ult.UserID, _db);\n                    TeamData.UserNames.Add(UserName);\n                    TeamData.Averages.Add(UserWeekData.Average);\n                    TeamData.Series.Add(UserWeekData.Series);\n                    TeamData.TotalGames.Add(UserWeekData.TotalGames);\n                    TeamData.TotalPins.Add(UserWeekData.TotalPins);\n\n                    Result.Add(TeamData);\n                }\n            }\n\n\n            return (Result);\n        }\n\n        public struct UserTeamWeekData\n        {\n            public double Average;\n            public int TotalPins;\n            public int TotalGames;\n            public Series Series;\n        }\n\n        public static UserTeamWeekData GetUserTeamWeekData(string UserID, int TeamID, int LeagueID, ApplicationDbContext _db)\n        {\n            //\n            // NOTE(ERic): I wonder how I can narrow this down..\n            // So basically I need only a weeks worth of data\n            // Can I narrow it down by date somehow? or do an order by date, take 1?\n            // I also need to take nulls into account\n            //\n\n\n            // All series of League + Team + User\n            // so THIS is why i'm doing this..\n            // To calculate their average and total pins for the Team+League, I need to get All their series from it\n            var UserTeamSeries = _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID).Include(o => o.Games);\n            \n\n            List<Game> Games = new List<Game>();\n            foreach (var s in UserTeamSeries)\n            {\n                foreach(var g in s.Games)\n                {\n                    Games.Add(g);\n                }\n            }\n            //var Result = UserTeamSeries.Select(o => o.Games.Average(g => g.Score));\n            //return (Result.SingleOrDefault());\n            UserTeamWeekData Result = new UserTeamWeekData();\n            if (UserTeamSeries == null || !UserTeamSeries.Any()) { return Result; }\n            if (Games != null)\n            {\n                Result.TotalGames = Games.Count;\n                Result.Average = Games.Average(g => g.Score);\n                Result.TotalPins = Games.Sum(g => g.Score);\n            }\n\n            // TODO(ERIC): ENsure this is the last series they bowled.\n            Result.Series = UserTeamSeries.OrderBy(o => o.CreatedDate).Take(1).SingleOrDefault();\n\n            return (Result);\n        }\n\n        public static Series GetLastUserTeamSeries(string UserID, int TeamID, int LeagueID, ApplicationDbContext _db)\n        {\n            // TODO(ERIC): Get the Range of dates, not just now - 7\n            return _db.Series.Where(o => o.UserID == UserID && o.LeagueID == LeagueID && o.TeamID == TeamID && o.CreatedDate >= DateTime.Now.AddDays(-7)).Include(o => o.Games).SingleOrDefault();\n        }\n\n        \n        #endregion\n    }\n}\n",
 			"file": "BowlingCoreMVC/Helpers/DataHelper.cs",
-			"file_size": 19274,
-			"file_write_time": 132018153493303220,
 			"settings":
 			{
-				"buffer_size": 18706,
+				"buffer_size": 26710,
 				"line_ending": "Windows"
 			}
 		},
@@ -89,7 +95,7 @@
 			"file": "BowlingCoreMVC/Controllers/HomeController.cs",
 			"settings":
 			{
-				"buffer_size": 5225,
+				"buffer_size": 7758,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -107,7 +113,7 @@
 			"file": "BowlingCoreMVC/Startup.cs",
 			"settings":
 			{
-				"buffer_size": 6213,
+				"buffer_size": 6619,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -116,7 +122,25 @@
 			"file": "BowlingCoreMVC/Views/Shared/Components/EditGame/Default.cshtml",
 			"settings":
 			{
-				"buffer_size": 8054,
+				"buffer_size": 8305,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/ScoringTagHelpers/FrameThrowTagHelper.cs",
+			"settings":
+			{
+				"buffer_size": 3199,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/wwwroot/js/editgame.js",
+			"settings":
+			{
+				"buffer_size": 34641,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -125,7 +149,7 @@
 			"file": "BowlingCoreMVC/Views/Home/Index.cshtml",
 			"settings":
 			{
-				"buffer_size": 2016,
+				"buffer_size": 3840,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -134,7 +158,7 @@
 			"file": "BowlingCoreMVC.sublime-project",
 			"settings":
 			{
-				"buffer_size": 240,
+				"buffer_size": 482,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -152,7 +176,7 @@
 			"file": "BowlingCoreMVC/Data/ApplicationDbContext.cs",
 			"settings":
 			{
-				"buffer_size": 6590,
+				"buffer_size": 6794,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -161,7 +185,7 @@
 			"file": "BowlingCoreMVC/Controllers/GameController.cs",
 			"settings":
 			{
-				"buffer_size": 6567,
+				"buffer_size": 6522,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -188,7 +212,7 @@
 			"file": "BowlingCoreMVC/Views/Shared/_Layout.cshtml",
 			"settings":
 			{
-				"buffer_size": 5744,
+				"buffer_size": 7372,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -215,7 +239,7 @@
 			"file": "NOTES.md",
 			"settings":
 			{
-				"buffer_size": 34554,
+				"buffer_size": 40422,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -233,7 +257,7 @@
 			"file": "BowlingCoreMVC/Models/GameModels.cs",
 			"settings":
 			{
-				"buffer_size": 10877,
+				"buffer_size": 10989,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -242,7 +266,7 @@
 			"file": "BowlingCoreMVC/Controllers/TeamsController.cs",
 			"settings":
 			{
-				"buffer_size": 5764,
+				"buffer_size": 12016,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -251,7 +275,7 @@
 			"file": "BowlingCoreMVC/Models/StatsViewModel.cs",
 			"settings":
 			{
-				"buffer_size": 1600,
+				"buffer_size": 2142,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -260,7 +284,7 @@
 			"file": "BowlingCoreMVC/Controllers/StatsController.cs",
 			"settings":
 			{
-				"buffer_size": 13587,
+				"buffer_size": 14016,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -269,16 +293,7 @@
 			"file": "BowlingCoreMVC/Controllers/SeriesController.cs",
 			"settings":
 			{
-				"buffer_size": 6068,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/Migrations/20190515183024_idk.cs",
-			"settings":
-			{
-				"buffer_size": 1668,
-				"encoding": "UTF-8 with BOM",
+				"buffer_size": 7147,
 				"line_ending": "Windows"
 			}
 		},
@@ -286,7 +301,25 @@
 			"file": "BowlingCoreMVC/Views/Shared/_CardListSingleValue.cshtml",
 			"settings":
 			{
-				"buffer_size": 577,
+				"buffer_size": 610,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/ViewComponents/EditGameViewComponent.cs",
+			"settings":
+			{
+				"buffer_size": 1216,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/wwwroot/css/site.css",
+			"settings":
+			{
+				"buffer_size": 8500,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -304,7 +337,7 @@
 			"file": "BowlingCoreMVC/Views/Leagues/Index.cshtml",
 			"settings":
 			{
-				"buffer_size": 4352,
+				"buffer_size": 4428,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -313,7 +346,7 @@
 			"file": "BowlingCoreMVC/Views/Leagues/Create.cshtml",
 			"settings":
 			{
-				"buffer_size": 4350,
+				"buffer_size": 4351,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -322,7 +355,7 @@
 			"file": "BowlingCoreMVC/Views/Leagues/RequestToJoin.cshtml",
 			"settings":
 			{
-				"buffer_size": 2159,
+				"buffer_size": 2160,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -331,7 +364,7 @@
 			"file": "BowlingCoreMVC/Program.cs",
 			"settings":
 			{
-				"buffer_size": 1313,
+				"buffer_size": 1605,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -526,6 +559,7 @@
 	],
 	"file_history":
 	[
+		"/C/_Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Migrations/20190515183024_idk.cs",
 		"/C/_Eric/Code/BowlingCoreMVC/BowlingCoreMVC/obj/Debug/netcoreapp2.2/Razor/Views/Leagues/RequestToJoin.g.cshtml.cs",
 		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/BowlingCoreMVC.sublime-build",
 		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/BuildBAT.sublime-build",
@@ -579,7 +613,7 @@
 	],
 	"find":
 	{
-		"height": 24.0
+		"height": 39.0
 	},
 	"find_in_files":
 	{
@@ -594,6 +628,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"currentframe",
+			"HighlightSelectedFrame",
+			"nextthrow",
+			"league",
 			"usersleagues",
 			"DefaultConnection",
 			"ConnectionString",
@@ -630,7 +668,7 @@
 	"groups":
 	[
 		{
-			"selected": 21,
+			"selected": 10,
 			"sheets":
 			[
 				{
@@ -639,15 +677,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 13497,
+						"buffer_size": 14870,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								9928,
-								9928
+								9244,
+								9244
 							]
 						],
 						"settings":
@@ -663,58 +701,57 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3660.0,
+						"translation.y": 3075.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 17,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "BowlingCoreMVC/Views/Stats/UserSummary.cshtml",
+					"file": "BowlingCoreMVC/Views/Leagues/Details.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9494,
+						"buffer_size": 5813,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								947,
-								947
+								5789,
+								5789
 							]
 						],
 						"settings":
 						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1845.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "BowlingCoreMVC/Views/Shared/_TeamWeekSummary.cshtml",
+					"file": "BowlingCoreMVC/Views/Stats/UserSummary.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2979,
+						"buffer_size": 9514,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2832,
-								2832
+								0,
+								0
 							]
 						],
 						"settings":
@@ -728,16 +765,47 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 35,
+					"stack_index": 15,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
+					"file": "BowlingCoreMVC/Views/Shared/_TeamWeekSummary.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6545,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 40,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
 					"file": "BowlingCoreMVC/Helpers/DataHelper.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 18706,
+						"buffer_size": 26710,
 						"regions":
 						{
 						},
@@ -763,24 +831,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 18,
+					"stack_index": 28,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "BowlingCoreMVC/Controllers/HomeController.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5225,
+						"buffer_size": 7758,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2217,
-								2217
+								0,
+								0
 							]
 						],
 						"settings":
@@ -799,11 +867,11 @@
 						"translation.y": 506.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 18,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 6,
 					"file": "BowlingCoreMVC/Views/Stats/MyStats.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -829,24 +897,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 16,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 7,
 					"file": "BowlingCoreMVC/Startup.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6213,
+						"buffer_size": 6619,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1538,
-								1538
+								0,
+								0
 							]
 						],
 						"settings":
@@ -867,24 +935,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 19,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 8,
 					"file": "BowlingCoreMVC/Views/Shared/Components/EditGame/Default.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8054,
+						"buffer_size": 8305,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1745,
-								1745
+								0,
+								0
 							]
 						],
 						"settings":
@@ -897,24 +965,84 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 21,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
-					"file": "BowlingCoreMVC/Views/Home/Index.cshtml",
+					"buffer": 9,
+					"file": "BowlingCoreMVC/ScoringTagHelpers/FrameThrowTagHelper.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2016,
+						"buffer_size": 3199,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								915,
-								915
+								1514,
+								1514
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "BowlingCoreMVC/wwwroot/js/editgame.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 34641,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1535,
+								1535
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 754.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "BowlingCoreMVC/Views/Home/Index.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3840,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
 							]
 						],
 						"settings":
@@ -927,24 +1055,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 19,
+					"stack_index": 29,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 12,
 					"file": "BowlingCoreMVC.sublime-project",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 240,
+						"buffer_size": 482,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								139,
-								139
+								482,
+								482
 							]
 						],
 						"settings":
@@ -957,11 +1085,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 25,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 13,
 					"file": "BowlingCoreMVC/Services/EmailSender.cs",
 					"semi_transient": false,
 					"settings":
@@ -988,16 +1116,16 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 32,
+					"stack_index": 38,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 14,
 					"file": "BowlingCoreMVC/Data/ApplicationDbContext.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6590,
+						"buffer_size": 6794,
 						"regions":
 						{
 						},
@@ -1018,24 +1146,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 28,
+					"stack_index": 34,
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 15,
 					"file": "BowlingCoreMVC/Controllers/GameController.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6567,
+						"buffer_size": 6522,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2452,
-								2452
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1049,11 +1177,11 @@
 						"translation.y": 38.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 23,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 16,
 					"file": "BowlingCoreMVC/appsettings.json",
 					"semi_transient": false,
 					"settings":
@@ -1080,11 +1208,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 22,
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 17,
 					"file": "BowlingCoreMVC/appsettings.Development.json",
 					"semi_transient": false,
 					"settings":
@@ -1109,24 +1237,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 33,
+					"stack_index": 39,
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 18,
 					"file": "BowlingCoreMVC/Views/Shared/_Layout.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5744,
+						"buffer_size": 7372,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4758,
-								4758
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1140,11 +1268,11 @@
 						"translation.y": 271.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 38,
+					"stack_index": 43,
 					"type": "text"
 				},
 				{
-					"buffer": 16,
+					"buffer": 19,
 					"file": "BowlingCoreMVC/Views/Shared/Error.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1169,11 +1297,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 39,
+					"stack_index": 44,
 					"type": "text"
 				},
 				{
-					"buffer": 17,
+					"buffer": 20,
 					"file": "build.bat",
 					"semi_transient": false,
 					"settings":
@@ -1185,8 +1313,8 @@
 						"selection":
 						[
 							[
-								55,
-								55
+								58,
+								58
 							]
 						],
 						"settings":
@@ -1198,16 +1326,16 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 40,
+					"stack_index": 13,
 					"type": "text"
 				},
 				{
-					"buffer": 18,
+					"buffer": 21,
 					"file": "NOTES.md",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 34554,
+						"buffer_size": 40422,
 						"regions":
 						{
 						},
@@ -1227,11 +1355,11 @@
 						"translation.y": 16847.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 41,
+					"stack_index": 45,
 					"type": "text"
 				},
 				{
-					"buffer": 19,
+					"buffer": 22,
 					"file": "BowlingCoreMVC/Models/GameViewModels/GameViewModels.cs",
 					"semi_transient": false,
 					"settings":
@@ -1258,24 +1386,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 42,
+					"stack_index": 46,
 					"type": "text"
 				},
 				{
-					"buffer": 20,
+					"buffer": 23,
 					"file": "BowlingCoreMVC/Models/GameModels.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10877,
+						"buffer_size": 10989,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10204,
-								10204
+								8946,
+								8950
 							]
 						],
 						"settings":
@@ -1286,27 +1414,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4441.0,
+						"translation.y": 3694.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 34,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
-					"buffer": 21,
+					"buffer": 24,
 					"file": "BowlingCoreMVC/Controllers/TeamsController.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5764,
+						"buffer_size": 12016,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1640,
-								1640
+								5990,
+								5990
 							]
 						],
 						"settings":
@@ -1317,27 +1445,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 315.0,
+						"translation.y": 1770.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 22,
+					"buffer": 25,
 					"file": "BowlingCoreMVC/Models/StatsViewModel.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1600,
+						"buffer_size": 2142,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								668,
-								668
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1351,24 +1479,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 46,
+					"stack_index": 50,
 					"type": "text"
 				},
 				{
-					"buffer": 23,
+					"buffer": 26,
 					"file": "BowlingCoreMVC/Controllers/StatsController.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 13587,
+						"buffer_size": 14016,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1813,
-								1813
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1382,24 +1510,24 @@
 						"translation.y": 177.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 47,
+					"stack_index": 51,
 					"type": "text"
 				},
 				{
-					"buffer": 24,
+					"buffer": 27,
 					"file": "BowlingCoreMVC/Controllers/SeriesController.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6068,
+						"buffer_size": 7147,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2970,
-								2970
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1413,30 +1541,30 @@
 						"translation.y": 825.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 44,
+					"stack_index": 48,
 					"type": "text"
 				}
 			]
 		},
 		{
-			"selected": 0,
+			"selected": 6,
 			"sheets":
 			[
 				{
-					"buffer": 18,
+					"buffer": 21,
 					"file": "NOTES.md",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 34554,
+						"buffer_size": 40422,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								31280,
-								31280
+								38605,
+								38605
 							]
 						],
 						"settings":
@@ -1445,27 +1573,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 16560.0,
+						"translation.y": 20380.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 11,
 					"file": "BowlingCoreMVC/Views/Home/Index.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2016,
+						"buffer_size": 3840,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1610,
-								1802
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1478,54 +1606,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
-					"buffer": 25,
-					"file": "BowlingCoreMVC/Migrations/20190515183024_idk.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1668,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1668,
-								1668
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 11,
-					"type": "text"
-				},
-				{
-					"buffer": 26,
+					"buffer": 28,
 					"file": "BowlingCoreMVC/Views/Shared/_CardListSingleValue.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 577,
+						"buffer_size": 610,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								136,
-								136
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1538,24 +1636,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 13,
+					"stack_index": 24,
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 15,
 					"file": "BowlingCoreMVC/Controllers/GameController.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6567,
+						"buffer_size": 6522,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3344,
-								3344
+								1106,
+								1106
 							]
 						],
 						"settings":
@@ -1566,27 +1664,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 836.0,
+						"translation.y": 340.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 20,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 3,
 					"file": "BowlingCoreMVC/Views/Shared/_TeamWeekSummary.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2979,
+						"buffer_size": 6545,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1051,
-								1051
+								5051,
+								5051
 							]
 						],
 						"settings":
@@ -1597,19 +1695,79 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 915.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 22,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 29,
+					"file": "BowlingCoreMVC/ViewComponents/EditGameViewComponent.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1216,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1216,
+								1216
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 30,
+					"file": "BowlingCoreMVC/wwwroot/css/site.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8500,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8034,
+								8034
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6355.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
 					"file": "BowlingCoreMVC/Helpers/DataHelper.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 18706,
+						"buffer_size": 26710,
 						"regions":
 						{
 							"bookmarks":
@@ -1644,11 +1802,11 @@
 						"translation.y": 533.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 16,
+					"stack_index": 27,
 					"type": "text"
 				},
 				{
-					"buffer": 27,
+					"buffer": 31,
 					"file": "BowlingCoreMVC/Views/Game/Index.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1674,24 +1832,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 43,
+					"stack_index": 47,
 					"type": "text"
 				},
 				{
-					"buffer": 28,
+					"buffer": 32,
 					"file": "BowlingCoreMVC/Views/Leagues/Index.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4352,
+						"buffer_size": 4428,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								96,
-								96
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1704,24 +1862,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 37,
+					"stack_index": 42,
 					"type": "text"
 				},
 				{
-					"buffer": 29,
+					"buffer": 33,
 					"file": "BowlingCoreMVC/Views/Leagues/Create.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4350,
+						"buffer_size": 4351,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4350,
-								4350
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1735,24 +1893,24 @@
 						"translation.y": 62.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 36,
+					"stack_index": 41,
 					"type": "text"
 				},
 				{
-					"buffer": 30,
+					"buffer": 34,
 					"file": "BowlingCoreMVC/Views/Leagues/RequestToJoin.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2159,
+						"buffer_size": 2160,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2159,
-								2159
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1766,24 +1924,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 26,
+					"stack_index": 32,
 					"type": "text"
 				},
 				{
-					"buffer": 20,
+					"buffer": 23,
 					"file": "BowlingCoreMVC/Models/GameModels.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10877,
+						"buffer_size": 10989,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10877,
-								10877
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1797,11 +1955,11 @@
 						"translation.y": 4542.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 21,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 16,
 					"file": "BowlingCoreMVC/appsettings.json",
 					"semi_transient": false,
 					"settings":
@@ -1828,24 +1986,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 23,
+					"stack_index": 30,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 7,
 					"file": "BowlingCoreMVC/Startup.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6213,
+						"buffer_size": 6619,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5886,
-								5886
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1866,24 +2024,24 @@
 						"translation.y": 1396.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 30,
+					"stack_index": 36,
 					"type": "text"
 				},
 				{
-					"buffer": 31,
+					"buffer": 35,
 					"file": "BowlingCoreMVC/Program.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1313,
+						"buffer_size": 1605,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								304,
-								257
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1896,11 +2054,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 29,
+					"stack_index": 35,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 13,
 					"file": "BowlingCoreMVC/Services/EmailSender.cs",
 					"semi_transient": false,
 					"settings":
@@ -1927,11 +2085,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 27,
+					"stack_index": 33,
 					"type": "text"
 				},
 				{
-					"buffer": 32,
+					"buffer": 36,
 					"semi_transient": false,
 					"settings":
 					{
@@ -2021,24 +2179,24 @@
 						"translation.y": 855.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 24,
+					"stack_index": 31,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 14,
 					"file": "BowlingCoreMVC/Data/ApplicationDbContext.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6590,
+						"buffer_size": 6794,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1730,
-								1730
+								0,
+								0
 							]
 						],
 						"settings":
@@ -2051,11 +2209,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 20,
 					"type": "text"
 				},
 				{
-					"buffer": 33,
+					"buffer": 37,
 					"semi_transient": false,
 					"settings":
 					{
@@ -2078,11 +2236,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 31,
+					"stack_index": 37,
 					"type": "text"
 				},
 				{
-					"buffer": 34,
+					"buffer": 38,
 					"file": "BowlingCoreMVC/Views/Series/Index.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -2108,24 +2266,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 45,
+					"stack_index": 49,
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 18,
 					"file": "BowlingCoreMVC/Views/Shared/_Layout.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5744,
+						"buffer_size": 7372,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3735,
-								3808
+								0,
+								0
 							]
 						],
 						"settings":
@@ -2136,14 +2294,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 746.0,
+						"translation.y": 221.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 17,
 					"type": "text"
 				},
 				{
-					"buffer": 35,
+					"buffer": 39,
 					"file": "BowlingCoreMVC/Areas/Identity/Pages/Account/Register.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -2169,11 +2327,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 14,
+					"stack_index": 25,
 					"type": "text"
 				},
 				{
-					"buffer": 36,
+					"buffer": 40,
 					"file": "BowlingCoreMVC/Areas/Identity/Pages/Account/Login.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -2199,7 +2357,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 15,
+					"stack_index": 26,
 					"type": "text"
 				}
 			]
@@ -2255,7 +2413,7 @@
 	{
 		"height": 199.0
 	},
-	"pinned_build_system": "Packages/User/BowlingCoreMVC.sublime-build",
+	"pinned_build_system": "Build",
 	"project": "BowlingCoreMVC.sublime-project",
 	"replace":
 	{
@@ -2268,6 +2426,18 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"teamcon",
+				"BowlingCoreMVC\\Controllers\\TeamsController.cs"
+			],
+			[
+				"_teamweek",
+				"BowlingCoreMVC\\Views\\Shared\\_TeamWeekSummary.cshtml"
+			],
+			[
+				"gamecontrol",
+				"BowlingCoreMVC\\Controllers\\GameController.cs"
+			],
 			[
 				"ntoes",
 				"NOTES.md"
@@ -2377,16 +2547,8 @@
 				"NOTES.md"
 			],
 			[
-				"gamecontrol",
-				"BowlingCoreMVC\\Controllers\\GameController.cs"
-			],
-			[
 				"editgame",
 				"BowlingCoreMVC\\Views\\Shared\\Components\\EditGame\\Default.cshtml"
-			],
-			[
-				"_teamweek",
-				"BowlingCoreMVC\\Views\\Shared\\_TeamWeekSummary.cshtml"
 			],
 			[
 				"a",
@@ -2569,10 +2731,6 @@
 				"BowlingCoreMVC\\Controllers\\LeaguesController.cs"
 			],
 			[
-				"teamcon",
-				"BowlingCoreMVC\\Controllers\\TeamController.cs"
-			],
-			[
 				"league/inde",
 				"BowlingCoreMVC\\Views\\Leagues\\Index.cshtml"
 			],
@@ -2641,12 +2799,16 @@
 	},
 	"select_project":
 	{
-		"height": 0.0,
+		"height": 500.0,
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"",
+				"C:\\_Eric\\misc\\handmade_hero_day_029_source\\handmade\\handmade_029_proj.sublime-project"
+			]
 		],
-		"width": 0.0
+		"width": 380.0
 	},
 	"select_symbol":
 	{
