@@ -97,6 +97,7 @@ namespace BowlingCoreMVC.Controllers
                 {
                     MyGamesBowledToday.Keys.Add(user.UserName);
                     MyGamesBowledToday.Values.Add(g.Score);
+                    MyGamesBowledToday.Links.Add($"game/details/{g.ID}");
                 }
                 ViewData["MyGamesBowledToday"] = MyGamesBowledToday;
             }
@@ -110,6 +111,7 @@ namespace BowlingCoreMVC.Controllers
             {
                 Last5GamesList.Keys.Add(g.CreatedDate.ToShortDateString());
                 Last5GamesList.Values.Add(g.Score);
+                Last5GamesList.Links.Add($"game/details/{g.ID}");
             }
             ViewData["MyLast5Games"] = Last5GamesList;
 
@@ -121,6 +123,7 @@ namespace BowlingCoreMVC.Controllers
             {
                 MyHighGamesList.Keys.Add(g.CreatedDate.ToShortDateString());
                 MyHighGamesList.Values.Add(g.Score);
+                MyHighGamesList.Links.Add($"game/details/{g.ID}");
             }
             ViewData["MyHighGames"] = MyHighGamesList;
 
@@ -132,6 +135,7 @@ namespace BowlingCoreMVC.Controllers
             {
                 MyHighSeriesList.Keys.Add(s.CreatedDate.ToShortDateString());
                 MyHighSeriesList.Values.Add(s.SeriesScore);
+                MyHighSeriesList.Links.Add($"series/details/{s.ID}");
             }
             ViewData["MyHighSeries"] = MyHighSeriesList;
 

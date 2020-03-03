@@ -38,8 +38,10 @@ namespace BowlingCoreMVC.Models
         public short ThrowTwoPins { get; set; }
         public short ThrowThreePins { get; set; }
 
-        //[Editable(true)]
-        //public bool PinMissed { get; set; }
+        // New fields:
+        public short BallID {get;set;}
+        public short FeetPos {get;set;}
+        public short MarkPos {get;set;}
     }
 
     public class Game

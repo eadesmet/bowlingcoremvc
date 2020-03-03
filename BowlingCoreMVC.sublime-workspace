@@ -122,16 +122,7 @@
 			"file": "BowlingCoreMVC/Views/Shared/Components/EditGame/Default.cshtml",
 			"settings":
 			{
-				"buffer_size": 8305,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "BowlingCoreMVC/ScoringTagHelpers/FrameThrowTagHelper.cs",
-			"settings":
-			{
-				"buffer_size": 3199,
+				"buffer_size": 10217,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -140,7 +131,7 @@
 			"file": "BowlingCoreMVC/wwwroot/js/editgame.js",
 			"settings":
 			{
-				"buffer_size": 34641,
+				"buffer_size": 35107,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -158,8 +149,7 @@
 			"file": "BowlingCoreMVC.sublime-project",
 			"settings":
 			{
-				"buffer_size": 482,
-				"encoding": "UTF-8",
+				"buffer_size": 493,
 				"line_ending": "Unix"
 			}
 		},
@@ -212,7 +202,7 @@
 			"file": "BowlingCoreMVC/Views/Shared/_Layout.cshtml",
 			"settings":
 			{
-				"buffer_size": 7372,
+				"buffer_size": 7441,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
@@ -239,8 +229,34 @@
 			"file": "NOTES.md",
 			"settings":
 			{
-				"buffer_size": 40422,
+				"buffer_size": 41514,
 				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/wwwroot/css/site.css",
+			"settings":
+			{
+				"buffer_size": 8500,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/wwwroot/js/site.js",
+			"settings":
+			{
+				"buffer_size": 779,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Views/Shared/_LoginPartial.cshtml",
+			"settings":
+			{
+				"buffer_size": 1945,
 				"line_ending": "Windows"
 			}
 		},
@@ -257,7 +273,7 @@
 			"file": "BowlingCoreMVC/Models/GameModels.cs",
 			"settings":
 			{
-				"buffer_size": 10989,
+				"buffer_size": 11058,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -316,15 +332,6 @@
 			}
 		},
 		{
-			"file": "BowlingCoreMVC/wwwroot/css/site.css",
-			"settings":
-			{
-				"buffer_size": 8500,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Windows"
-			}
-		},
-		{
 			"file": "BowlingCoreMVC/Views/Game/Index.cshtml",
 			"settings":
 			{
@@ -357,6 +364,24 @@
 			{
 				"buffer_size": 2160,
 				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/Migrations/20191024180502_additionalthrowinfo.cs",
+			"settings":
+			{
+				"buffer_size": 1228,
+				"encoding": "UTF-8 with BOM",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "BowlingCoreMVC/ScoringTagHelpers/FrameThrowTagHelper.cs",
+			"settings":
+			{
+				"buffer_size": 4578,
+				"encoding": "UTF-8 with BOM",
 				"line_ending": "Windows"
 			}
 		},
@@ -425,6 +450,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"ssn html",
+				"Set Syntax: HTML (ASP)"
+			],
 			[
 				"omnigotode",
 				"OmniSharpSublime: Goto Definition"
@@ -559,6 +588,7 @@
 	],
 	"file_history":
 	[
+		"/C/_Eric/Code/BowlingCoreMVC/BowlingCoreMVC.sublime-project",
 		"/C/_Eric/Code/BowlingCoreMVC/BowlingCoreMVC/Migrations/20190515183024_idk.cs",
 		"/C/_Eric/Code/BowlingCoreMVC/BowlingCoreMVC/obj/Debug/netcoreapp2.2/Razor/Views/Leagues/RequestToJoin.g.cshtml.cs",
 		"/C/Users/EDeSmet/AppData/Roaming/Sublime Text 3/Packages/User/BowlingCoreMVC.sublime-build",
@@ -613,7 +643,7 @@
 	],
 	"find":
 	{
-		"height": 39.0
+		"height": 23.0
 	},
 	"find_in_files":
 	{
@@ -628,6 +658,15 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"missed_0",
+			"missed",
+			"highlight",
+			"migration",
+			"migrations",
+			"database",
+			"Position",
+			"BallChoiceID",
+			"int",
 			"currentframe",
 			"HighlightSelectedFrame",
 			"nextthrow",
@@ -654,6 +693,9 @@
 		"regex": false,
 		"replace_history":
 		[
+			"Pos",
+			"BallID",
+			"short",
 			"/",
 			"LeagueDayOfWeek",
 			"team",
@@ -668,7 +710,7 @@
 	"groups":
 	[
 		{
-			"selected": 10,
+			"selected": 17,
 			"sheets":
 			[
 				{
@@ -704,7 +746,7 @@
 						"translation.y": 3075.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 19,
 					"type": "text"
 				},
 				{
@@ -734,7 +776,7 @@
 						"translation.y": 1845.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 20,
 					"type": "text"
 				},
 				{
@@ -765,7 +807,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 15,
+					"stack_index": 26,
 					"type": "text"
 				},
 				{
@@ -796,7 +838,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 40,
+					"stack_index": 48,
 					"type": "text"
 				},
 				{
@@ -831,7 +873,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 28,
+					"stack_index": 37,
 					"type": "text"
 				},
 				{
@@ -867,7 +909,7 @@
 						"translation.y": 506.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 18,
+					"stack_index": 28,
 					"type": "text"
 				},
 				{
@@ -897,7 +939,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 16,
+					"stack_index": 27,
 					"type": "text"
 				},
 				{
@@ -935,7 +977,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 19,
+					"stack_index": 29,
 					"type": "text"
 				},
 				{
@@ -944,75 +986,45 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8305,
+						"buffer_size": 10217,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								4516,
+								4516
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"syntax": "Packages/ASP/HTML-ASP.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1320.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
 					"buffer": 9,
-					"file": "BowlingCoreMVC/ScoringTagHelpers/FrameThrowTagHelper.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3199,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1514,
-								1514
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
 					"file": "BowlingCoreMVC/wwwroot/js/editgame.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 34641,
+						"buffer_size": 35107,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1535,
-								1535
+								4153,
+								4153
 							]
 						],
 						"settings":
@@ -1022,14 +1034,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 754.0,
+						"translation.y": 865.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 10,
 					"file": "BowlingCoreMVC/Views/Home/Index.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1041,8 +1053,8 @@
 						"selection":
 						[
 							[
-								0,
-								0
+								37,
+								37
 							]
 						],
 						"settings":
@@ -1055,41 +1067,39 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 29,
+					"stack_index": 15,
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 11,
 					"file": "BowlingCoreMVC.sublime-project",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 482,
+						"buffer_size": 493,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								482,
-								482
+								141,
+								141
 							]
 						],
 						"settings":
 						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 12,
 					"file": "BowlingCoreMVC/Services/EmailSender.cs",
 					"semi_transient": false,
 					"settings":
@@ -1116,11 +1126,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 38,
+					"stack_index": 46,
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 13,
 					"file": "BowlingCoreMVC/Data/ApplicationDbContext.cs",
 					"semi_transient": false,
 					"settings":
@@ -1146,11 +1156,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 34,
+					"stack_index": 42,
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 14,
 					"file": "BowlingCoreMVC/Controllers/GameController.cs",
 					"semi_transient": false,
 					"settings":
@@ -1177,11 +1187,11 @@
 						"translation.y": 38.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 23,
+					"stack_index": 32,
 					"type": "text"
 				},
 				{
-					"buffer": 16,
+					"buffer": 15,
 					"file": "BowlingCoreMVC/appsettings.json",
 					"semi_transient": false,
 					"settings":
@@ -1208,11 +1218,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 22,
+					"stack_index": 31,
 					"type": "text"
 				},
 				{
-					"buffer": 17,
+					"buffer": 16,
 					"file": "BowlingCoreMVC/appsettings.Development.json",
 					"semi_transient": false,
 					"settings":
@@ -1237,24 +1247,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 39,
+					"stack_index": 47,
 					"type": "text"
 				},
 				{
-					"buffer": 18,
+					"buffer": 17,
 					"file": "BowlingCoreMVC/Views/Shared/_Layout.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7372,
+						"buffer_size": 7441,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								45,
+								45
 							]
 						],
 						"settings":
@@ -1265,14 +1275,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 271.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 43,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 19,
+					"buffer": 18,
 					"file": "BowlingCoreMVC/Views/Shared/Error.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1297,11 +1307,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 44,
+					"stack_index": 51,
 					"type": "text"
 				},
 				{
-					"buffer": 20,
+					"buffer": 19,
 					"file": "build.bat",
 					"semi_transient": false,
 					"settings":
@@ -1326,24 +1336,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 13,
+					"stack_index": 24,
 					"type": "text"
 				},
 				{
-					"buffer": 21,
+					"buffer": 20,
 					"file": "NOTES.md",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 40422,
+						"buffer_size": 41514,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								41511,
+								41511
 							]
 						],
 						"settings":
@@ -1352,14 +1362,104 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 16847.0,
+						"translation.y": 19526.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 45,
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 21,
+					"file": "BowlingCoreMVC/wwwroot/css/site.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8500,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8033,
+								8033
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 5825.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
 					"buffer": 22,
+					"file": "BowlingCoreMVC/wwwroot/js/site.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 779,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								779,
+								779
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 23,
+					"file": "BowlingCoreMVC/Views/Shared/_LoginPartial.cshtml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1945,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1945,
+								1945
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 24,
 					"file": "BowlingCoreMVC/Models/GameViewModels/GameViewModels.cs",
 					"semi_transient": false,
 					"settings":
@@ -1386,24 +1486,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 46,
+					"stack_index": 52,
 					"type": "text"
 				},
 				{
-					"buffer": 23,
+					"buffer": 25,
 					"file": "BowlingCoreMVC/Models/GameModels.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10989,
+						"buffer_size": 11058,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								8946,
-								8950
+								9015,
+								9019
 							]
 						],
 						"settings":
@@ -1417,11 +1517,11 @@
 						"translation.y": 3694.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 21,
 					"type": "text"
 				},
 				{
-					"buffer": 24,
+					"buffer": 26,
 					"file": "BowlingCoreMVC/Controllers/TeamsController.cs",
 					"semi_transient": false,
 					"settings":
@@ -1448,11 +1548,11 @@
 						"translation.y": 1770.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 22,
 					"type": "text"
 				},
 				{
-					"buffer": 25,
+					"buffer": 27,
 					"file": "BowlingCoreMVC/Models/StatsViewModel.cs",
 					"semi_transient": false,
 					"settings":
@@ -1479,11 +1579,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 50,
+					"stack_index": 56,
 					"type": "text"
 				},
 				{
-					"buffer": 26,
+					"buffer": 28,
 					"file": "BowlingCoreMVC/Controllers/StatsController.cs",
 					"semi_transient": false,
 					"settings":
@@ -1510,11 +1610,11 @@
 						"translation.y": 177.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 51,
+					"stack_index": 57,
 					"type": "text"
 				},
 				{
-					"buffer": 27,
+					"buffer": 29,
 					"file": "BowlingCoreMVC/Controllers/SeriesController.cs",
 					"semi_transient": false,
 					"settings":
@@ -1541,30 +1641,30 @@
 						"translation.y": 825.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 48,
+					"stack_index": 54,
 					"type": "text"
 				}
 			]
 		},
 		{
-			"selected": 6,
+			"selected": 24,
 			"sheets":
 			[
 				{
-					"buffer": 21,
+					"buffer": 20,
 					"file": "NOTES.md",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 40422,
+						"buffer_size": 41514,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								38605,
-								38605
+								41512,
+								41512
 							]
 						],
 						"settings":
@@ -1573,14 +1673,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 20380.0,
+						"translation.y": 21110.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 10,
 					"file": "BowlingCoreMVC/Views/Home/Index.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1606,11 +1706,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 14,
+					"stack_index": 25,
 					"type": "text"
 				},
 				{
-					"buffer": 28,
+					"buffer": 30,
 					"file": "BowlingCoreMVC/Views/Shared/_CardListSingleValue.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1636,11 +1736,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 24,
+					"stack_index": 33,
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 14,
 					"file": "BowlingCoreMVC/Controllers/GameController.cs",
 					"semi_transient": false,
 					"settings":
@@ -1667,7 +1767,7 @@
 						"translation.y": 340.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 23,
 					"type": "text"
 				},
 				{
@@ -1695,14 +1795,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 915.0,
+						"translation.y": 225.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 18,
 					"type": "text"
 				},
 				{
-					"buffer": 29,
+					"buffer": 31,
 					"file": "BowlingCoreMVC/ViewComponents/EditGameViewComponent.cs",
 					"semi_transient": false,
 					"settings":
@@ -1728,11 +1828,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 17,
 					"type": "text"
 				},
 				{
-					"buffer": 30,
+					"buffer": 21,
 					"file": "BowlingCoreMVC/wwwroot/css/site.css",
 					"semi_transient": false,
 					"settings":
@@ -1758,7 +1858,7 @@
 						"translation.y": 6355.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 16,
 					"type": "text"
 				},
 				{
@@ -1802,11 +1902,11 @@
 						"translation.y": 533.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 27,
+					"stack_index": 36,
 					"type": "text"
 				},
 				{
-					"buffer": 31,
+					"buffer": 32,
 					"file": "BowlingCoreMVC/Views/Game/Index.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1832,11 +1932,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 47,
+					"stack_index": 53,
 					"type": "text"
 				},
 				{
-					"buffer": 32,
+					"buffer": 33,
 					"file": "BowlingCoreMVC/Views/Leagues/Index.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1862,11 +1962,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 42,
+					"stack_index": 50,
 					"type": "text"
 				},
 				{
-					"buffer": 33,
+					"buffer": 34,
 					"file": "BowlingCoreMVC/Views/Leagues/Create.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1893,11 +1993,11 @@
 						"translation.y": 62.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 41,
+					"stack_index": 49,
 					"type": "text"
 				},
 				{
-					"buffer": 34,
+					"buffer": 35,
 					"file": "BowlingCoreMVC/Views/Leagues/RequestToJoin.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -1924,24 +2024,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 32,
+					"stack_index": 40,
 					"type": "text"
 				},
 				{
-					"buffer": 23,
+					"buffer": 25,
 					"file": "BowlingCoreMVC/Models/GameModels.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10989,
+						"buffer_size": 11058,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								10247,
+								10247
 							]
 						],
 						"settings":
@@ -1952,14 +2052,74 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4542.0,
+						"translation.y": 4201.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 21,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 16,
+					"buffer": 36,
+					"file": "BowlingCoreMVC/Migrations/20191024180502_additionalthrowinfo.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1228,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1228,
+								1228
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 37,
+					"file": "BowlingCoreMVC/ScoringTagHelpers/FrameThrowTagHelper.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4578,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1986,
+								1986
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 310.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
 					"file": "BowlingCoreMVC/appsettings.json",
 					"semi_transient": false,
 					"settings":
@@ -1986,7 +2146,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 30,
+					"stack_index": 38,
 					"type": "text"
 				},
 				{
@@ -2024,11 +2184,11 @@
 						"translation.y": 1396.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 36,
+					"stack_index": 44,
 					"type": "text"
 				},
 				{
-					"buffer": 35,
+					"buffer": 38,
 					"file": "BowlingCoreMVC/Program.cs",
 					"semi_transient": false,
 					"settings":
@@ -2054,11 +2214,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 35,
+					"stack_index": 43,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 12,
 					"file": "BowlingCoreMVC/Services/EmailSender.cs",
 					"semi_transient": false,
 					"settings":
@@ -2085,11 +2245,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 33,
+					"stack_index": 41,
 					"type": "text"
 				},
 				{
-					"buffer": 36,
+					"buffer": 39,
 					"semi_transient": false,
 					"settings":
 					{
@@ -2179,11 +2339,11 @@
 						"translation.y": 855.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 31,
+					"stack_index": 39,
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 13,
 					"file": "BowlingCoreMVC/Data/ApplicationDbContext.cs",
 					"semi_transient": false,
 					"settings":
@@ -2209,11 +2369,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 20,
+					"stack_index": 30,
 					"type": "text"
 				},
 				{
-					"buffer": 37,
+					"buffer": 40,
 					"semi_transient": false,
 					"settings":
 					{
@@ -2236,11 +2396,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 37,
+					"stack_index": 45,
 					"type": "text"
 				},
 				{
-					"buffer": 38,
+					"buffer": 41,
 					"file": "BowlingCoreMVC/Views/Series/Index.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -2266,24 +2426,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 49,
+					"stack_index": 55,
 					"type": "text"
 				},
 				{
-					"buffer": 18,
+					"buffer": 17,
 					"file": "BowlingCoreMVC/Views/Shared/_Layout.cshtml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7372,
+						"buffer_size": 7441,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								7098,
+								7098
 							]
 						],
 						"settings":
@@ -2294,14 +2454,80 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 221.0,
+						"translation.y": 1387.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 17,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 39,
+					"buffer": 5,
+					"file": "BowlingCoreMVC/Controllers/HomeController.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7758,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								896,
+								786
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"oops":
+							{
+								"192,197": "Unnecessary using directive.",
+								"4120,4129": "'ISession' does not contain a definition for 'SetString' and no accessible extension method 'SetString' accepting a first argument of type 'ISession' could be found (are you missing a using directive or an assembly reference?)"
+							},
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "BowlingCoreMVC/wwwroot/js/editgame.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 35107,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								20406,
+								20981
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6935.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 42,
 					"file": "BowlingCoreMVC/Areas/Identity/Pages/Account/Register.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -2327,11 +2553,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 25,
+					"stack_index": 34,
 					"type": "text"
 				},
 				{
-					"buffer": 40,
+					"buffer": 43,
 					"file": "BowlingCoreMVC/Areas/Identity/Pages/Account/Login.cshtml",
 					"semi_transient": false,
 					"settings":
@@ -2357,7 +2583,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 26,
+					"stack_index": 35,
 					"type": "text"
 				}
 			]
@@ -2365,7 +2591,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 24.0
+		"height": 23.0
 	},
 	"input":
 	{
@@ -2417,7 +2643,7 @@
 	"project": "BowlingCoreMVC.sublime-project",
 	"replace":
 	{
-		"height": 44.0
+		"height": 42.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -2426,6 +2652,58 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"homecontro",
+				"BowlingCoreMVC\\Controllers\\HomeController.cs"
+			],
+			[
+				"layout",
+				"BowlingCoreMVC\\Views\\Shared\\_Layout.cshtml"
+			],
+			[
+				"loginpar",
+				"BowlingCoreMVC\\Views\\Shared\\_LoginPartial.cshtml"
+			],
+			[
+				"site.js",
+				"BowlingCoreMVC\\wwwroot\\js\\site.js"
+			],
+			[
+				"site.css",
+				"BowlingCoreMVC\\wwwroot\\css\\site.css"
+			],
+			[
+				"editgame",
+				"BowlingCoreMVC\\wwwroot\\js\\editgame.js"
+			],
+			[
+				"notes",
+				"NOTES.md"
+			],
+			[
+				"gamemode",
+				"BowlingCoreMVC\\Models\\GameModels.cs"
+			],
+			[
+				"shared _layout",
+				"BowlingCoreMVC\\Views\\Shared\\_Layout.cshtml"
+			],
+			[
+				"editga",
+				"BowlingCoreMVC\\Views\\Shared\\Components\\EditGame\\Default.cshtml"
+			],
+			[
+				"gamemo",
+				"BowlingCoreMVC\\Models\\GameModels.cs"
+			],
+			[
+				"",
+				"BowlingCoreMVC\\Models\\GameModels.cs"
+			],
+			[
+				"taghelper",
+				"BowlingCoreMVC\\ScoringTagHelpers\\FrameThrowTagHelper.cs"
+			],
 			[
 				"teamcon",
 				"BowlingCoreMVC\\Controllers\\TeamsController.cs"
@@ -2453,10 +2731,6 @@
 			[
 				"mysta",
 				"BowlingCoreMVC\\Views\\Stats\\MyStats.cshtml"
-			],
-			[
-				"",
-				"BowlingCoreMVC\\Views\\Home\\Index.cshtml"
 			],
 			[
 				"layou",
@@ -2503,10 +2777,6 @@
 				"BowlingCoreMVC\\Areas\\Identity\\Pages\\Account\\Register.cshtml"
 			],
 			[
-				"layout",
-				"BowlingCoreMVC\\Views\\Shared\\_Layout.cshtml"
-			],
-			[
 				"gamecon",
 				"BowlingCoreMVC\\Controllers\\GameController.cs"
 			],
@@ -2541,14 +2811,6 @@
 			[
 				"home",
 				"BowlingCoreMVC\\Views\\Home\\Index.cshtml"
-			],
-			[
-				"notes",
-				"NOTES.md"
-			],
-			[
-				"editgame",
-				"BowlingCoreMVC\\Views\\Shared\\Components\\EditGame\\Default.cshtml"
 			],
 			[
 				"a",
@@ -2625,10 +2887,6 @@
 			[
 				"_",
 				"BowlingCoreMVC\\Views\\Shared\\_TeamWeekSummary.cshtml"
-			],
-			[
-				"gamemo",
-				"BowlingCoreMVC\\Models\\GameModels.cs"
 			],
 			[
 				"leaguecreate",
@@ -2787,10 +3045,6 @@
 				"BowlingCoreMVC\\ScoringTagHelpers\\FrameScoreTagHelper.cs"
 			],
 			[
-				"site.js",
-				"BowlingCoreMVC\\wwwroot\\js\\site.js"
-			],
-			[
 				"leagues/create",
 				"BowlingCoreMVC\\Views\\Leagues\\Create.cshtml"
 			]
@@ -2819,7 +3073,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 0,
+	"selected_group": 1,
 	"settings":
 	{
 		"last_automatic_layout":

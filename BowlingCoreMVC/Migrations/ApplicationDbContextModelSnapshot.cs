@@ -15,46 +15,60 @@ namespace BowlingCoreMVC.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BowlingCoreMVC.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AccessFailedCount");
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<bool>("EmailConfirmed");
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("LockoutEnabled");
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd");
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<string>("PasswordHash");
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("PhoneNumberConfirmed");
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("SecurityStamp");
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("TwoFactorEnabled");
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -74,27 +88,47 @@ namespace BowlingCoreMVC.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("FrameNum");
+                    b.Property<short>("BallID")
+                        .HasColumnType("smallint");
 
-                    b.Property<int>("FrameScore");
+                    b.Property<short>("FeetPos")
+                        .HasColumnType("smallint");
 
-                    b.Property<int>("FrameTotal");
+                    b.Property<int>("FrameNum")
+                        .HasColumnType("int");
 
-                    b.Property<int>("GameID");
+                    b.Property<int>("FrameScore")
+                        .HasColumnType("int");
 
-                    b.Property<short>("ThrowOnePins");
+                    b.Property<int>("FrameTotal")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ThrowOneScore");
+                    b.Property<int>("GameID")
+                        .HasColumnType("int");
 
-                    b.Property<short>("ThrowThreePins");
+                    b.Property<short>("MarkPos")
+                        .HasColumnType("smallint");
 
-                    b.Property<int>("ThrowThreeScore");
+                    b.Property<short>("ThrowOnePins")
+                        .HasColumnType("smallint");
 
-                    b.Property<short>("ThrowTwoPins");
+                    b.Property<int>("ThrowOneScore")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ThrowTwoScore");
+                    b.Property<short>("ThrowThreePins")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("ThrowThreeScore")
+                        .HasColumnType("int");
+
+                    b.Property<short>("ThrowTwoPins")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("ThrowTwoScore")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -107,25 +141,35 @@ namespace BowlingCoreMVC.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CurrentFrame");
+                    b.Property<int>("CurrentFrame")
+                        .HasColumnType("int");
 
-                    b.Property<int>("CurrentThrow");
+                    b.Property<int>("CurrentThrow")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedDate");
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("Score");
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ScoreUpToFrame");
+                    b.Property<int>("ScoreUpToFrame")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("SeriesID");
+                    b.Property<int?>("SeriesID")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SeriesIndex");
+                    b.Property<int>("SeriesIndex")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)")
                         .HasMaxLength(450);
 
                     b.HasKey("ID");
@@ -141,35 +185,47 @@ namespace BowlingCoreMVC.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByID")
+                        .HasColumnType("nvarchar(450)")
                         .HasMaxLength(450);
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DefaultNumOfGames")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasDefaultValue(3);
 
-                    b.Property<DateTime>("EndDate");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("LeagueDay");
+                    b.Property<int>("LeagueDay")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("LocationID");
+                    b.Property<int?>("LocationID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Message");
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ModifiedDate");
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Occurance")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasDefaultValue(1);
 
-                    b.Property<DateTime>("StartDate");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ID");
 
@@ -182,16 +238,21 @@ namespace BowlingCoreMVC.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByID")
+                        .HasColumnType("nvarchar(450)")
                         .HasMaxLength(450);
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ModifiedDate");
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
@@ -202,19 +263,26 @@ namespace BowlingCoreMVC.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("LeagueID");
+                    b.Property<int?>("LeagueID")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedDate");
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("SeriesScore");
+                    b.Property<int>("SeriesScore")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TeamID");
+                    b.Property<int?>("TeamID")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)")
                         .HasMaxLength(450);
 
                     b.HasKey("ID");
@@ -232,18 +300,24 @@ namespace BowlingCoreMVC.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByID")
+                        .HasColumnType("nvarchar(450)")
                         .HasMaxLength(450);
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("LeagueID");
+                    b.Property<int>("LeagueID")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedDate");
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("TeamName");
+                    b.Property<string>("TeamName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
@@ -256,17 +330,23 @@ namespace BowlingCoreMVC.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsAdmin");
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("LeagueID");
+                    b.Property<int>("LeagueID")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TeamID");
+                    b.Property<int?>("TeamID")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)")
                         .HasMaxLength(450);
 
                     b.HasKey("ID");
@@ -279,15 +359,18 @@ namespace BowlingCoreMVC.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -304,14 +387,18 @@ namespace BowlingCoreMVC.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -324,14 +411,18 @@ namespace BowlingCoreMVC.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -342,14 +433,18 @@ namespace BowlingCoreMVC.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ProviderKey");
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ProviderDisplayName");
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -360,9 +455,11 @@ namespace BowlingCoreMVC.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("RoleId");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -373,13 +470,17 @@ namespace BowlingCoreMVC.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Value");
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -388,15 +489,16 @@ namespace BowlingCoreMVC.Migrations
 
             modelBuilder.Entity("BowlingCoreMVC.Models.Frame", b =>
                 {
-                    b.HasOne("BowlingCoreMVC.Models.Game")
+                    b.HasOne("BowlingCoreMVC.Models.Game", null)
                         .WithMany("Frames")
                         .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BowlingCoreMVC.Models.Game", b =>
                 {
-                    b.HasOne("BowlingCoreMVC.Models.Series")
+                    b.HasOne("BowlingCoreMVC.Models.Series", null)
                         .WithMany("Games")
                         .HasForeignKey("SeriesID");
 
@@ -432,59 +534,66 @@ namespace BowlingCoreMVC.Migrations
                     b.HasOne("BowlingCoreMVC.Models.League", "League")
                         .WithMany()
                         .HasForeignKey("LeagueID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BowlingCoreMVC.Models.UserLeagueTeam", b =>
                 {
-                    b.HasOne("BowlingCoreMVC.Models.Team")
+                    b.HasOne("BowlingCoreMVC.Models.Team", null)
                         .WithMany("UserLeagueTeams")
                         .HasForeignKey("TeamID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser")
+                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser")
+                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser")
+                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser")
+                    b.HasOne("BowlingCoreMVC.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

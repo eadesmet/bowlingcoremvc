@@ -1421,3 +1421,43 @@ because the strike bonus, spare bonus code would be repeated
 
 
 }
+
+
+
+10-24
+{
+	Thinking of the  crazy things I could add to this
+
+	I'm starting to work on getting ball choice, feet position and mark position in there
+		currently with range sliders, no styling yet
+	What would be good for this is to have images of the arrows/dots horizontally behind the slider
+	with a 'tick' or stop point on each board
+
+	but I'm also thinking I could show an image of the whole lane, draw a line of the balls path (calculated)
+
+
+}
+
+10-30
+{
+	I think for now I'll just go forward with Ball choice
+		even just that, it requires a new page with crud operations etc. (per user)
+
+	
+
+	If I were to change this app over to razor pages, I'd like to rework how some things work.
+
+	Just brainstorming here - what if I just have 1 db table of Frames?
+		get rid of Game and Series completely
+
+		each Frame would still need a Game ID
+		also a Series ID and League ID
+
+		Cons: 
+			I'd see a lot of duplicated data (IDs at least)
+			I would need helper functions to get a 'Game'
+				Even then, I could still have a Game object, it just wouldn't be in the db
+
+		I'm going to try this out
+
+}

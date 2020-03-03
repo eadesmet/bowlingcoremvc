@@ -45,6 +45,9 @@
     </environment>
 
     @* SIDEBAR *@
+
+    @* THIS IS AN ISSUE: USING BOOTSTRAP 3.3 ABOVE AND 4.1 HERE *@
+
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <!-- Scrollbar Custom CSS -->
@@ -73,8 +76,9 @@
                 @*
                     TODO(ERIC): Figure out how to switch the 'Active' li item
                     <li class="active">*@
-                <li class="">
-                    <a href="/">Home</a>
+                <li class="nav-item sidebar-nav @((ViewContext.RouteData.Values["Action"].ToString() == "Index") && ((ViewContext.RouteData.Values["Controller"].ToString() == "Home")) ? "active" : "")">
+                    
+                    <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
                     @*<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
                         <ul class="collapse list-unstyled" id="homeSubmenu">
                             <li>
@@ -90,11 +94,19 @@
                 </li>
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <li class="nav-item"><a asp-controller="Game" asp-action="Index" class="nav-link">Scores</a></li>
-                    <li class="nav-item"><a asp-controller="Stats" asp-action="UserSummary" asp-route-id="@UserManager.GetUserId(User)" class="nav-link">Statistics</a></li>
+                    <li class="nav-item sidebar-nav @((ViewContext.RouteData.Values["Action"].ToString() == "Index") && ((ViewContext.RouteData.Values["Controller"].ToString() == "Game")) ? "active" : "")">
+                        <a asp-controller="Game" asp-action="Index" class="nav-link">Scores</a>
+                    </li>
+                    <li class="nav-item sidebar-nav @((ViewContext.RouteData.Values["Action"].ToString() == "UserSummary") && ((ViewContext.RouteData.Values["Controller"].ToString() == "Stats")) ? "active" : "")">
+                        <a asp-controller="Stats" asp-action="UserSummary" asp-route-id="@UserManager.GetUserId(User)" class="nav-link">Statistics</a>
+                    </li>
 
-                    <li class="nav-item"><a asp-controller="Leagues" asp-action="Index" class="nav-link">Leagues</a></li>
-                    <li class="nav-item"><a asp-controller="Stats" asp-action="Index" class="nav-link">Sitewide Scores</a></li>
+                    <li class="nav-item sidebar-nav @((ViewContext.RouteData.Values["Action"].ToString() == "Index") && ((ViewContext.RouteData.Values["Controller"].ToString() == "Leagues")) ? "active" : "")">
+                        <a asp-controller="Leagues" asp-action="Index" class="nav-link">Leagues</a>
+                    </li>
+                    <li class="nav-item sidebar-nav @((ViewContext.RouteData.Values["Action"].ToString() == "Index") && ((ViewContext.RouteData.Values["Controller"].ToString() == "Stats")) ? "active" : "")">
+                        <a asp-controller="Stats" asp-action="Index" class="nav-link">Sitewide Scores</a>
+                    </li>
                     @*<li class="nav-item"><a asp-controller="Teams" asp-action="Index" class="nav-link">Teams Test</a></li>*@
                 }
             </ul>

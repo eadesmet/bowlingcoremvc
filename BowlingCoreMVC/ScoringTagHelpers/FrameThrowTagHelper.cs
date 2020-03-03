@@ -36,6 +36,10 @@ namespace BowlingCoreMVC.ScoringTagHelpers
 
             var hidFrameNumID = String.Format("{0}_{1}_hidFrameNum", frame.GameID, frame.FrameNum);
 
+            var hidBallID = String.Format("{0}_{1}_{2}_hidBallID", frame.GameID, frame.FrameNum, ThrowNum);
+            var hidFeetPos = String.Format("{0}_{1}_{2}_hidFeetPos", frame.GameID, frame.FrameNum, ThrowNum);
+            var hidMarkPos = String.Format("{0}_{1}_{2}_hidMarkPos", frame.GameID, frame.FrameNum, ThrowNum);
+
             //output.TagName = "td";
             //output.Attributes.Add("id", tdID);
 
@@ -51,18 +55,30 @@ namespace BowlingCoreMVC.ScoringTagHelpers
                 template.AppendJoin("", "<label id='", lblThrowID, "'>", frame.ThrowOneScore, "</label>");
                 template.AppendJoin("", "<input type='hidden' id='", hidThrowID, "' value='", frame.ThrowOneScore, "'/>");
                 template.AppendJoin("", "<input type='hidden' id='", hidPinsID, "' value='", frame.ThrowOnePins, "'/>");
+
+                template.AppendJoin("", "<input type='hidden' id='", hidBallID, "' value='", frame.BallID, "'/>");
+                template.AppendJoin("", "<input type='hidden' id='", hidFeetPos, "' value='", frame.FeetPos, "'/>");
+                template.AppendJoin("", "<input type='hidden' id='", hidMarkPos, "' value='", frame.MarkPos, "'/>");
             }
             else if (ThrowNum == 2)
             {
                 template.AppendJoin("", "<label class='frameBox' id='", lblThrowID, "'>", frame.ThrowTwoScore, "</label>");
                 template.AppendJoin("", "<input type='hidden' id='", hidThrowID, "' value='", frame.ThrowTwoScore, "'/>");
                 template.AppendJoin("", "<input type='hidden' id='", hidPinsID, "' value='", frame.ThrowTwoPins, "'/>");
+
+                template.AppendJoin("", "<input type='hidden' id='", hidBallID, "' value='", frame.BallID, "'/>");
+                template.AppendJoin("", "<input type='hidden' id='", hidFeetPos, "' value='", frame.FeetPos, "'/>");
+                template.AppendJoin("", "<input type='hidden' id='", hidMarkPos, "' value='", frame.MarkPos, "'/>");
             }
             else if (ThrowNum == 3)
             {
                 template.AppendJoin("", "<label class='frameBox3' id='", lblThrowID, "'>", frame.ThrowThreeScore, "</label>");
                 template.AppendJoin("", "<input type='hidden' id='", hidThrowID, "' value='", frame.ThrowThreeScore, "'/>");
                 template.AppendJoin("", "<input type='hidden' id='", hidPinsID, "' value='", frame.ThrowThreePins, "'/>");
+
+                template.AppendJoin("", "<input type='hidden' id='", hidBallID, "' value='", frame.BallID, "'/>");
+                template.AppendJoin("", "<input type='hidden' id='", hidFeetPos, "' value='", frame.FeetPos, "'/>");
+                template.AppendJoin("", "<input type='hidden' id='", hidMarkPos, "' value='", frame.MarkPos, "'/>");
             }
             
             output.Content.AppendHtml(template.ToString());

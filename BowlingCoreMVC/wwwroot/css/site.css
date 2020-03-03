@@ -1,6 +1,8 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
 }
 
 /* Wrapping element */
@@ -285,11 +287,17 @@ input[type='checkbox']:disabled.pins-checkbox + label:before {
 
 .card-body {
     padding: 0px; /* Doesn't work anymore? */
+    
+    background-color: #d5c4a1;
 }
 
 .card-title, .card-subtitle {
     text-align: center;
     
+}
+
+li.sidebar-nav {
+    background-color: #928374;
 }
 
 
@@ -299,11 +307,6 @@ input[type='checkbox']:disabled.pins-checkbox + label:before {
 /* Sidebar */
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #fafafa;
-}
 
 p {
     font-family: 'Poppins', sans-serif;
@@ -392,14 +395,14 @@ a:focus {
 }
 
 #sidebar ul li a:hover {
-    color: #7386D5;
-    background: #fff;
+    color: #000;
+    background: #fbf1c7;
 }
 
 #sidebar ul li.active > a,
 a[aria-expanded="true"] {
-    color: #fff;
-    background: #6d7fcc;
+    color: #000;
+    background: #fbf1c7;
 }
 
 a[data-toggle="collapse"] {

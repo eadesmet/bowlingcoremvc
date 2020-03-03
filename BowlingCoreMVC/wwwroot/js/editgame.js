@@ -64,6 +64,13 @@ function GetJSONFromPage(GameID)
         frameDetails["ThrowOnePins"] = $(prefixID + "1_hidPins").val();
         frameDetails["ThrowTwoPins"] = $(prefixID + "2_hidPins").val();
 
+        frameDetails["ThrowOneBallID"] = $(prefixID + "1_hidBallID").val();
+        frameDetails["ThrowOneFeetPos"] = $(prefixID + "1_hidFeetPos").val();
+        frameDetails["ThrowOneMarkPos"] = $(prefixID + "1_hidMarkPos").val();
+        frameDetails["ThrowTwoBallID"] = $(prefixID + "2_hidBallID").val();
+        frameDetails["ThrowTwoFeetPos"] = $(prefixID + "2_hidFeetPos").val();
+        frameDetails["ThrowTwoMarkPos"] = $(prefixID + "2_hidMarkPos").val();
+
 
         //TODO: 10th frame updating here
         if (i === 10)
@@ -627,6 +634,7 @@ $(document).ready(function ()
 
         HighlightSelectedFrame(GameIDs[i], CurrentFrame, CurrentThrow);
     }
+
 });
 
 function UnloadPage()

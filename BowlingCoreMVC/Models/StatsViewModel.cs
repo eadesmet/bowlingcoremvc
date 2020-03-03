@@ -26,6 +26,7 @@ namespace BowlingCoreMVC.Models
         {
             this.Keys = new List<string>();
             this.Values = new List<int>();
+            this.Links = new List<string>();
         }
 
         public string Title { get; set; }
@@ -33,6 +34,7 @@ namespace BowlingCoreMVC.Models
 
         public List<string> Keys { get; set; }
         public List<int> Values { get; set; }
+        public List<string> Links { get; set; }
     }
 
     // To be used with "_CardListMultipleValue"
@@ -42,6 +44,7 @@ namespace BowlingCoreMVC.Models
         {
             this.ColKeys = new List<List<string>>();
             this.Values = new List<int>();
+            this.Links = new List<string>();
         }
 
         public string Title { get; set; }
@@ -49,6 +52,7 @@ namespace BowlingCoreMVC.Models
 
         public List<List<string>> ColKeys { get; set; }
         public List<int> Values { get; set; }
+        public List<string> Links { get; set; }
     }
 
     public class TeamMember
